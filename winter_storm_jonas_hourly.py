@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import requests
 
 from matplotlib.animation import FuncAnimation
+from metpy.plots import USCOUNTIES
 from pandas import date_range
 
 extent = (-79.602563, -75.723267, 37.035112, 40)
@@ -21,7 +22,7 @@ ax.set_extent(extent)
 
 ax.add_feature(cfeature.LAND.with_scale("10m"))
 ax.add_feature(cfeature.OCEAN.with_scale("10m"))
-ax.add_feature(cfeature.STATES.with_scale("10m"))
+ax.add_feature(USCOUNTIES.with_scale("5m"))
 
 session = requests.session()
 lines = []
@@ -123,7 +124,7 @@ def animate(frame):
     return lines
 
 
-anim = FuncAnimation(fig, animate, frames=animation_frames, interval=20, blit=False)
+anim = FuncAnimation(fig, animate, frames=animation_frames, blit=False)
 
 anim.save("./progress.gif")
 
