@@ -1,6 +1,5 @@
 import logging
 
-from datetime import datetime
 from operator import itemgetter
 
 import cartopy.crs as ccrs
@@ -58,7 +57,7 @@ def filter_cape(cape_coords):
 data_nam = Dataset(
     (
         f"http://nomads.ncep.noaa.gov/dods/nam/"
-        f"nam{datetime.now().strftime('%Y%m%d')}/nam_18z"
+        f"nam20220330/nam_18z"
     )
 )
 logger.info("Loaded NAM dataset")
@@ -66,7 +65,7 @@ logger.info("Loaded NAM dataset")
 data_nam3k = Dataset(
     (
         f"http://nomads.ncep.noaa.gov/dods/nam/"
-        f"nam{datetime.now().strftime('%Y%m%d')}/nam_conusnest_18z"
+        f"nam20220330/nam_conusnest_18z"
     )
 )
 logger.info("Loaded NAM CONUS NEST dataset")
@@ -74,7 +73,7 @@ logger.info("Loaded NAM CONUS NEST dataset")
 data_hrrr = Dataset(
     (
         f"http://nomads.ncep.noaa.gov/dods/hrrr/"
-        f"hrrr{datetime.now().strftime('%Y%m%d')}/hrrr_sfc.t18z"
+        f"hrrr20220330/hrrr_sfc.t18z"
     )
 )
 logger.info("Loaded HRRR dataset")
