@@ -1,3 +1,5 @@
+import logging
+
 from datetime import datetime
 from operator import itemgetter
 
@@ -6,8 +8,13 @@ import cartopy.feature as cfeature
 import numpy as np
 import matplotlib.pyplot as plt
 
+from matplotlib.offsetbox import AnchoredText
 from metpy.plots import USCOUNTIES
 from netCDF4 import Dataset
+
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 extent = (-79.9, -74.1, 37.1, 39.9)
 
@@ -54,18 +61,23 @@ data_nam = Dataset(
         f"nam{datetime.now().strftime('%Y%m%d')}/nam_18z"
     )
 )
+logger.info("Loaded NAM dataset")
+
 data_nam3k = Dataset(
     (
         f"http://nomads.ncep.noaa.gov/dods/nam/"
         f"nam{datetime.now().strftime('%Y%m%d')}/nam_conusnest_18z"
     )
 )
+logger.info("Loaded NAM CONUS NEST dataset")
+
 data_hrrr = Dataset(
     (
         f"http://nomads.ncep.noaa.gov/dods/hrrr/"
         f"hrrr{datetime.now().strftime('%Y%m%d')}/hrrr_sfc.t18z"
     )
 )
+logger.info("Loaded HRRR dataset")
 
 lons = data_nam3k.variables["lon"][:]
 lats = data_nam3k.variables["lat"][:]
@@ -93,7 +105,8 @@ cape_nam = data_nam.variables["capesfc"][27 / 3]
 cape_nam3k = data_nam3k.variables["capesfc"][27 / 3]
 cape_hrrr = data_hrrr.variables["capesfc"][27]
 
-print("starting")
+
+logger.info("Starting to generate CAPE for NAM NEST/HRRR")
 
 for lat in home_lat:
     for lon in home_lon:
@@ -102,30 +115,33 @@ for lat in home_lat:
         if cape_hrrr[lat, lon] > 500:
             cape500_poly_hrrr.append((lons[lon], lats[lat]))
 
-print("done with nam3k/HRRR")
+logger.info("Finished with generating CAPE for NAM NEST/HRRR")
 
 for lat in home_lat_nam:
     for lon in home_lon_nam:
         if cape_nam[lat, lon] > 500:
             cape500_poly_nam.append((lons_n[lon], lats_n[lat]))
 
-print("done with NAM")
+logger.info("Finished with generating CAPE for NAM")
 
 if cape500_poly_nam3k:
-    ax.plot(
+    ax.fill(
         *filter_cape(cape500_poly_nam3k),
-        alpha=0.5, c="red", lw=5, label="NAM NEST", transform=ccrs.PlateCarree()
+        alpha=0.5, facecolor="red", label="NAM NEST", transform=ccrs.PlateCarree()
     )
 if cape500_poly_hrrr:
-    ax.plot(
+    ax.fill(
         *filter_cape(cape500_poly_hrrr),
-        alpha=0.5, c="green", lw=5, label="HRRR", transform=ccrs.PlateCarree()
+        alpha=0.5, facecolor="green", label="HRRR", transform=ccrs.PlateCarree()
     )
 if cape500_poly_nam:
-    ax.plot(
+    ax.fill(
         *filter_cape(cape500_poly_nam),
-        alpha=0.5, c="blue", lw=5, label="NAM", transform=ccrs.PlateCarree()
+        alpha=0.5, facecolor="blue", label="NAM", transform=ccrs.PlateCarree()
     )
+
+text = AnchoredText(">500 CAPE on 18z Models at 5 PM Tomorrow", loc=4, prop={'size': 12}, frameon=True)
+ax.add_artist(text)
 
 ax.legend()
 
