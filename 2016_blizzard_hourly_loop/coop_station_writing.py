@@ -24,7 +24,7 @@ def closest_airport(coop_coords):
     return min(dist_mapping.items(), key=lambda kv: kv[1])[0]
 
 
-state = "WV"
+state = "MD"
 all_data = session.get(
     f"https://mesonet.agron.iastate.edu/api/1/daily.geojson?date=2016-01-22&network={state}_COOP"
 ).json()
