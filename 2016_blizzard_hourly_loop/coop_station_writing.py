@@ -19,7 +19,7 @@ def closest_airport(coop_coords):
     return min(dist_from_airports.items(), key=lambda kv: kv[1])[0]
 
 
-state = "MD"
+state = "VA"
 all_data = session.get(
     f"https://mesonet.agron.iastate.edu/api/1/daily.geojson?date=2016-01-22&network={state}_COOP"
 ).json()
@@ -54,12 +54,15 @@ for dp in all_data["features"]:
 
 precip_stns = {
     name: stn_data for name, stn_data in precip_stns.items()
-    if all(isinstance(data[0], float) for data in stn_data["data"])
+    if all(isinstance(data[0], float) and data[1] for data in stn_data["data"])
 }
 for name, stn_data in precip_stns.items():
     closest = storm_totals[closest_airport(stn_data["coordinates"])]
     total_snow = sum(tup[0] for tup in stn_data["data"])
+    stn_data["snow"] = total_snow
+
     hourly_precip = []
+
     for idx, day in enumerate(stn_data["data"]):
         if hourly_precip:
             hours_so_far = len(hourly_precip) + 1
@@ -81,10 +84,9 @@ for name, stn_data in precip_stns.items():
 
     stn_data["hourly_precip"] = hourly_precip
     stn_data["hourly_snow"] = [round(p * 10 * ratio, 3) for p in hourly_precip]
-    stn_data["snow"] = total_snow
     stn_data.pop("data")
 
-print(sum(precip_stns["OLDM2"]["hourly_snow"]), precip_stns["OLDM2"]["snow"])
+
         # precip_stns = {
 #     name: data for name, data in precip_stns.items()
 #     if any(p for p in data["hourly_precip"])
