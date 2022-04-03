@@ -57,7 +57,6 @@ precip_stns = {
     if all(isinstance(data[0], float) and data[1] for data in stn_data["data"])
 }
 for name, stn_data in precip_stns.items():
-    print(closest_airport(stn_data["coordinates"]))
     closest = storm_totals[closest_airport(stn_data["coordinates"])]
     total_snow = sum(tup[0] for tup in stn_data["data"])
     stn_data["snow"] = total_snow
