@@ -2,7 +2,7 @@ import json
 import requests
 
 session = requests.session()
-extent = (-79.602563, -75.723267, 37.035112, 39.6)
+extent = (-79.602563, -75.723267, 37.035112, 39.7)
 
 with open("storm_totals.json") as file:
     storm_totals = json.loads(file.read())
@@ -38,50 +38,58 @@ all_data["features"].extend(
 precip_stns = {}
 
 for dp in all_data["features"]:
-    dp_coords = dp["geometry"]["coordinates"]
+    stn = dp["properties"]["id"]
+    coords = dp["geometry"]["coordinates"]
     if (
-        extent[0] + 0.02 <= dp_coords[0] <= extent[1] - 0.02
-        and extent[2] + 0.02 <= dp_coords[1] <= extent[3] - 0.02
+        extent[0] + 0.02 <= coords[0] <= extent[1] - 0.02
+        and extent[2] + 0.02 <= coords[1] <= extent[3] - 0.02
     ):
-        if dp["properties"]["snow"]:
-            closest = storm_totals[closest_airport(dp_coords)]
-            stn = dp["properties"]["id"]
-            if so_far := precip_stns.get(stn):
-                hours_so_far = len(so_far["hourly_precip"])
-                hours_to_add = len(so_far["hourly_precip"]) + (int(dp["properties"]["temp_hour"]) - 1)
-                precip_stns[stn]["snow"] += dp["properties"]["snow"]
-
-                try:
-                    period_precip = [
-                            round(
-                                precip *
-                                (dp["properties"]["snow"] / sum(closest["hourly_snow"][hours_so_far:hours_to_add])),
-                                3
-                            )
-                            for precip in closest["hourly_precip"][hours_so_far:hours_to_add]
-                    ]
-                    precip_stns[stn]["hourly_precip"].extend(period_precip)
-                except ZeroDivisionError:
-                    precip_stns[stn]["hourly_precip"].extend(closest["hourly_precip"][hours_so_far:hours_to_add])
-            else:
-                precip_stns[stn] = {}
-                precip_stns[stn]["name"] = dp["properties"]["name"]
-
-                hours_to_add = int(dp["properties"]["temp_hour"]) - 1
-                precip_stns[stn]["snow"] = dp["properties"]["snow"]
-
-                try:
-                    precip_stns[stn]["hourly_precip"] = [
-                        round(precip * (dp["properties"]["snow"] / sum(closest["hourly_snow"][:hours_to_add])), 3)
-                        for precip in closest["hourly_precip"][:hours_to_add]
-                    ]
-                except ZeroDivisionError:
-                    precip_stns[stn]["hourly_precip"] = closest["hourly_precip"][:hours_to_add]
+        if not precip_stns.get(stn):
+            precip_stns[stn] = {}
+            precip_stns[stn]["name"] = dp["properties"]["name"]
+            precip_stns[stn]["coordinates"] = coords
+            precip_stns[stn]["data"] = [(dp["properties"]["snow"], dp["properties"]["temp_hour"])]
         else:
-            print("No data")
+            precip_stns[stn]["data"].append((dp["properties"]["snow"], dp["properties"]["temp_hour"]))
 
-precip_stns = {name: data for name, data in precip_stns.items()}
-print(precip_stns)
+precip_stns = {
+    name: stn_data for name, stn_data in precip_stns.items()
+    if all(isinstance(data[0], float) for data in stn_data["data"])
+}
+for name, stn_data in precip_stns.items():
+    closest = storm_totals[closest_airport(stn_data["coordinates"])]
+    total_snow = sum(tup[0] for tup in stn_data["data"])
+    hourly_precip = []
+    for idx, day in enumerate(stn_data["data"]):
+        if hourly_precip:
+            hours_so_far = len(hourly_precip) + 1
+        else:
+            hours_so_far = 0
+
+        time_mapping = {0: 0, 1: 23, 2: 46}
+        hours_to_add = time_mapping[idx] + int(day[1])
+        to_add = closest["hourly_precip"][hours_so_far:hours_to_add]
+        cur_snow = closest["hourly_snow"][hours_so_far:hours_to_add]
+
+        to_add = [
+            round(precip * (day[0] / tot_sum), 3) if (tot_sum := sum(cur_snow)) else precip
+            for precip in to_add
+        ]
+        hourly_precip.extend(to_add)
+
+    ratio = total_snow / sum([p * 10 for p in hourly_precip])
+
+    stn_data["hourly_precip"] = hourly_precip
+    stn_data["hourly_snow"] = [round(p * 10 * ratio, 3) for p in hourly_precip]
+    stn_data["snow"] = total_snow
+    stn_data.pop("data")
+
+print(sum(precip_stns["OLDM2"]["hourly_snow"]), precip_stns["OLDM2"]["snow"])
+        # precip_stns = {
+#     name: data for name, data in precip_stns.items()
+#     if any(p for p in data["hourly_precip"])
+# }
+# print(precip_stns)
 # for station, sd in precip_stns.items():
 #     ratio = sd["snow"] / sum([p * 10 for p in sd["hourly_precip"]])
 #

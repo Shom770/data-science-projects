@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import requests
 
 from matplotlib.animation import FuncAnimation
-from metpy.plots import USCOUNTIES
 from pandas import date_range
 
 extent = (-79.602563, -75.723267, 37.035112, 40)
@@ -22,7 +21,6 @@ ax.set_extent(extent)
 
 ax.add_feature(cfeature.LAND.with_scale("10m"))
 ax.add_feature(cfeature.OCEAN.with_scale("10m"))
-ax.add_feature(USCOUNTIES.with_scale("5m"))
 
 session = requests.session()
 lines = []
@@ -90,7 +88,7 @@ def size_table(total_snow):
 
 
 def animation_frames():
-    yield from date_range(datetime(2016, 1, 22, 6), periods=48, freq="H").tolist()[1:]
+    yield from date_range(datetime(2016, 1, 22, 6), periods=48, freq="H").tolist()
 
 
 def animate(frame):
@@ -126,4 +124,4 @@ def animate(frame):
 
 anim = FuncAnimation(fig, animate, frames=animation_frames, blit=False)
 
-anim.save("./progress.gif")
+plt.show()
