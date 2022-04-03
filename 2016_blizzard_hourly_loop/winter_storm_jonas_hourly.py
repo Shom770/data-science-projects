@@ -10,8 +10,6 @@ import requests
 from matplotlib.animation import FuncAnimation
 from pandas import date_range
 
-from coop_station_writing import precip_stns
-
 extent = (-79.602563, -75.723267, 37.035112, 40)
 text_lon = sum(extent[:2]) / 2
 text_lat = (40 + 39.6) / 2
@@ -95,8 +93,9 @@ def animation_frames():
 
 
 def animate(frame):
-    for artist in lines:
+    for artist in lines[:]:
         artist.set_visible(False)
+        del artist
 
     current_time = datetime.fromisoformat(str(frame).replace(" ", "T")) - timedelta(hours=5)
 
@@ -125,9 +124,6 @@ def animate(frame):
     return lines
 
 
-# anim = FuncAnimation(fig, animate, frames=animation_frames, blit=False)
-
-for stn_data in precip_stns.values():
-    ax.scatter(*stn_data["coordinates"], cmap="plasma")
+anim = FuncAnimation(fig, animate, frames=animation_frames, blit=False)
 
 plt.show()

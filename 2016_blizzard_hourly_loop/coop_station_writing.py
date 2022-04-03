@@ -19,7 +19,7 @@ def closest_airport(coop_coords):
     return min(dist_from_airports.items(), key=lambda kv: kv[1])[0]
 
 
-state = "VA"
+state = "MD"
 all_data = session.get(
     f"https://mesonet.agron.iastate.edu/api/1/daily.geojson?date=2016-01-22&network={state}_COOP"
 ).json()
@@ -57,6 +57,7 @@ precip_stns = {
     if all(isinstance(data[0], float) and data[1] for data in stn_data["data"])
 }
 for name, stn_data in precip_stns.items():
+    print(closest_airport(stn_data["coordinates"]))
     closest = storm_totals[closest_airport(stn_data["coordinates"])]
     total_snow = sum(tup[0] for tup in stn_data["data"])
     stn_data["snow"] = total_snow
@@ -87,13 +88,6 @@ for name, stn_data in precip_stns.items():
     stn_data.pop("data")
 
 
-        # precip_stns = {
-#     name: data for name, data in precip_stns.items()
-#     if any(p for p in data["hourly_precip"])
-# }
-# print(precip_stns)
-# for station, sd in precip_stns.items():
-#     ratio = sd["snow"] / sum([p * 10 for p in sd["hourly_precip"]])
-#
-#     sd["hourly_snow"] = [round(s * 10 * ratio) for s in sd["hourly_precip"]]
-#
+with open("storm_totals.json", "w") as file:
+    storm_totals.update(precip_stns)
+    file.write(json.dumps(storm_totals, indent=4))
