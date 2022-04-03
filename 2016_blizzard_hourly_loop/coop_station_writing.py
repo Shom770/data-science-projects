@@ -19,7 +19,7 @@ def closest_airport(coop_coords):
     return min(dist_from_airports.items(), key=lambda kv: kv[1])[0]
 
 
-state = "WV"
+state = "VA"
 all_data = session.get(
     f"https://mesonet.agron.iastate.edu/api/1/daily.geojson?date=2016-01-22&network={state}_COOP"
 ).json()
@@ -54,8 +54,10 @@ for dp in all_data["features"]:
 
 precip_stns = {
     name: stn_data for name, stn_data in precip_stns.items()
-    if all(isinstance(data[0], float) and data[1] for data in stn_data["data"])
+    if all(isinstance(data[0], float) and data[1] for data in stn_data["data"]) and name not in {"AMLV2", "ERLV2"}
 }
+print(precip_stns)
+
 for name, stn_data in precip_stns.items():
     closest = storm_totals[closest_airport(stn_data["coordinates"])]
     total_snow = sum(tup[0] for tup in stn_data["data"])
