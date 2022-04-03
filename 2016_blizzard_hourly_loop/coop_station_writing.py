@@ -11,7 +11,7 @@ coordinates = {airport: info["coordinates"] for airport, info in storm_totals.it
 
 
 def distance(c1, c2):
-    return (abs(c1[0] - c2[0]) ** 2 + abs(c1[1] - c2[1]) ** 2) ** 0.5
+    return abs(c1[1] - c2[1])
 
 
 def closest_airport(coop_coords):
@@ -24,7 +24,7 @@ def closest_airport(coop_coords):
     return min(dist_mapping.items(), key=lambda kv: kv[1])[0]
 
 
-state = "VA"
+state = "MD"
 all_data = session.get(
     f"https://mesonet.agron.iastate.edu/api/1/daily.geojson?date=2016-01-22&network={state}_COOP"
 ).json()
