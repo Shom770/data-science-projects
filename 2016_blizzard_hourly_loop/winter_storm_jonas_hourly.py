@@ -106,10 +106,12 @@ def animate(frame):
 
     current_time = datetime.fromisoformat(str(frame).replace(" ", "T")) - timedelta(hours=5)
 
+    all_obs = []
     for station, observations in storm_totals.items():
         total_snow = round(sum(
                 observations["hourly_snow"][:current_time.hour if current_time.day == 22 else 24 + current_time.hour]
         ),  1)
+        all_obs.append((observations["name"], total_snow))
 
         lines.append(ax.scatter(
             *observations["coordinates"],
@@ -133,4 +135,4 @@ def animate(frame):
 
 anim = FuncAnimation(fig, animate, frames=animation_frames, blit=False)
 
-plt.show()
+anim.save("./progress.gif")
