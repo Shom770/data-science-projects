@@ -10,16 +10,21 @@ with open("storm_totals.json") as file:
 coordinates = {airport: info["coordinates"] for airport, info in storm_totals.items()}
 
 
+def distance(c1, c2):
+    return (abs(c1[0] - c2[0]) ** 2 + abs(c1[1] - c2[1]) ** 2) ** 0.5
+
+
 def closest_airport(coop_coords):
-    dist_from_airports = {
-        airport: (abs(coop_coords[0] - coords[0]) ** 2 + abs(coop_coords[1] - coords[1]) ** 2) ** 0.5
-        for airport, coords in coordinates.items()
+    dist_mapping = {
+        "IAD": distance(storm_totals["IAD"]["coordinates"], coop_coords),
+        "BWI": distance(storm_totals["BWI"]["coordinates"], coop_coords),
+        "DCA": distance(storm_totals["DCA"]["coordinates"], coop_coords),
+        "LYH": distance(storm_totals["LYH"]["coordinates"], coop_coords),
     }
+    return min(dist_mapping.items(), key=lambda kv: kv[1])[0]
 
-    return min(dist_from_airports.items(), key=lambda kv: kv[1])[0]
 
-
-state = "VA"
+state = "WV"
 all_data = session.get(
     f"https://mesonet.agron.iastate.edu/api/1/daily.geojson?date=2016-01-22&network={state}_COOP"
 ).json()
@@ -56,7 +61,6 @@ precip_stns = {
     name: stn_data for name, stn_data in precip_stns.items()
     if all(isinstance(data[0], float) and data[1] for data in stn_data["data"]) and name not in {"AMLV2", "ERLV2"}
 }
-print(precip_stns)
 
 for name, stn_data in precip_stns.items():
     closest = storm_totals[closest_airport(stn_data["coordinates"])]

@@ -4,17 +4,18 @@ from datetime import datetime, timedelta
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as font_manager
 import requests
 
 from matplotlib.animation import FuncAnimation
+from matplotlib.offsetbox import AnchoredText
 from pandas import date_range
 
-extent = (-79.602563, -75.723267, 37.035112, 40)
-text_lon = sum(extent[:2]) / 2
-text_lat = (40 + 39.6) / 2
+extent = (-79.602563, -75.723267, 37.035112, 39.9)
 
-fig: plt.Figure = plt.figure()
+fig: plt.Figure = plt.figure(figsize=(12, 6))
 ax: plt.Axes = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
 
 ax.set_extent(extent)
@@ -22,6 +23,12 @@ ax.set_extent(extent)
 ax.add_feature(cfeature.LAND.with_scale("10m"))
 ax.add_feature(cfeature.OCEAN.with_scale("10m"))
 ax.add_feature(cfeature.STATES.with_scale("10m"))
+
+for font in font_manager.findSystemFonts(["."]):
+    font_manager.fontManager.addfont(font)
+
+# Set font family globally
+matplotlib.rcParams['font.family'] = 'Inter'
 
 session = requests.session()
 lines = []
@@ -112,14 +119,14 @@ def animate(frame):
             transform=ccrs.PlateCarree()
         ))
 
-    lines.append(ax.text(
-        text_lon,
-        text_lat,
+    cur_time = AnchoredText(
         current_time.strftime("%B %d, %Y at %I:%M %p"),
-        size=14,
-        horizontalalignment="center",
-        bbox={'facecolor': '#c0c0c0', 'edgecolor': 'black', 'boxstyle': 'round'}
-    ))
+        loc='upper center',
+        prop={"size": 14},
+        frameon=True
+    )
+
+    lines.append(ax.add_artist(cur_time))
 
     return lines
 
