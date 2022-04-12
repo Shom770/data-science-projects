@@ -35,7 +35,6 @@ POINTS_BETWEEN = 5
 
 session = requests.session()
 lines = []
-visited = set()
 
 with open("storm_totals.json", "r") as totals_file:
     storm_totals = json.loads(totals_file.read())
@@ -119,9 +118,6 @@ def animation_frames():
 
 
 def animate(frame):
-    global visited
-    visited = set()
-
     for artist in lines[:]:
         artist.set_visible(False)
         del artist
@@ -142,43 +138,6 @@ def animate(frame):
             s=size_table(total_snow),
             transform=ccrs.PlateCarree()
         ))
-
-        for closest in adjacent_stations(observations["coordinates"], station):
-            if closest[0] in visited:
-                continue
-            else:
-                cc = closest[-1]  # The coordinates for one of the five closest stations.
-                dist_lon = abs(cc[0] - observations["coordinates"][0])
-                min_lon = min((cc[0], observations["coordinates"][0]))
-
-                dist_lat = abs(cc[1] - observations["coordinates"][1])
-                min_lat = min((cc[1], observations["coordinates"][1]))
-
-                stn_snow = round(sum(
-                    storm_totals[closest[0]][
-                        "hourly_snow"
-                    ][:current_time.hour if current_time.day == 22 else 24 + current_time.hour]
-                ), 1)
-                diff_snow = abs(stn_snow - total_snow)
-                min_snow, stn_min = min(((stn_snow, closest[0]), (total_snow, station)), key=itemgetter(0))
-
-                between_coords = sorted([
-                    (
-                        min_lon + dist_lon * (num / POINTS_BETWEEN), min_lat + dist_lat * (num / POINTS_BETWEEN)
-                    ) for num in range(1, POINTS_BETWEEN)
-                ], key=lambda coord: distance(coord, storm_totals[stn_min]["coordinates"]))
-
-                for coord_num, bet_coord in enumerate(between_coords, start=1):
-                    pt_snow = min_snow + diff_snow * (coord_num / POINTS_BETWEEN)
-                    lines.append(ax.scatter(
-                        *bet_coord,
-                        c=snow_color_table(pt_snow),
-                        edgecolor="black",
-                        s=size_table(pt_snow),
-                        transform=ccrs.PlateCarree()
-                    ))
-
-        visited.add(station)
 
     cur_time = AnchoredText(
         current_time.strftime("%B %d, %Y at %I:%M %p"),
