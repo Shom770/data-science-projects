@@ -78,7 +78,7 @@ def adjacent_stations(coords, stn_name):
     res = sorted(
         [
             (name, distance(stn_data["coordinates"], coords), tuple(stn_data["coordinates"]))
-            for name, stn_data in {"DALV2": storm_totals["DALV2"], "DMAM2": storm_totals["DMAM2"]}.items()
+            for name, stn_data in storm_totals.items()
             if name != stn_name
         ], key=itemgetter(1)
     )
@@ -129,7 +129,7 @@ def animate(frame):
     current_time = datetime.fromisoformat(str(frame).replace(" ", "T")) - timedelta(hours=5)
 
     all_obs = []
-    for station, observations in {"DALV2": storm_totals["DALV2"], "DMAM2": storm_totals["DMAM2"]}.items():
+    for station, observations in storm_totals.items():
         total_snow = round(sum(
                 observations["hourly_snow"][:current_time.hour if current_time.day == 22 else 24 + current_time.hour]
         ),  1)
@@ -177,18 +177,6 @@ def animate(frame):
                         s=size_table(pt_snow),
                         transform=ccrs.PlateCarree()
                     ))
-
-
-                # for num in range(*range_args):
-                #     coords = [min_lon + dist_lon * (num / 5), min_lat + dist_lat * (num / 5)]
-                #     pt_snow = min_snow + diff_snow * (num / 5)
-                #     lines.append(ax.scatter(
-                #         *coords,
-                #         c=snow_color_table(pt_snow),
-                #         edgecolor="black",
-                #         s=size_table(pt_snow),
-                #         transform=ccrs.PlateCarree()
-                #     ))
 
         visited.add(station)
 
