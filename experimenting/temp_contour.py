@@ -45,7 +45,7 @@ home_lon = np.where(
 )[0]
 all_lons = np.array([lons[lon] for lon in home_lon])
 
-temp_nam = data_nam.variables["tmpsfc"][1]
+temp_nam = data_nam.variables["tmp2m"][1]
 temps = np.array([[(temp_nam[lat, lon] - 273.15) * 9/5 + 32 for lon in home_lon] for lat in home_lat])
 
 lons_, lats_ = np.meshgrid(all_lons, all_lats)
@@ -55,5 +55,6 @@ ticks = levels[::10]
 
 CS = ax.contourf(lons_, lats_, temps, transform=ccrs.PlateCarree(), levels=levels, cmap="coolwarm")
 
+ax.set_title("Temperature on April 14th at 21z")
 fig.colorbar(CS, ticks=ticks, location="bottom")
 plt.show()
