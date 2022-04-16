@@ -14,7 +14,7 @@ logger.setLevel(logging.INFO)
 data_nam = Dataset(
     (
         f"http://nomads.ncep.noaa.gov/dods/nam/"
-        f"nam20220414/nam_18z"
+        f"nam20220415/nam_18z"
     )
 )
 logger.info("Loaded NAM dataset")
@@ -22,7 +22,7 @@ logger.info("Loaded NAM dataset")
 lons = data_nam.variables["lon"][:]
 lats = data_nam.variables["lat"][:]
 
-extent = (lons.min(), lons.max(), lats.min(), lats.max())
+extent = (-80, -74, 37, 40)
 slo, elo = extent[:2]
 sla, ela = extent[2:]
 
@@ -45,7 +45,7 @@ home_lon = np.where(
 )[0]
 all_lons = np.array([lons[lon] for lon in home_lon])
 
-temp_nam = data_nam.variables["tmp2m"][1]
+temp_nam = data_nam.variables["tmp2m"][84 / 3]
 temps = np.array([[(temp_nam[lat, lon] - 273.15) * 9/5 + 32 for lon in home_lon] for lat in home_lat])
 
 lons_, lats_ = np.meshgrid(all_lons, all_lats)
@@ -55,6 +55,6 @@ ticks = levels[::10]
 
 CS = ax.contourf(lons_, lats_, temps, transform=ccrs.PlateCarree(), levels=levels, cmap="coolwarm")
 
-ax.set_title("Temperature on April 14th at 21z")
+ax.set_title("Temperature on April 15th at 21z")
 fig.colorbar(CS, ticks=ticks, location="bottom")
 plt.show()
