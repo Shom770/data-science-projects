@@ -174,14 +174,17 @@ def animate(frame):
         lons, lats = np.meshgrid(lons_uni, lats_uni)
         data = np.array([[coords_to_snow.get((lon, lat), np.nan) for lon in lons_uni] for lat in lats_uni])
 
-        lines.append(ax.contourf(
-            lons,
-            lats,
-            data,
-            alpha=0.5,
-            levels=[0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
-            colors=ALL_COLORS
-        ))
+        try:
+            lines.append(ax.contourf(
+                lons,
+                lats,
+                data,
+                alpha=0.5,
+                levels=[0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
+                colors=ALL_COLORS
+            ))
+        except TypeError:  # Shape is smaller than (2, 2), usually at the start
+            pass
 
         visited.add(station)
 
