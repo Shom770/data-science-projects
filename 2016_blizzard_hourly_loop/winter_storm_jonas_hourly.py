@@ -136,13 +136,15 @@ def animate(frame):
         ),  1)
         all_obs.append((observations["name"], total_snow))
 
-        lines.append(ax.scatter(
-            *observations["coordinates"],
-            c=snow_color_table(total_snow),
-            edgecolor="black",
-            s=size_table(total_snow),
-            transform=ccrs.PlateCarree()
-        ))
+        # lines.append(ax.scatter(
+        #     *observations["coordinates"],
+        #     c=snow_color_table(total_snow),
+        #     edgecolor="black",
+        #     s=size_table(total_snow),
+        #     transform=ccrs.PlateCarree()
+        # ))
+        corresponding_snow.append((*observations["coordinates"], total_snow))
+
         for closest in adjacent_stations(observations["coordinates"], station):
             stn_snow = round(sum(
                 storm_totals[closest[0]][
