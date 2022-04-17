@@ -194,8 +194,8 @@ def animate(frame):
         lats_uni = sorted(corresponding_coords[1::2])
         lons_uni = sorted(corresponding_coords[::2])
 
-        lats, lons = np.meshgrid(lats_uni, lons_uni)
-        data = np.array([[coords_to_snow.get((lon, lat), np.nan) for lon in lons] for lat in lats])
+        lons, lats = np.meshgrid(lons_uni, lats_uni)
+        data = np.array([[coords_to_snow.get((lon, lat), np.nan) for lon in lons_uni] for lat in lats_uni])
         print(data)
         raise Exception
 
