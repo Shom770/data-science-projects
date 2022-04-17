@@ -102,7 +102,7 @@ def animate(frame):
 
     for artist in lines[:]:
         if isinstance(artist, AnchoredText):
-            artist.remove()
+            artist.set_visible(False)
         else:
             for col in artist.collections:
                 col.set_visible(False)
