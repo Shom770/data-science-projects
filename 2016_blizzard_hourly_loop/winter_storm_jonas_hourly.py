@@ -145,7 +145,7 @@ def animate(frame):
         #     transform=ccrs.PlateCarree()
         # ))
         corresponding_coords.extend(observations["coordinates"])
-        coords_to_snow[observations["coordinates"]] = total_snow
+        coords_to_snow[tuple(observations["coordinates"])] = total_snow
 
         for closest in adjacent_stations(observations["coordinates"], station):
             stn_snow = round(sum(
@@ -179,8 +179,8 @@ def animate(frame):
 
                 for coord_num, bet_coord in enumerate(between_coords, start=1):
                     pt_snow = min_snow + diff_snow * (coord_num / POINTS_BETWEEN)
-                    corresponding_snow.extend(bet_coord)
-                    coords_to_snow[bet_coord] = pt_snow
+                    corresponding_coords.extend(bet_coord)
+                    coords_to_snow[tuple(bet_coord)] = pt_snow
                     # lines.append(ax.scatter(
                     #     *bet_coord,
                     #     c=snow_color_table(pt_snow),
