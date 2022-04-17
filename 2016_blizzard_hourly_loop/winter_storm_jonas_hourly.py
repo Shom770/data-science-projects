@@ -101,8 +101,11 @@ def animate(frame):
     visited = set()
 
     for artist in lines[:]:
-        artist.set_visible(False)
-        del artist
+        if isinstance(artist, AnchoredText):
+            artist.remove()
+        else:
+            for col in artist.collections:
+                col.remove()
 
     current_time = datetime.fromisoformat(str(frame).replace(" ", "T")) - timedelta(hours=5)
 
