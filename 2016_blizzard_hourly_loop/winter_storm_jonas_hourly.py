@@ -128,7 +128,8 @@ def animate(frame):
 
     current_time = datetime.fromisoformat(str(frame).replace(" ", "T")) - timedelta(hours=5)
 
-    corresponding_snow = []
+    corresponding_coords = []
+    coords_to_snow = {}
     all_obs = []
     for station, observations in storm_totals.items():
         total_snow = round(sum(
@@ -143,7 +144,8 @@ def animate(frame):
         #     s=size_table(total_snow),
         #     transform=ccrs.PlateCarree()
         # ))
-        corresponding_snow.append((*observations["coordinates"], total_snow))
+        corresponding_snow.extend(observations["coordinates"])
+        coords_to_snow[observations["coordinates"]] = total_snow
 
         for closest in adjacent_stations(observations["coordinates"], station):
             stn_snow = round(sum(
@@ -177,7 +179,8 @@ def animate(frame):
 
                 for coord_num, bet_coord in enumerate(between_coords, start=1):
                     pt_snow = min_snow + diff_snow * (coord_num / POINTS_BETWEEN)
-                    corresponding_snow.append((*bet_coord, pt_snow))
+                    corresponding_snow.extend(bet_coord)
+                    coords_to_snow[bet_coord] = pt_snow
                     # lines.append(ax.scatter(
                     #     *bet_coord,
                     #     c=snow_color_table(pt_snow),
@@ -186,6 +189,9 @@ def animate(frame):
                     #     transform=ccrs.PlateCarree()
                     # ))
                 break
+
+        corresponding_snow = sorted(corresponding_snow, key=itemgetter(0, 0))
+        print(corresponding_snow)
 
         visited.add(station)
 
