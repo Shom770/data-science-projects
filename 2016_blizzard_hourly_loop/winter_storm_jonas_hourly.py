@@ -105,7 +105,7 @@ def animate(frame):
             artist.remove()
         else:
             for col in artist.collections:
-                col.remove()
+                col.set_visible(False)
 
     current_time = datetime.fromisoformat(str(frame).replace(" ", "T")) - timedelta(hours=5)
 
