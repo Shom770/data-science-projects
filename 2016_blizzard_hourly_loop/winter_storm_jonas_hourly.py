@@ -8,6 +8,7 @@ import cartopy.feature as cfeature
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
+import numpy as np
 import requests
 
 from matplotlib.animation import FuncAnimation
@@ -190,9 +191,11 @@ def animate(frame):
                     # ))
                 break
 
-        lats = sorted(corresponding_coords[1::2])
-        lons = sorted(corresponding_coords[::2])
-        print(lats)
+        lats_uni = sorted(corresponding_coords[1::2])
+        lons_uni = sorted(corresponding_coords[::2])
+
+        lats, lons = np.meshgrid(lats_uni, lons_uni)
+        data = np.array([[coords_to_snow.get(lon, lat, np.nan) for lon in lons] for lat in lats])
 
         visited.add(station)
 
