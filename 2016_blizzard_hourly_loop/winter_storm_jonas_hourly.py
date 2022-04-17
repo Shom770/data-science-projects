@@ -144,7 +144,7 @@ def animate(frame):
         #     s=size_table(total_snow),
         #     transform=ccrs.PlateCarree()
         # ))
-        corresponding_snow.extend(observations["coordinates"])
+        corresponding_coords.extend(observations["coordinates"])
         coords_to_snow[observations["coordinates"]] = total_snow
 
         for closest in adjacent_stations(observations["coordinates"], station):
@@ -190,8 +190,9 @@ def animate(frame):
                     # ))
                 break
 
-        corresponding_snow = sorted(corresponding_snow, key=itemgetter(0, 0))
-        print(corresponding_snow)
+        lats = sorted(corresponding_coords[1::2])
+        lons = sorted(corresponding_coords[::2])
+        print(lats)
 
         visited.add(station)
 
