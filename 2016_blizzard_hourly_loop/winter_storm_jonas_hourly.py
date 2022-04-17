@@ -33,6 +33,12 @@ for font in font_manager.findSystemFonts(["."]):
 matplotlib.rcParams['font.family'] = 'Inter'
 
 POINTS_BETWEEN = 5
+ALL_COLORS = [
+    "#bdd8e6", "#6bb0d6", "#3284bf",
+    "#07519d", "#082695", "#ffff97",
+    "#fdc400", "#ff8801", "#db1300",
+    "#9f0002", "#690001", "#330101"
+]
 
 session = requests.session()
 lines = []
@@ -84,35 +90,6 @@ def adjacent_stations(coords, stn_name):
         ], key=itemgetter(1)
     )
     yield from res
-
-
-def size_table(total_snow):
-    if total_snow == 0:
-        return 40
-    elif 0.1 <= total_snow < 1:
-        return 50
-    elif 1 <= total_snow < 2:
-        return 60
-    elif 2 <= total_snow < 3:
-        return 70
-    elif 3 <= total_snow < 4:
-        return 80
-    elif 4 <= total_snow < 6:
-        return 100
-    elif 6 <= total_snow < 8:
-        return 120
-    elif 8 <= total_snow < 12:
-        return 170
-    elif 12 <= total_snow < 18:
-        return 225
-    elif 18 <= total_snow < 24:
-        return 275
-    elif 24 <= total_snow < 30:
-        return 350
-    elif 30 <= total_snow < 36:
-        return 425
-    elif total_snow >= 36:
-        return 500
 
 
 def animation_frames():
@@ -196,8 +173,15 @@ def animate(frame):
 
         lons, lats = np.meshgrid(lons_uni, lats_uni)
         data = np.array([[coords_to_snow.get((lon, lat), np.nan) for lon in lons_uni] for lat in lats_uni])
-        print(data)
-        raise Exception
+
+        lines.append(ax.contourf(
+            lons,
+            lats,
+            data,
+            alpha=0.5,
+            levels=[0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
+            colors=ALL_COLORS
+        ))
 
         visited.add(station)
 
