@@ -131,7 +131,7 @@ def animate(frame):
             ), 1)
             if closest[0] in visited:
                 continue
-            elif ct == 0:
+            elif ct == 2:
                 break
             else:
                 cc = closest[-1]  # The coordinates for one of the stations close to it in a different zone
