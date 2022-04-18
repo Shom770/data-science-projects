@@ -4,11 +4,23 @@ import requests
 
 
 session = requests.session()
-list_of_cities = ["Germantown, MD"]
+list_of_cities = [
+    "Gaithersburg, MD",
+    "Frederick, MD",
+    "Front Royal, VA",
+    "Baltimore, MD",
+    "Washington D.C.",
+    "Manassas, VA",
+    "Charlottesville, VA",
+    "Lexington Park, MD",
+    "Martinsburg, WV",
+    "Winchester, VA",
+    "Culpeper, MD"
+]
 loc = {}
 
 for city in list_of_cities:
-    loc[city] = (
+    loc[city.split(" ")[0].removesuffix(",")] = (
         session.get(
             f"https://nominatim.openstreetmap.org/search?q={city}&format=geojson"
         ).json()["features"][0]["geometry"]["coordinates"]
