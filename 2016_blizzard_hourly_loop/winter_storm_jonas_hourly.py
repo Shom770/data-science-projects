@@ -10,9 +10,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 import requests
+import scipy.ndimage
 
 from matplotlib.animation import FuncAnimation
 from matplotlib.offsetbox import AnchoredText
+from metpy.plots import USCOUNTIES
 from pandas import date_range
 
 extent = (-79.05, -76.02, 37.585112, 39.6)
@@ -24,7 +26,7 @@ ax.set_extent(extent)
 
 ax.add_feature(cfeature.LAND.with_scale("10m"))
 ax.add_feature(cfeature.OCEAN.with_scale("10m"))
-ax.add_feature(cfeature.STATES.with_scale("10m"))
+ax.add_feature(USCOUNTIES.with_scale("5m"))
 
 for font in font_manager.findSystemFonts(["."]):
     font_manager.fontManager.addfont(font)
@@ -227,5 +229,4 @@ def animate(frame):
 
 anim = FuncAnimation(fig, animate, frames=animation_frames, blit=False)
 
-plt.show()
-# anim.save("./progress.gif")
+anim.save("./progress.gif")
