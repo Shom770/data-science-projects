@@ -15,7 +15,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.offsetbox import AnchoredText
 from pandas import date_range
 
-extent = (-79, -75.89, 37.585112, 39.6)
+extent = (-79.05, -76.02, 37.585112, 39.6)
 
 fig: plt.Figure = plt.figure(figsize=(12, 6))
 ax: plt.Axes = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
@@ -227,4 +227,5 @@ def animate(frame):
 
 anim = FuncAnimation(fig, animate, frames=animation_frames, blit=False)
 
-anim.save("./progress.gif")
+plt.show()
+# anim.save("./progress.gif")
