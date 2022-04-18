@@ -15,7 +15,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.offsetbox import AnchoredText
 from pandas import date_range
 
-extent = (-79, -75.89, 37.585112, 39.5)
+extent = (-79, -75.89, 37.585112, 39.6)
 
 fig: plt.Figure = plt.figure(figsize=(12, 6))
 ax: plt.Axes = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
