@@ -176,7 +176,7 @@ def animate(frame):
         colors_frame = []
 
         for idx, (rmin, rmax) in enumerate(zip(ALL_LEVELS, ALL_LEVELS[1:])):
-            if any(rmin <= val < max for val in data):
+            if any(rmin <= val < rmax for val in data):
                 levels_frame.append(ALL_LEVELS[idx])
                 colors_frame.append(ALL_COLORS[idx])
 
