@@ -33,11 +33,12 @@ matplotlib.rcParams['font.family'] = 'Inter'
 
 POINTS_BETWEEN = 5
 ALL_COLORS = [
-    "#ffffff", "#bdd8e6", "#6bb0d6", "#3284bf",
+    "#bdd8e6", "#6bb0d6", "#3284bf",
     "#07519d", "#082695", "#ffff97",
     "#fdc400", "#ff8801", "#db1300",
     "#9f0002", "#690001", "#330101"
 ]
+ALL_LEVELS = [0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36]
 
 session = requests.session()
 lines = []
@@ -167,19 +168,25 @@ def animate(frame):
     data = [
         coords_to_snow[(lon, lat)] for lon, lat in zip(lons_uni, lats_uni)
     ]
-
-    if any(item != 0 for item in data):
+    maximum_val = max(data)
+    if maximum_val >= 0.1:
+        for idx, num in enumerate(ALL_LEVELS):
+            if num <= maximum_val:
+                break
+        
+        levels_frame = ALL_LEVELS[:idx + 1]
+        colors_frame = ALL_COLORS[:idx + 1]
+        
         try:
             lines.append(cont := ax.tricontourf(
                 lons_uni,
                 lats_uni,
                 data,
                 alpha=0.5,
-                levels=8,
-                cmap="plasma",
+                levels=levels_frame,
+                colors=colors_frame,
                 transform=ccrs.PlateCarree()
             ))
-            lines.append(fig.colorbar(cont, extend="both"))
         except TypeError:  # Shape is smaller than (2, 2), usually at the start
             pass
 
