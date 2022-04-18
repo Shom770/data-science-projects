@@ -34,12 +34,12 @@ matplotlib.rcParams['font.family'] = 'Inter'
 
 POINTS_BETWEEN = 5
 ALL_COLORS = [
-    "#ffffff", "#bdd8e6", "#6bb0d6", "#3284bf",
+    "#bdd8e6", "#6bb0d6", "#3284bf",
     "#07519d", "#082695", "#ffff97",
     "#fdc400", "#ff8801", "#db1300",
     "#9f0002", "#690001", "#330101"
 ]
-ALL_LEVELS = [0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 48]
+ALL_LEVELS = [0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36]
 
 session = requests.session()
 lines = []
@@ -170,19 +170,19 @@ def animate(frame):
         coords_to_snow[(lon, lat)] for lon, lat in zip(lons_uni, lats_uni)
     ]
     maximum_val = max(data)
+    minimum_val = min(data)
 
     if maximum_val >= 0.1:
         levels_frame = []
         colors_frame = []
 
-        for idx, (rmin, rmax) in enumerate(zip(ALL_LEVELS, ALL_LEVELS[1:])):
-            if any(rmin <= val < rmax for val in data):
+        for idx, rmin in enumerate(ALL_LEVELS):
+            if any(minimum_val <= rmin <= val for val in data):
                 levels_frame.append(ALL_LEVELS[idx])
                 colors_frame.append(ALL_COLORS[idx])
 
-        if len(levels_frame) < 2:
-            levels_frame = ALL_LEVELS[:2]
-            colors_frame = ALL_COLORS[:2]
+        levels_frame.append(ALL_LEVELS[idx + 1])
+        colors_frame.append(ALL_COLORS[idx + 1])
 
         try:
             lines.append(cont := ax.tricontourf(
