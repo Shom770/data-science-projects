@@ -227,6 +227,6 @@ def animate(frame):
     return lines
 
 
-anim = FuncAnimation(fig, animate, frames=animation_frames, blit=False)
+anim = FuncAnimation(fig, animate, frames=animation_frames, interval=500, blit=False)
 
 anim.save("./progress.gif")
