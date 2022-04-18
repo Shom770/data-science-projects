@@ -170,19 +170,19 @@ def animate(frame):
         coords_to_snow[(lon, lat)] for lon, lat in zip(lons_uni, lats_uni)
     ]
     maximum_val = max(data)
-    minimum_val = min(data)
 
     if maximum_val >= 0.1:
         levels_frame = []
         colors_frame = []
 
-        for idx, rmin in enumerate(ALL_LEVELS):
-            if any(minimum_val <= rmin <= val for val in data):
+        for idx, (rmin, rmax) in enumerate(zip(ALL_LEVELS, ALL_LEVELS[1:])):
+            if any(rmin <= val < rmax for val in data):
                 levels_frame.append(ALL_LEVELS[idx])
                 colors_frame.append(ALL_COLORS[idx])
 
-        levels_frame.append(ALL_LEVELS.index(levels_frame[-1]) + 1)
-        colors_frame.append(ALL_COLORS.index(colors_frame[-1]) + 1)
+        if len(levels_frame) < 2:
+            levels_frame = ALL_LEVELS[:2]
+            colors_frame = ALL_COLORS[:2]
 
         try:
             lines.append(cont := ax.tricontourf(
