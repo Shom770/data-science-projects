@@ -132,7 +132,7 @@ def animate(frame):
                 continue
             elif ct > 3:
                 break
-            elif snow_color_table(stn_snow) != snow_color_table(total_snow):
+            else:
                 cc = closest[-1]  # The coordinates for one of the stations close to it in a different zone
                 dist_lon = abs(cc[0] - observations["coordinates"][0])
                 min_lon = min((cc[0], observations["coordinates"][0]))
@@ -169,18 +169,19 @@ def animate(frame):
         coords_to_snow[(lon, lat)] for lon, lat in zip(lons_uni, lats_uni)
     ]
     maximum_val = max(data)
+    minimum_val = min(data)
+
     if maximum_val >= 0.1:
+        min_idx = 0
         for idx, num in enumerate(ALL_LEVELS):
-            if num <= maximum_val:
+            if num < minimum_val:
+                min_idx = idx
+            if num > maximum_val:
                 break
 
-        if idx == 0:
-            levels_frame = ALL_LEVELS[:2]
-            colors_frame = ALL_COLORS[:2]
-        else:
-            levels_frame = ALL_LEVELS[:idx + 1]
-            colors_frame = ALL_COLORS[:idx + 1]
-        
+        levels_frame = ALL_LEVELS[min_idx:idx + 1]
+        colors_frame = ALL_COLORS[min_idx:idx + 1]
+
         try:
             lines.append(cont := ax.tricontourf(
                 lons_uni,
