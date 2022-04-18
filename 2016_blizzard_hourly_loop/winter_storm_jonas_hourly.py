@@ -227,4 +227,4 @@ def animate(frame):
 
 anim = FuncAnimation(fig, animate, frames=animation_frames, blit=False)
 
-plt.show()
+anim.save("./progress.gif")
