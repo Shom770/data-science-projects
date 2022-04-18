@@ -173,9 +173,13 @@ def animate(frame):
         for idx, num in enumerate(ALL_LEVELS):
             if num <= maximum_val:
                 break
-        
-        levels_frame = ALL_LEVELS[:idx + 1]
-        colors_frame = ALL_COLORS[:idx + 1]
+
+        if idx == 0:
+            levels_frame = ALL_LEVELS[:2]
+            colors_frame = ALL_COLORS[:2]
+        else:
+            levels_frame = ALL_LEVELS[:idx + 1]
+            colors_frame = ALL_COLORS[:idx + 1]
         
         try:
             lines.append(cont := ax.tricontourf(
