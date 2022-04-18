@@ -41,9 +41,18 @@ ALL_COLORS = [
 ]
 ALL_LEVELS = [0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 48]
 
+cmap = matplotlib.colors.ListedColormap(ALL_COLORS)
 session = requests.session()
 lines = []
 visited = set()
+
+fig.colorbar(
+    matplotlib.cm.ScalarMappable(cmap=cmap, norm=matplotlib.colors.BoundaryNorm(ALL_LEVELS, cmap.N)),
+    ticks=ALL_LEVELS,
+    orientation="horizontal",
+    label="Total Snowfall (in.)",
+    extend="max"
+)
 
 with open("storm_totals.json", "r") as totals_file:
     storm_totals = json.loads(totals_file.read())
