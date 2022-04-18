@@ -173,14 +173,10 @@ def animate(frame):
 
         visited.add(station)
 
-    lats_uni = sorted(corresponding_coords[1::2])
-    lons_uni = sorted(corresponding_coords[::2])
+    lats_uni = corresponding_coords[1::2]
+    lons_uni = corresponding_coords[::2]
 
-    data = np.array(
-        [val for lon in lons_uni for lat in lats_uni if (val := coords_to_snow.get((lon, lat))) is not None]
-    )
-
-
+    data = [coords_to_snow[(lon, lat)] for lon, lat in zip(lons_uni, lats_uni)]
     # x, y = np.where(~np.isnan(data))
     # non_nans = set(zip(x, y))
     #
@@ -198,8 +194,8 @@ def animate(frame):
             lons_uni,
             lats_uni,
             data,
-            alpha=1,
-            levels=[0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
+            alpha=0.5,
+            levels=[0, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
             colors=ALL_COLORS,
             transform=ccrs.PlateCarree()
         ))
