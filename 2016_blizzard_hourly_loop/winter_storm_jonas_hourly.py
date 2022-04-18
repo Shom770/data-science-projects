@@ -39,7 +39,7 @@ ALL_COLORS = [
     "#fdc400", "#ff8801", "#db1300",
     "#9f0002", "#690001", "#330101"
 ]
-ALL_LEVELS = [0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36]
+ALL_LEVELS = [0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 48]
 
 session = requests.session()
 lines = []
@@ -186,7 +186,10 @@ def animate(frame):
 
         while levels_frame[-1] < maximum_val:
             levels_frame.append(ALL_LEVELS[ALL_LEVELS.index(levels_frame[-1]) + 1])
-            colors_frame.append(ALL_COLORS[ALL_COLORS.index(colors_frame[-1]) + 1])
+            try:
+                colors_frame.append(ALL_COLORS[ALL_COLORS.index(colors_frame[-1]) + 1])
+            except IndexError:
+                colors_frame.append(ALL_COLORS[-1])
 
         try:
             lines.append(cont := ax.tricontourf(
