@@ -171,39 +171,39 @@ def animate(frame):
                     # ))
                 break
 
-        lats_uni = sorted(corresponding_coords[1::2])
-        lons_uni = sorted(corresponding_coords[::2])
-
-        lons, lats = np.meshgrid(lons_uni, lats_uni)
-
-        data = np.array([[coords_to_snow.get((lon, lat), np.nan) for lat in lats_uni] for lon in lons_uni])
-        x, y = np.where(~np.isnan(data))
-        non_nans = set(zip(x, y))
-
-        xn, yn = np.where(np.isnan(data))
-        nans = list(zip(xn, yn))
-
-        for x, y in nans:
-            cx, cy = sorted(non_nans, key=lambda tup: (x, y))[0]
-            if distance((cx, cy), (x, y)) < 5:
-                data[x, y] = data[cx, cy]
-            else:
-                data[x, y] = 0.0
-
-        try:
-            lines.append(ax.contourf(
-                lons,
-                lats,
-                data,
-                alpha=1,
-                levels=[0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
-                colors=ALL_COLORS,
-                transform=ccrs.PlateCarree()
-            ))
-        except TypeError:  # Shape is smaller than (2, 2), usually at the start
-            pass
-
         visited.add(station)
+
+    lats_uni = sorted(corresponding_coords[1::2])
+    lons_uni = sorted(corresponding_coords[::2])
+
+    lons, lats = np.meshgrid(lons_uni, lats_uni)
+
+    data = np.array([[coords_to_snow.get((lon, lat), np.nan) for lat in lats_uni] for lon in lons_uni])
+    x, y = np.where(~np.isnan(data))
+    non_nans = set(zip(x, y))
+
+    xn, yn = np.where(np.isnan(data))
+    nans = set(zip(xn, yn))
+
+    for x, y in nans:
+        cx, cy = sorted(non_nans, key=lambda tup: (x, y))[0]
+        if distance((cx, cy), (x, y)) < 10:
+            data[x, y] = data[cx, cy]
+        else:
+            data[x, y] = 0.0
+
+    try:
+        lines.append(ax.contourf(
+            lons,
+            lats,
+            data,
+            alpha=1,
+            levels=[0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
+            colors=ALL_COLORS,
+            transform=ccrs.PlateCarree()
+        ))
+    except TypeError:  # Shape is smaller than (2, 2), usually at the start
+        pass
 
     cur_time = AnchoredText(
         current_time.strftime("%B %d, %Y at %I:%M %p"),
