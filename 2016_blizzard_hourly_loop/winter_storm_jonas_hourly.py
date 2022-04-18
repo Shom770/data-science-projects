@@ -181,8 +181,8 @@ def animate(frame):
                 levels_frame.append(ALL_LEVELS[idx])
                 colors_frame.append(ALL_COLORS[idx])
 
-        levels_frame.append(ALL_LEVELS[idx + 1])
-        colors_frame.append(ALL_COLORS[idx + 1])
+        levels_frame.append(ALL_LEVELS.index(levels_frame[-1]) + 1)
+        colors_frame.append(ALL_COLORS.index(colors_frame[-1]) + 1)
 
         try:
             lines.append(cont := ax.tricontourf(
