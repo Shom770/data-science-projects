@@ -49,10 +49,9 @@ visited = set()
 fig.colorbar(
     matplotlib.cm.ScalarMappable(cmap=cmap, norm=matplotlib.colors.BoundaryNorm(ALL_LEVELS, cmap.N)),
     ticks=ALL_LEVELS,
-    orientation="horizontal",
     label="Total Snowfall (in.)",
     extend="max",
-    aspect=10
+    aspect=5
 )
 
 with open("storm_totals.json", "r") as totals_file:
@@ -217,7 +216,7 @@ def animate(frame):
     cur_time = AnchoredText(
         current_time.strftime("%B %d, %Y at %I:%M %p"),
         loc="lower right",
-        prop={"size": 10},
+        prop={"size": 11},
         frameon=True
     )
 
