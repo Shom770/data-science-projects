@@ -8,7 +8,6 @@ import cartopy.feature as cfeature
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
-import numpy as np
 import requests
 
 from matplotlib.animation import FuncAnimation
@@ -34,7 +33,7 @@ matplotlib.rcParams['font.family'] = 'Inter'
 
 POINTS_BETWEEN = 5
 ALL_COLORS = [
-    "#bdd8e6", "#6bb0d6", "#3284bf",
+    "#ffffff", "#bdd8e6", "#6bb0d6", "#3284bf",
     "#07519d", "#082695", "#ffff97",
     "#fdc400", "#ff8801", "#db1300",
     "#9f0002", "#690001", "#330101"
@@ -118,13 +117,6 @@ def animate(frame):
         ),  1)
         all_obs.append((observations["name"], total_snow))
 
-        # lines.append(ax.scatter(
-        #     *observations["coordinates"],
-        #     c=snow_color_table(total_snow),
-        #     edgecolor="black",
-        #     s=size_table(total_snow),
-        #     transform=ccrs.PlateCarree()
-        # ))
         corresponding_coords.extend(observations["coordinates"])
         coords_to_snow[tuple(observations["coordinates"])] = total_snow
 
@@ -162,13 +154,6 @@ def animate(frame):
                     pt_snow = min_snow + diff_snow * (coord_num / POINTS_BETWEEN)
                     corresponding_coords.extend(bet_coord)
                     coords_to_snow[tuple(bet_coord)] = pt_snow
-                    # lines.append(ax.scatter(
-                    #     *bet_coord,
-                    #     c=snow_color_table(pt_snow),
-                    #     edgecolor="black",
-                    #     s=size_table(pt_snow),
-                    #     transform=ccrs.PlateCarree()
-                    # ))
                 break
 
         visited.add(station)
@@ -177,17 +162,6 @@ def animate(frame):
     lons_uni = corresponding_coords[::2]
 
     data = [coords_to_snow[(lon, lat)] for lon, lat in zip(lons_uni, lats_uni)]
-    # x, y = np.where(~np.isnan(data))
-    # non_nans = set(zip(x, y))
-    #
-    # xn, yn = np.where(np.isnan(data))
-    # nans = set(zip(xn, yn))
-    # for x, y in nans:
-    #     cx, cy = sorted(non_nans, key=lambda tup: (x, y))[0]
-    #     if distance((cx, cy), (x, y)) < 100:
-    #         data[x, y] = data[cx, cy]
-    #     else:
-    #         data[x, y] = 0.0
 
     try:
         lines.append(ax.tricontourf(
@@ -195,7 +169,7 @@ def animate(frame):
             lats_uni,
             data,
             alpha=0.5,
-            levels=[0, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
+            levels=[0, 0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
             colors=ALL_COLORS,
             transform=ccrs.PlateCarree()
         ))
