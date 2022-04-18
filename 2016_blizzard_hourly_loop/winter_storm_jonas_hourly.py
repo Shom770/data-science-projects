@@ -15,7 +15,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.offsetbox import AnchoredText
 from pandas import date_range
 
-extent = (-79.602563, -75.723267, 37.035112, 39.9)
+extent = (-79.202563, -75.89, 37.585112, 39.6)
 
 fig: plt.Figure = plt.figure(figsize=(12, 6))
 ax: plt.Axes = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
@@ -131,7 +131,7 @@ def animate(frame):
             ), 1)
             if closest[0] in visited:
                 continue
-            elif ct > 3:
+            elif ct == 0:
                 break
             else:
                 cc = closest[-1]  # The coordinates for one of the stations close to it in a different zone
