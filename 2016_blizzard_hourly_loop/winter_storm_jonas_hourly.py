@@ -180,6 +180,10 @@ def animate(frame):
                 levels_frame.append(ALL_LEVELS[idx])
                 colors_frame.append(ALL_COLORS[idx])
 
+        if len(levels_frame) < 2:
+            levels_frame = ALL_LEVELS[:2]
+            colors_frame = ALL_COLORS[:2]
+
         try:
             lines.append(cont := ax.tricontourf(
                 lons_uni,
