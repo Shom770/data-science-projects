@@ -52,7 +52,7 @@ fig.colorbar(
     orientation="horizontal",
     label="Total Snowfall (in.)",
     extend="max",
-    aspect=20
+    aspect=10
 )
 
 with open("storm_totals.json", "r") as totals_file:
@@ -216,7 +216,8 @@ def animate(frame):
 
     cur_time = AnchoredText(
         current_time.strftime("%B %d, %Y at %I:%M %p"),
-        prop={"size": 12},
+        loc="lower right",
+        prop={"size": 10},
         frameon=True
     )
 
