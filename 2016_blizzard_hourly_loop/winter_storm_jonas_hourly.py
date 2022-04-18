@@ -181,15 +181,14 @@ def animate(frame):
         non_nans = set(zip(x, y))
 
         xn, yn = np.where(np.isnan(data))
-        nans = set(zip(xn, yn))
+        nans = list(zip(xn, yn))
 
-        for x, row in enumerate(nans):
-            for y, col in enumerate(row):
-                cx, cy = sorted(non_nans, key=lambda tup: (x, y))[0]
-                if distance((cx, cy), (x, y)) < 5:
-                    data[x, y] = data[cx, cy]
-                else:
-                    data[x, y] = 0.0
+        for x, y in nans:
+            cx, cy = sorted(non_nans, key=lambda tup: (x, y))[0]
+            if distance((cx, cy), (x, y)) < 5:
+                data[x, y] = data[cx, cy]
+            else:
+                data[x, y] = 0.0
 
         try:
             lines.append(ax.contourf(
