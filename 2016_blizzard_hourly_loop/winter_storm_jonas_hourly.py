@@ -243,5 +243,4 @@ def animate(frame):
 write_cities()
 anim = FuncAnimation(fig, animate, frames=animation_frames, interval=500, blit=False)
 
-plt.show()
-# anim.save("./progress.gif")
+anim.save("./progress.gif")
