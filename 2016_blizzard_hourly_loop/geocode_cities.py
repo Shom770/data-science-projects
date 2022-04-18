@@ -23,7 +23,7 @@ for city in list_of_cities:
     loc[city.split(",")[0]] = (
         session.get(
             f"https://nominatim.openstreetmap.org/search?q={city}&format=geojson"
-        ).json()["features"]
+        ).json()["features"][0]["geometry"]["coordinates"]
     )
 
 with open("cities.json", "w") as file:

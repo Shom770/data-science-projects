@@ -1,1 +1,1458 @@
-{}
+{
+   "Gaithersburg": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 282378549,
+            "osm_type": "relation",
+            "osm_id": 133704,
+            "display_name": "Gaithersburg, Montgomery County, Maryland, United States",
+            "place_rank": 16,
+            "category": "boundary",
+            "type": "administrative",
+            "importance": 0.5743196194753637,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+         },
+         "bbox": [
+            -77.2582727,
+            39.1027533,
+            -77.1711755,
+            39.1683086
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.1929215,
+               39.1399187
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 2795732,
+            "osm_type": "node",
+            "osm_id": 367799280,
+            "display_name": "Gaithersburg, 5, South Summit Avenue, Observatory Heights, Gaithersburg, Montgomery County, Maryland, 20877, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "station",
+            "importance": 0.3744313097683034,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//transport_train_station2.p.20.png"
+         },
+         "bbox": [
+            -77.1974423,
+            39.1365292,
+            -77.1874423,
+            39.1465292
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.1924423,
+               39.1415292
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 10317785,
+            "osm_type": "node",
+            "osm_id": 1133012435,
+            "display_name": "Gaithersburg, Wells Avenue, Observatory Heights, Gaithersburg, Montgomery County, Maryland, 20877, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.1925916,
+            39.1414632,
+            -77.1924916,
+            39.1415632
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.1925416,
+               39.1415132
+            ]
+         }
+      }
+   ],
+   "Frederick": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 844063,
+            "osm_type": "node",
+            "osm_id": 294326197,
+            "display_name": "Frederick, Frederick County, Maryland, 21701-4546, United States",
+            "place_rank": 16,
+            "category": "place",
+            "type": "city",
+            "importance": 0.6064586983358651,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_place_city.p.20.png"
+         },
+         "bbox": [
+            -77.5727562,
+            39.255779,
+            -77.2527562,
+            39.575779
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.4127562,
+               39.415779
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 282295206,
+            "osm_type": "relation",
+            "osm_id": 133229,
+            "display_name": "Frederick, Frederick County, Maryland, United States",
+            "place_rank": 16,
+            "category": "boundary",
+            "type": "administrative",
+            "importance": 0.6064586983358651,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+         },
+         "bbox": [
+            -77.4781744,
+            39.3924799,
+            -77.3453065,
+            39.4885388
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.42788167406401,
+               39.4407095
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 74802649,
+            "osm_type": "node",
+            "osm_id": 7058553354,
+            "display_name": "Frederick, South East Street, Frederick, Frederick County, Maryland, 21701, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "station",
+            "importance": 0.3633630197666373,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//transport_train_station2.p.20.png"
+         },
+         "bbox": [
+            -77.4104429,
+            39.4068867,
+            -77.4004429,
+            39.4168867
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.4054429,
+               39.4118867
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 123720592,
+            "osm_type": "way",
+            "osm_id": 97952705,
+            "display_name": "Frederick, 100, South East Street, Frederick, Frederick County, Maryland, 21701, United States",
+            "place_rank": 30,
+            "category": "building",
+            "type": "train_station",
+            "importance": 0.3633630197666373
+         },
+         "bbox": [
+            -77.4056103,
+            39.4117678,
+            -77.4053623,
+            39.412004
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.40549855304877,
+               39.41190775
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 5783695,
+            "osm_type": "node",
+            "osm_id": 701684619,
+            "display_name": "Frederick, South East Street, Frederick, Frederick County, Maryland, 21701-4546, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "buffer_stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.4055735,
+            39.4123669,
+            -77.4054735,
+            39.4124669
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.4055235,
+               39.4124169
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 4321538,
+            "osm_type": "node",
+            "osm_id": 585383516,
+            "display_name": "Frederick (Eastalco) Smelter, Manor Woods Road, Buckeystown Station, Buckeystown, Frederick County, Maryland, 21703, United States",
+            "place_rank": 30,
+            "category": "man_made",
+            "type": "mine",
+            "importance": 0.101
+         },
+         "bbox": [
+            -77.46905,
+            39.33395,
+            -77.46895,
+            39.33405
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.469,
+               39.334
+            ]
+         }
+      }
+   ],
+   "Front Royal": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 282330618,
+            "osm_type": "relation",
+            "osm_id": 207046,
+            "display_name": "Front Royal, Warren County, Virginia, 2230, United States",
+            "place_rank": 16,
+            "category": "boundary",
+            "type": "administrative",
+            "importance": 0.6185592734177272,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+         },
+         "bbox": [
+            -78.2206845,
+            38.8916385,
+            -78.1427623,
+            38.9622231
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.1917718,
+               38.9178538
+            ]
+         }
+      }
+   ],
+   "Baltimore": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 283877536,
+            "osm_type": "node",
+            "osm_id": 671113,
+            "display_name": "Baltimore, Maryland, 21203, United States",
+            "place_rank": 16,
+            "category": "place",
+            "type": "city",
+            "importance": 0.765295117264336,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_place_city.p.20.png"
+         },
+         "bbox": [
+            -76.770759,
+            39.1308816,
+            -76.450759,
+            39.4508816
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.610759,
+               39.2908816
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 282832750,
+            "osm_type": "relation",
+            "osm_id": 133345,
+            "display_name": "Baltimore, Maryland, United States",
+            "place_rank": 12,
+            "category": "boundary",
+            "type": "administrative",
+            "importance": 0.765295117264336,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+         },
+         "bbox": [
+            -76.7112977,
+            39.1972328,
+            -76.5296757,
+            39.3720378
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.6204745554597,
+               39.2829352
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 181804072,
+            "osm_type": "way",
+            "osm_id": 336344487,
+            "display_name": "Sleep Inn & Suites Downtown Inner Harbor, MD, 300, North Front Street, Jonestown, Baltimore, Maryland, 21202, United States",
+            "place_rank": 30,
+            "category": "tourism",
+            "type": "hotel",
+            "importance": 0.22100000000000003,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//accommodation_hotel2.p.20.png"
+         },
+         "bbox": [
+            -76.6076185,
+            39.2923433,
+            -76.6071102,
+            39.2927123
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.60738363382055,
+               39.29251175
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 324716152,
+            "osm_type": "node",
+            "osm_id": 9298273418,
+            "display_name": "1100 N EUTAW ST, BALTIMORE, MD 21201, North Eutaw Street, Madison Park, Baltimore, Maryland, 21201, United States",
+            "place_rank": 30,
+            "category": "amenity",
+            "type": "post_box",
+            "importance": 0.21100000000000002
+         },
+         "bbox": [
+            -76.6246628,
+            39.3023312,
+            -76.6245628,
+            39.3024312
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.6246128,
+               39.3023812
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 173858257,
+            "osm_type": "way",
+            "osm_id": 298922136,
+            "display_name": "Remedios P. Baltazar, MD, 303, Eastern Boulevard, Eastern Terrace, Essex, Baltimore County, Maryland, 21221, United States",
+            "place_rank": 30,
+            "category": "amenity",
+            "type": "doctors",
+            "importance": 0.21100000000000002,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//health_doctors.p.20.png"
+         },
+         "bbox": [
+            -76.4806011,
+            39.305995,
+            -76.4803793,
+            39.30618
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.48048624896612,
+               39.30608495
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 135152005,
+            "osm_type": "way",
+            "osm_id": 144158762,
+            "display_name": "Michele A. Shermak, MD, 1304, Bellona Avenue, Bellona Commons, Lutherville, Baltimore County, Maryland, 21093, United States",
+            "place_rank": 30,
+            "category": "amenity",
+            "type": "doctors",
+            "importance": 0.21100000000000002,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//health_doctors.p.20.png"
+         },
+         "bbox": [
+            -76.6317458,
+            39.4183747,
+            -76.6313921,
+            39.418655
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.63158073786312,
+               39.41849485
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 173292776,
+            "osm_type": "way",
+            "osm_id": 299103589,
+            "display_name": "Dr. Tony Varghese, MD, 8022, Belair Road, Putty Hill, Carney, Baltimore County, Maryland, 21236, United States",
+            "place_rank": 30,
+            "category": "amenity",
+            "type": "doctors",
+            "importance": 0.21100000000000002,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//health_doctors.p.20.png"
+         },
+         "bbox": [
+            -76.5070771,
+            39.3762694,
+            -76.5068838,
+            39.3764253
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.50696965704023,
+               39.37635684999999
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 337131604,
+            "osm_type": "node",
+            "osm_id": 9669340912,
+            "display_name": "Crown Castle Baltimore, 111, Market Place, Inner Harbor, Baltimore, Maryland, 21202-4036, United States",
+            "place_rank": 30,
+            "category": "place",
+            "type": "house",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -76.6064732,
+            39.2875761,
+            -76.6063732,
+            39.2876761
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.6064232,
+               39.2876261
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 329795163,
+            "osm_type": "node",
+            "osm_id": 9447868934,
+            "display_name": "Fayette Square, 518, West Fayette Street, Downtown, Baltimore, Maryland, 21201, United States",
+            "place_rank": 30,
+            "category": "tourism",
+            "type": "hostel",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -76.6232315,
+            39.2905121,
+            -76.6231315,
+            39.2906121
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.6231815,
+               39.2905621
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 182129376,
+            "osm_type": "way",
+            "osm_id": 336189071,
+            "display_name": "US Storage Centers, Baltimore, 5117, Belair Road, Frankford, Baltimore, Maryland, 21206, United States",
+            "place_rank": 30,
+            "category": "shop",
+            "type": "storage_rental",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -76.5538742,
+            39.3361927,
+            -76.5536044,
+            39.3364092
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.55373929999999,
+               39.33630095
+            ]
+         }
+      }
+   ],
+   "Washington D.C.": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 283012477,
+            "osm_type": "relation",
+            "osm_id": 5396194,
+            "display_name": "Washington, District of Columbia, United States",
+            "place_rank": 12,
+            "category": "boundary",
+            "type": "administrative",
+            "importance": 1.059288898611582,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+         },
+         "bbox": [
+            -77.1197949,
+            38.7916303,
+            -76.909366,
+            38.995968
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.0365427,
+               38.8950368
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 114044474,
+            "osm_type": "way",
+            "osm_id": 48265528,
+            "display_name": "Rue Silo,( Washington D.C, Zone Inondable, 1re Varreux, Commune Cit\u00e9 Soleil, Arrondissement de Port-au-Prince, D\u00e9partement de l'Ouest, HT6123, Ayiti",
+            "place_rank": 26,
+            "category": "highway",
+            "type": "residential",
+            "importance": 0.4
+         },
+         "bbox": [
+            -72.3328135,
+            18.5811723,
+            -72.3318473,
+            18.581999
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -72.3322831,
+               18.5815979
+            ]
+         }
+      }
+   ],
+   "Manassas": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 282593220,
+            "osm_type": "relation",
+            "osm_id": 206870,
+            "display_name": "Manassas, Virginia, United States",
+            "place_rank": 12,
+            "category": "boundary",
+            "type": "administrative",
+            "importance": 0.6091949642705354,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+         },
+         "bbox": [
+            -77.5265024,
+            38.7061063,
+            -77.4477072,
+            38.7811645
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.4752667,
+               38.7509488
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 74990193,
+            "osm_type": "node",
+            "osm_id": 7021114136,
+            "display_name": "Manassas, West Street, Georgetown South, Manassas, Virginia, 20110, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "station",
+            "importance": 0.36130841619905607,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//transport_train_station2.p.20.png"
+         },
+         "bbox": [
+            -77.4778139,
+            38.7451372,
+            -77.4678139,
+            38.7551372
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.4728139,
+               38.7501372
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 74057524,
+            "osm_type": "node",
+            "osm_id": 7021114134,
+            "display_name": "Manassas, Prince William Street, Georgetown South, Manassas, Virginia, 20110, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.4741501,
+            38.7500552,
+            -77.4740501,
+            38.7501552
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.4741001,
+               38.7501052
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 74308874,
+            "osm_type": "node",
+            "osm_id": 7021114135,
+            "display_name": "Manassas, Battle Street, Manassas, Virginia, 20110, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.4724776,
+            38.7502132,
+            -77.4723776,
+            38.7503132
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.4724276,
+               38.7502632
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 156005732,
+            "osm_type": "way",
+            "osm_id": 222967502,
+            "display_name": "Manassas, 9401, Peabody Street, Manassas, Prince William County, Virginia, 20110, United States",
+            "place_rank": 30,
+            "category": "building",
+            "type": "central_office",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.4772402,
+            38.7514219,
+            -77.4763597,
+            38.7518673
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.47666305558386,
+               38.7515726
+            ]
+         }
+      }
+   ],
+   "Charlottesville": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 282693098,
+            "osm_type": "relation",
+            "osm_id": 2504948,
+            "display_name": "Charlottesville, Virginia, United States",
+            "place_rank": 12,
+            "category": "boundary",
+            "type": "administrative",
+            "importance": 0.6689801575461752,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+         },
+         "bbox": [
+            -78.5237084,
+            38.0095927,
+            -78.4462997,
+            38.0705032
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.4766781,
+               38.029306
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 74643208,
+            "osm_type": "node",
+            "osm_id": 7022584315,
+            "display_name": "Charlottesville, West Main Street, Starr Hill, Charlottesville, Virginia, 22908, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "station",
+            "importance": 0.3580920830180936,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//transport_train_station2.p.20.png"
+         },
+         "bbox": [
+            -78.4967906,
+            38.0264369,
+            -78.4867906,
+            38.0364369
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.4917906,
+               38.0314369
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 273046744,
+            "osm_type": "way",
+            "osm_id": 921224926,
+            "display_name": "Country Inn & Suites by Radisson, Charlottesville-UVA, VA, 1600, Emmet Street North, The Meadows, Northerly, Charlottesville, Virginia, 22901, United States",
+            "place_rank": 30,
+            "category": "tourism",
+            "type": "hotel",
+            "importance": 0.22100000000000003,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//accommodation_hotel2.p.20.png"
+         },
+         "bbox": [
+            -78.4943127,
+            38.0576767,
+            -78.4935471,
+            38.0582135
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.49398353428293,
+               38.057975600000006
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 273024082,
+            "osm_type": "way",
+            "osm_id": 920886212,
+            "display_name": "Homewood Suites by Hilton Charlottesville, VA, 2036, India Road, The Meadows, Oak Terrace, Charlottesville, Albemarle County, Virginia, 22901, United States",
+            "place_rank": 30,
+            "category": "tourism",
+            "type": "hotel",
+            "importance": 0.22100000000000003,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//accommodation_hotel2.p.20.png"
+         },
+         "bbox": [
+            -78.4888559,
+            38.0612642,
+            -78.4880286,
+            38.0622048
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.48826219863946,
+               38.0617677
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 221197927,
+            "osm_type": "way",
+            "osm_id": 575374619,
+            "display_name": "The Draftsman, Charlottesville, University, Autograph Collection Hotel, 1106, West Main Street, 10th & Page, Starr Hill, Charlottesville, Virginia, 22903, United States",
+            "place_rank": 30,
+            "category": "tourism",
+            "type": "hotel",
+            "importance": 0.11100000000000002,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//accommodation_hotel2.p.20.png"
+         },
+         "bbox": [
+            -78.4965351,
+            38.032361,
+            -78.4960884,
+            38.032873
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.49631828743813,
+               38.0325977
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 74239330,
+            "osm_type": "node",
+            "osm_id": 7022584314,
+            "display_name": "Charlottesville, 7th Street Southwest, Starr Hill, Charlottesville, Virginia, 22903, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -78.4900044,
+            38.0309547,
+            -78.4899044,
+            38.0310547
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.4899544,
+               38.0310047
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 19326496,
+            "osm_type": "node",
+            "osm_id": 2188095418,
+            "display_name": "Charlottesville, West Main Street, Starr Hill, Charlottesville, Virginia, 22908, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -78.4919197,
+            38.0312111,
+            -78.4918197,
+            38.0313111
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.4918697,
+               38.0312611
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 4120373,
+            "osm_type": "node",
+            "osm_id": 540970350,
+            "display_name": "Charlottesville, West Main Street, 10th & Page, Starr Hill, Charlottesville, Virginia, 22908, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -78.4924641,
+            38.0316247,
+            -78.4923641,
+            38.0317247
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.4924141,
+               38.0316747
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 73673565,
+            "osm_type": "node",
+            "osm_id": 7022584313,
+            "display_name": "Charlottesville, 8th Street Northwest, Starr Hill, Charlottesville, Virginia, 22903, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -78.4905959,
+            38.0326318,
+            -78.4904959,
+            38.0327318
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.4905459,
+               38.0326818
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 92176891,
+            "osm_type": "node",
+            "osm_id": 8881031038,
+            "display_name": "Charlottesville, Ridge Street, North Downtown, Vinegar Hill, Charlottesville, Virginia, 22902, United States",
+            "place_rank": 30,
+            "category": "highway",
+            "type": "bus_stop",
+            "importance": 0.11100000000000002,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//transport_bus_stop2.p.20.png"
+         },
+         "bbox": [
+            -78.4855704,
+            38.0297384,
+            -78.4854704,
+            38.0298384
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.4855204,
+               38.0297884
+            ]
+         }
+      }
+   ],
+   "Lexington Park": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 421161,
+            "osm_type": "node",
+            "osm_id": 158655000,
+            "display_name": "Lexington Park, Saint Mary's County, Maryland, 20653, United States",
+            "place_rank": 18,
+            "category": "place",
+            "type": "town",
+            "importance": 0.5197110336847337,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_place_town.p.20.png"
+         },
+         "bbox": [
+            -76.4933565,
+            38.2241725,
+            -76.4133565,
+            38.3041725
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.4533565,
+               38.2641725
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 282403503,
+            "osm_type": "relation",
+            "osm_id": 383098,
+            "display_name": "Lexington Park, Saint Mary's County, Maryland, United States",
+            "place_rank": 18,
+            "category": "place",
+            "type": "town",
+            "importance": 0.5,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_place_town.p.20.png"
+         },
+         "bbox": [
+            -76.5684844,
+            38.2223482,
+            -76.3959029,
+            38.3399315
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.48411991370034,
+               38.281115099999994
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 217848814,
+            "osm_type": "way",
+            "osm_id": 552222708,
+            "display_name": "Lexington Park, Lexington Run, Sykesville, Carroll County, Maryland, United States",
+            "place_rank": 24,
+            "category": "leisure",
+            "type": "park",
+            "importance": 0.35000000000000003
+         },
+         "bbox": [
+            -76.9770134,
+            39.3695973,
+            -76.9760127,
+            39.3701011
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -76.97684194893455,
+               39.3698861
+            ]
+         }
+      }
+   ],
+   "Martinsburg": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 326469202,
+            "osm_type": "node",
+            "osm_id": 158242358,
+            "display_name": "Martinsburg, Berkeley County, West Virginia, 25401, United States",
+            "place_rank": 16,
+            "category": "place",
+            "type": "city",
+            "importance": 0.5825741935154469,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_place_city.p.20.png"
+         },
+         "bbox": [
+            -78.1239604,
+            39.2962528,
+            -77.8039604,
+            39.6162528
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.9639604,
+               39.4562528
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 282337473,
+            "osm_type": "relation",
+            "osm_id": 239860,
+            "display_name": "Martinsburg, Berkeley County, West Virginia, United States",
+            "place_rank": 16,
+            "category": "boundary",
+            "type": "administrative",
+            "importance": 0.5825741935154469,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+         },
+         "bbox": [
+            -78.025659,
+            39.437242,
+            -77.941526,
+            39.485334
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.96980179439834,
+               39.4614475
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 73737483,
+            "osm_type": "node",
+            "osm_id": 6997927573,
+            "display_name": "Martinsburg, East Martin Street, Adam Stephen Homes, Martinsburg, Berkeley County, West Virginia, 25401, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "station",
+            "importance": 0.3823437491030711,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//transport_train_station2.p.20.png"
+         },
+         "bbox": [
+            -77.9658861,
+            39.4534452,
+            -77.9558861,
+            39.4634452
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.9608861,
+               39.4584452
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 82352553,
+            "osm_type": "node",
+            "osm_id": 8229473729,
+            "display_name": "Martinsburg, White Avenue, Adam Stephen Homes, Martinsburg, Berkeley County, West Virginia, 25401, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.9605948,
+            39.4585184,
+            -77.9604948,
+            39.4586184
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.9605448,
+               39.4585684
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 384798,
+            "osm_type": "node",
+            "osm_id": 154548040,
+            "display_name": "Martinsburg, East Martin Street, Adam Stephen Homes, Martinsburg, Berkeley County, West Virginia, 25401, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.9607628,
+            39.4588038,
+            -77.9606628,
+            39.4589038
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.9607128,
+               39.4588538
+            ]
+         }
+      }
+   ],
+   "Winchester": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 282329936,
+            "osm_type": "relation",
+            "osm_id": 207037,
+            "display_name": "Winchester, Virginia, United States",
+            "place_rank": 12,
+            "category": "boundary",
+            "type": "administrative",
+            "importance": 0.6239981719218805,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+         },
+         "bbox": [
+            -78.2005131,
+            39.1310274,
+            -78.136725,
+            39.2048701
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.1652404,
+               39.1852184
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 165026849,
+            "osm_type": "way",
+            "osm_id": 256727350,
+            "display_name": "Country Inn & Suites by Radisson, Winchester, VA, 141, Kernstown Commons Boulevard, Echo Village, Winchester, Frederick County, Virginia, 22602, United States",
+            "place_rank": 30,
+            "category": "tourism",
+            "type": "hotel",
+            "importance": 0.22100000000000003,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//accommodation_hotel2.p.20.png"
+         },
+         "bbox": [
+            -78.1945249,
+            39.1202083,
+            -78.1940147,
+            39.1208804
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.19432292043899,
+               39.12054585
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 186766047,
+            "osm_type": "way",
+            "osm_id": 366207819,
+            "display_name": "Winchester, 10800, Midlothian Turnpike, Midlothian, Chesterfield County, Virginia, 23235, United States",
+            "place_rank": 30,
+            "category": "building",
+            "type": "yes",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.5978461,
+            37.5073326,
+            -77.5968563,
+            37.50822
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.59733885936305,
+               37.507783
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 172737325,
+            "osm_type": "way",
+            "osm_id": 293626841,
+            "display_name": "Winchester, Millers Head Trail, Skyland, Page County, Virginia, United States",
+            "place_rank": 30,
+            "category": "building",
+            "type": "yes",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -78.3847096,
+            38.5915805,
+            -78.384403,
+            38.5917869
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -78.38454692576923,
+               38.591696299999995
+            ]
+         }
+      }
+   ],
+   "Culpeper": [
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 282381859,
+            "osm_type": "relation",
+            "osm_id": 207020,
+            "display_name": "Culpeper, Culpeper County, Virginia, 22701, United States",
+            "place_rank": 16,
+            "category": "boundary",
+            "type": "administrative",
+            "importance": 0.5506665299245435,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png"
+         },
+         "bbox": [
+            -78.028554,
+            38.445481,
+            -77.971925,
+            38.495747
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.9961275,
+               38.4733823
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 74046811,
+            "osm_type": "node",
+            "osm_id": 6997927574,
+            "display_name": "Culpeper, Commerce Street, Belle Parc, Culpeper, Culpeper County, Virginia, 22701, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "station",
+            "importance": 0.30050836296268335,
+            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//transport_train_station2.p.20.png"
+         },
+         "bbox": [
+            -77.9984369,
+            38.4671707,
+            -77.9884369,
+            38.4771707
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.9934369,
+               38.4721707
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 82121926,
+            "osm_type": "node",
+            "osm_id": 8181652559,
+            "display_name": "Culpeper, Dog Park Lanee, Culpeper, Culpeper County, Virginia, 22701, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.9930515,
+            38.4723134,
+            -77.9929515,
+            38.4724134
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.9930015,
+               38.4723634
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 274892757,
+            "osm_type": "way",
+            "osm_id": 936382485,
+            "display_name": "Culpeper, 502, East Piedmont Street, Catalpa Hills, Culpeper, Culpeper County, Virginia, 22701, United States",
+            "place_rank": 30,
+            "category": "building",
+            "type": "central_office",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.9910767,
+            38.4756754,
+            -77.9907721,
+            38.4761724
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.99092444924429,
+               38.4759239
+            ]
+         }
+      },
+      {
+         "type": "Feature",
+         "properties": {
+            "place_id": 14470065,
+            "osm_type": "node",
+            "osm_id": 1537736505,
+            "display_name": "Culpeper, East Culpeper Street, Catalpa Hills, Culpeper, Culpeper County, Virginia, 22701, United States",
+            "place_rank": 30,
+            "category": "railway",
+            "type": "stop",
+            "importance": 0.11100000000000002
+         },
+         "bbox": [
+            -77.9936516,
+            38.4717561,
+            -77.9935516,
+            38.4718561
+         ],
+         "geometry": {
+            "type": "Point",
+            "coordinates": [
+               -77.9936016,
+               38.4718061
+            ]
+         }
+      }
+   ]
+}
