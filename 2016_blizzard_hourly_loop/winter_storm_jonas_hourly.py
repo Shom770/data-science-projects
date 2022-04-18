@@ -63,18 +63,13 @@ with open("cities.json", "r") as cities_file:
 
 def write_cities():
     for city_name, location in cities.items():
-        ax.scatter(
-            *location,
-            c="white",
-            edgecolor="black",
-            s=50
-        )
         ax.text(
-            location[0],
-            location[1] - 0.025,
+            *location,
             city_name,
+            bbox={"facecolor": "#eaeaea", "edgecolor": "black", "boxstyle": "round"},
             horizontalalignment="center",
-            size=10
+            verticalalignment="center",
+            size=9
         )
 
 
