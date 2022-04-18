@@ -15,7 +15,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.offsetbox import AnchoredText
 from pandas import date_range
 
-extent = (-79.202563, -75.89, 37.585112, 39.6)
+extent = (-79, -75.89, 37.585112, 39.5)
 
 fig: plt.Figure = plt.figure(figsize=(12, 6))
 ax: plt.Axes = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
@@ -51,7 +51,7 @@ fig.colorbar(
     ticks=ALL_LEVELS,
     label="Total Snowfall (in.)",
     extend="max",
-    aspect=5
+    aspect=3
 )
 
 with open("storm_totals.json", "r") as totals_file:
@@ -216,7 +216,7 @@ def animate(frame):
     cur_time = AnchoredText(
         current_time.strftime("%B %d, %Y at %I:%M %p"),
         loc="lower right",
-        prop={"size": 11},
+        prop={"size": 12},
         frameon=True
     )
 
