@@ -100,11 +100,11 @@ def animate(frame):
     visited = set()
 
     for artist in lines[:]:
-        if isinstance(artist, AnchoredText):
-            artist.set_visible(False)
-        else:
+        try:
             for col in artist.collections:
                 col.set_visible(False)
+        except AttributeError:
+            artist.set_visible(False)
 
     current_time = datetime.fromisoformat(str(frame).replace(" ", "T")) - timedelta(hours=5)
 
@@ -120,6 +120,7 @@ def animate(frame):
         corresponding_coords.extend(observations["coordinates"])
         coords_to_snow[tuple(observations["coordinates"])] = total_snow
 
+        ct = 0
         for closest in adjacent_stations(observations["coordinates"], station):
             stn_snow = round(sum(
                 storm_totals[closest[0]][
@@ -128,6 +129,8 @@ def animate(frame):
             ), 1)
             if closest[0] in visited:
                 continue
+            elif ct > 3:
+                break
             elif snow_color_table(stn_snow) != snow_color_table(total_snow):
                 cc = closest[-1]  # The coordinates for one of the stations close to it in a different zone
                 dist_lon = abs(cc[0] - observations["coordinates"][0])
@@ -154,27 +157,31 @@ def animate(frame):
                     pt_snow = min_snow + diff_snow * (coord_num / POINTS_BETWEEN)
                     corresponding_coords.extend(bet_coord)
                     coords_to_snow[tuple(bet_coord)] = pt_snow
-                break
+                ct += 1
 
         visited.add(station)
 
     lats_uni = corresponding_coords[1::2]
     lons_uni = corresponding_coords[::2]
 
-    data = [coords_to_snow[(lon, lat)] for lon, lat in zip(lons_uni, lats_uni)]
+    data = [
+        coords_to_snow[(lon, lat)] for lon, lat in zip(lons_uni, lats_uni)
+    ]
 
-    try:
-        lines.append(ax.tricontourf(
-            lons_uni,
-            lats_uni,
-            data,
-            alpha=0.5,
-            levels=[0, 0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
-            colors=ALL_COLORS,
-            transform=ccrs.PlateCarree()
-        ))
-    except TypeError:  # Shape is smaller than (2, 2), usually at the start
-        pass
+    if any(item != 0 for item in data):
+        try:
+            lines.append(cont := ax.tricontourf(
+                lons_uni,
+                lats_uni,
+                data,
+                alpha=0.5,
+                levels=8,
+                cmap="plasma",
+                transform=ccrs.PlateCarree()
+            ))
+            lines.append(fig.colorbar(cont, extend="both"))
+        except TypeError:  # Shape is smaller than (2, 2), usually at the start
+            pass
 
     cur_time = AnchoredText(
         current_time.strftime("%B %d, %Y at %I:%M %p"),
