@@ -1,6 +1,7 @@
 import json
 
 from datetime import datetime, timedelta
+from itertools import zip_longest
 from operator import itemgetter
 
 import cartopy.crs as ccrs
@@ -33,12 +34,12 @@ matplotlib.rcParams['font.family'] = 'Inter'
 
 POINTS_BETWEEN = 5
 ALL_COLORS = [
-    "#bdd8e6", "#6bb0d6", "#3284bf",
+    "#ffffff", "#bdd8e6", "#6bb0d6", "#3284bf",
     "#07519d", "#082695", "#ffff97",
     "#fdc400", "#ff8801", "#db1300",
     "#9f0002", "#690001", "#330101"
 ]
-ALL_LEVELS = [0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36]
+ALL_LEVELS = [0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 48]
 
 session = requests.session()
 lines = []
@@ -169,18 +170,15 @@ def animate(frame):
         coords_to_snow[(lon, lat)] for lon, lat in zip(lons_uni, lats_uni)
     ]
     maximum_val = max(data)
-    minimum_val = min(data)
 
     if maximum_val >= 0.1:
-        min_idx = 0
-        for idx, num in enumerate(ALL_LEVELS):
-            if num < minimum_val:
-                min_idx = idx
-            if num > maximum_val:
-                break
+        levels_frame = []
+        colors_frame = []
 
-        levels_frame = ALL_LEVELS[min_idx:idx + 1]
-        colors_frame = ALL_COLORS[min_idx:idx + 1]
+        for idx, (rmin, rmax) in enumerate(zip(ALL_LEVELS, ALL_LEVELS[1:])):
+            if any(rmin <= val < max for val in data):
+                levels_frame.append(ALL_LEVELS[idx])
+                colors_frame.append(ALL_COLORS[idx])
 
         try:
             lines.append(cont := ax.tricontourf(
