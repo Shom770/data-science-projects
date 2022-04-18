@@ -184,6 +184,10 @@ def animate(frame):
             levels_frame = ALL_LEVELS[:2]
             colors_frame = ALL_COLORS[:2]
 
+        while levels_frame[-1] < maximum_val:
+            levels_frame.append(ALL_LEVELS[ALL_LEVELS.index(levels_frame[-1]) + 1])
+            colors_frame.append(ALL_COLORS[ALL_COLORS.index(colors_frame[-1]) + 1])
+
         try:
             lines.append(cont := ax.tricontourf(
                 lons_uni,
