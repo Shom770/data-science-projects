@@ -1,7 +1,6 @@
 import json
 
 from datetime import datetime, timedelta
-from itertools import zip_longest
 from operator import itemgetter
 
 import cartopy.crs as ccrs
@@ -10,7 +9,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 import requests
-import scipy.ndimage
 
 from matplotlib.animation import FuncAnimation
 from matplotlib.offsetbox import AnchoredText
@@ -58,6 +56,26 @@ fig.colorbar(
 
 with open("storm_totals.json", "r") as totals_file:
     storm_totals = json.loads(totals_file.read())
+
+with open("cities.json", "r") as cities_file:
+    cities = json.loads(cities_file.read())
+
+
+def write_cities():
+    for city_name, location in cities.items():
+        ax.scatter(
+            *location,
+            c="white",
+            edgecolor="black",
+            s=50
+        )
+        ax.text(
+            location[0],
+            location[1] - 0.025,
+            city_name,
+            horizontalalignment="center",
+            size=10
+        )
 
 
 def snow_color_table(total_snow):
@@ -227,6 +245,8 @@ def animate(frame):
     return lines
 
 
+write_cities()
 anim = FuncAnimation(fig, animate, frames=animation_frames, interval=500, blit=False)
 
-anim.save("./progress.gif")
+plt.show()
+# anim.save("./progress.gif")
