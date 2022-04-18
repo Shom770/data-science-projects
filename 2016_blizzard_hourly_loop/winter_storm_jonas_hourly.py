@@ -177,20 +177,24 @@ def animate(frame):
         lons, lats = np.meshgrid(lons_uni, lats_uni)
 
         data = np.array([[coords_to_snow.get((lon, lat), np.nan) for lat in lats_uni] for lon in lons_uni])
-        nansIndx = np.where(np.isnan(data))[0]
-        isanIndx = np.where(~np.isnan(data))[0]
-        for nan in nansIndx:
-            replacementCandidates = np.where(isanIndx > nan)[0]
-            if replacementCandidates.size != 0:
-                replacement = data[isanIndx[replacementCandidates[0]]]
-            else:
-                replacement = data[isanIndx[np.where(isanIndx < nan)[0][-1]]]
-            data[nan] = replacement
+        x, y = np.where(~np.isnan(data))
+        non_nans = set(zip(x, y))
+
+        xn, yn = np.where(np.isnan(data))
+        nans = set(zip(xn, yn))
+
+        for x, row in enumerate(nans):
+            for y, col in enumerate(row):
+                cx, cy = sorted(non_nans, key=lambda tup: (x, y))[0]
+                if distance((cx, cy), (x, y)) < 5:
+                    data[x, y] = data[cx, cy]
+                else:
+                    data[x, y] = 0.0
 
         try:
             lines.append(ax.contourf(
-                lons_uni,
-                lats_uni,
+                lons,
+                lats,
                 data,
                 alpha=1,
                 levels=[0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36, 42],
