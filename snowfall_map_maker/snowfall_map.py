@@ -1,23 +1,16 @@
-import datetime
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import matplotlib.pyplot as plt
 
-import requests
+from metpy.plots import USCOUNTIES
 
+extent = (-79.05, -76.02, 37.585112, 39.6)
 
-ISO8660 = "%Y-%m-%dT%H:%M"
-URL = "http://mesonet.agron.iastate.edu/cgi-bin/request/gis/lsr.py"
+fig: plt.Figure = plt.figure(figsize=(12, 6))
+ax: plt.Axes = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
 
-session = requests.session()
+ax.set_extent(extent)
 
-
-def get_reports(states: list, start_time: datetime.datetime, end_time: datetime.datetime) -> None:
-    totals = {}
-    for state in states:
-        req = session.get(
-                f"{URL}?state={state}&sts={start_time.strftime(ISO8660)}&ets={end_time.strftime(ISO8660)}&justcsv=true"
-        ).text
-        for line in req.split("\n")[1:]:
-            if line:
-                split_line = line.split(",")
-                totals[tuple(map(float, split_line[2:4]))] = float(split_line[4])
-
-    return totals
+ax.add_feature(cfeature.LAND.with_scale("10m"))
+ax.add_feature(cfeature.OCEAN.with_scale("10m"))
+ax.add_feature(USCOUNTIES.with_scale("5m"))
