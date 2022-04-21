@@ -17,7 +17,7 @@ def get_reports(states: list, start_time: datetime.datetime, end_time: datetime.
         ).text
         for line in req.split("\n")[1:]:
             split_line = line.split(",")
-            totals[tuple(map(float, split_line[2:4]))] = float(split_line[5])
+            totals[tuple(map(float, split_line[2:4]))] = float(split_line[4])
 
     return totals
 
