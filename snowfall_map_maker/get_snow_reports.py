@@ -9,7 +9,7 @@ URL = "http://mesonet.agron.iastate.edu/cgi-bin/request/gis/lsr.py"
 session = requests.session()
 
 
-def get_reports(states: list, start_time: datetime.datetime, end_time: datetime.datetime) -> None:
+def get_reports(states: list, start_time: datetime.datetime, end_time: datetime.datetime) -> dict:
     totals = {}
     for state in states:
         req = session.get(
