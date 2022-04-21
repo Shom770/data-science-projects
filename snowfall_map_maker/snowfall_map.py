@@ -21,6 +21,3 @@ def get_reports(states: list, start_time: datetime.datetime, end_time: datetime.
                 totals[tuple(map(float, split_line[2:4]))] = float(split_line[4])
 
     return totals
-
-
-print(get_reports(["MD", "VA"], datetime.datetime(2022, 1, 7), datetime.datetime(2022, 1, 8)))
