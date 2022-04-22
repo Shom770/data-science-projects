@@ -30,4 +30,7 @@ refined_data = {
 
 for coords, magnitude in refined_data.items():
     if not isinstance(magnitude, int):
-        ax.
+        lons = (coords[0][0], coords[1][0])
+        lats = (coords[0][1], coords[1][1])
+
+        ax.plot(lons, lats)
