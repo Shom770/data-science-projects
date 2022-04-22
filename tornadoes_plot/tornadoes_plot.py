@@ -4,16 +4,18 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from matplotlib.lines import Line2D
+from matplotlib.offsetbox import AnchoredText
 
 EF_COLORS = ("#e0e0e0", "#ddffdd", "#ddffff", "#ffffcc", "#ffddbb", "#ffcccc", "#ffccff")
 LINE_WIDTH = 1
+FILE_NAME = "2011_torn.csv"
 COLORS_TO_SIZE = {
     "#e0e0e0": LINE_WIDTH, "#ddffdd": LINE_WIDTH,
     "#ddffff": LINE_WIDTH + 0.4, "#ffffcc": LINE_WIDTH + 0.8,
     "#ffddbb": LINE_WIDTH + 1.2, "#ffcccc": LINE_WIDTH + 1.6, "#ffccff": LINE_WIDTH + 2
 }
 
-tornado_data = pd.read_csv("2011_torn.csv")
+tornado_data = pd.read_csv(FILE_NAME)
 
 extent = (-131.220703, -64.775391, 23.966176, 50.792047)
 
@@ -57,6 +59,15 @@ legend_elements = [
     Line2D([0], [0], color=EF_COLORS[5], marker="v", label=f"EF4 ({magnitude_amt[5]})"),
     Line2D([0], [0], color=EF_COLORS[6], marker="v", label=f"EF5 ({magnitude_amt[6]})"),
 ]
+title = AnchoredText(
+    f"Tornadoes of {FILE_NAME.split('_')[0]}",
+    loc="upper center",
+    prop={"size": 18},
+    frameon=True
+)
 
-ax.legend(handles=legend_elements)
+ax.add_artist(title)
+
+
+ax.legend(handles=legend_elements, loc="lower right", facecolor="#b0b0b0")
 plt.show()
