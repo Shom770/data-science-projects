@@ -36,12 +36,12 @@ ax.add_feature(cfeature.LAND.with_scale("10m"))
 ax.add_feature(USCOUNTIES.with_scale("5m"), zorder=200)
 ax.add_feature(cfeature.OCEAN.with_scale("10m"), zorder=100)
 
-data = tuple(all_reports.values())
+data = list(all_reports.values())
 
 levels_spec = []
 colors_spec = []
 if max(data) - max(i for i in data if i != max(data)) > 10:
-    for (lon, lat), value in [(key, val) for key, val in all_reports.items() if val == max(data)]:
+    for (lat, lon), value in [(key, val) for key, val in all_reports.items() if val == max(data)]:
         lons.remove(lon)
         lats.remove(lat)
         data.remove(value)
