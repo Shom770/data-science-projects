@@ -13,13 +13,14 @@ logger.setLevel(logging.INFO)
 
 data_nam = Dataset(
     (
-        f"http://nomads.ncep.noaa.gov/dods/nam/"
-        f"nam20220415/nam_18z"
+        f"http://nomads.ncep.noaa.gov/dods/gfs_0p25/"
+        f"gfs20220423/gfs_0p25_12z"
     )
 )
 logger.info("Loaded NAM dataset")
 
 lons = data_nam.variables["lon"][:]
+print(lons)
 lats = data_nam.variables["lat"][:]
 
 extent = (-80, -74, 37, 40)
@@ -45,13 +46,13 @@ home_lon = np.where(
 )[0]
 all_lons = np.array([lons[lon] for lon in home_lon])
 
-temp_nam = data_nam.variables["tmp2m"][84 / 3]
-temps = np.array([[(temp_nam[lat, lon] - 273.15) * 9/5 + 32 for lon in home_lon] for lat in home_lat])
+temp_nam = data_nam.variables["crainsfc"][84 / 3]
+temps = np.array([[temp_nam[lat, lon] for lon in home_lon] for lat in home_lat])
 
 lons_, lats_ = np.meshgrid(all_lons, all_lats)
 
-levels = [n for n in range(0, 101, 1)]
-ticks = levels[::10]
+levels = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 1, 2, 3, 4, 5]
+ticks = levels
 
 CS = ax.contourf(lons_, lats_, temps, transform=ccrs.PlateCarree(), levels=levels, cmap="coolwarm")
 
