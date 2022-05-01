@@ -43,8 +43,8 @@ dataset = xarray.open_dataset(
     engine="cfgrib",
     filter_by_keys={'stepType': 'accum', 'typeOfLevel': 'surface'}
 )
-lons = dataset.lon.values
-lats = dataset.lat.values
+lons = dataset["longitude"].values
+lats = dataset["latitude"].values
 
 levels = [0.1, 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 30, 36, 48, 60, 72]
 cmap = colors.ListedColormap([
