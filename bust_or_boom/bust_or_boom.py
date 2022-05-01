@@ -25,7 +25,5 @@ cmap = colors.ListedColormap([
 ])
 norm = colors.BoundaryNorm(levels, cmap.N)
 
-lons_n, lats_n, snow_n = nohrsc_snow()
-lons_h, lats_h, snow_h = historical_hrrr_snow()
-
-print(snow_n, snow_h)
+lons_n, lats_n, snow_n, date = nohrsc_snow()
+lons_h, lats_h, snow_h = historical_hrrr_snow(date)

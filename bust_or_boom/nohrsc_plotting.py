@@ -31,4 +31,4 @@ def nohrsc_snow():
     lats = snow_data.lat.values
     lons = snow_data.lon.values
 
-    return lons, lats, snow_data.values
+    return lons, lats, snow_data.values, DATA_TIME
