@@ -14,7 +14,7 @@ for file_name in directory[-1]:
     if file_name.endswith(".nc"):
         os.remove(file_name)
 
-DATA_TIME = datetime.datetime(year=2022, month=1, day=17)
+DATA_TIME = datetime.datetime(year=2022, month=1, day=7)
 FILE_PATH = f"{DATA_TIME.strftime('%Y%m%d%H')}.nc"
 URL = (
         f"http://www.nohrsc.noaa.gov/snowfall_v2/data/"
