@@ -7,6 +7,7 @@ import matplotlib.colors as colors
 import numpy as np
 
 from historical_hrrr import historical_hrrr_snow
+from nohrsc_plotting import nohrsc_snow
 
 DIFF = 0.1
 extent = (-79.05, -76.02, 37.585112, 39.6)
@@ -31,7 +32,5 @@ cmap = colors.ListedColormap([
 ])
 norm = colors.BoundaryNorm(levels, cmap.N)
 
-lons_2, lats_2, snow_2 = historical_hrrr_snow(extent_lim, type_="depth")
-
-ax.contourf(lons_2, lats_2, snow_2, levels, cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree())
-plt.show()
+lons_n, lats_n, snow_n, date = nohrsc_snow(extent_lim)
+lons_h, lats_h, snow_h = historical_hrrr_snow(date, extent_lim)
