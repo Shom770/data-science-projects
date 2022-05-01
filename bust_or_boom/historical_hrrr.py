@@ -16,7 +16,7 @@ for file_name in directory[-1]:
         os.remove(file_name)
 
 BUCKET_NAME = 'noaa-hrrr-bdp-pds'
-S3_OBJECT = 'hrrr.20220107/conus/hrrr.t00z.wrfsfcf24.grib2'
+S3_OBJECT = 'hrrr.20190113/conus/hrrr.t00z.wrfsfcf36.grib2'
 
 FILE_PATH = S3_OBJECT.split("/")[-1]
 
@@ -54,5 +54,8 @@ cmap = colors.ListedColormap([
 ])
 norm = colors.BoundaryNorm(levels, cmap.N)
 
-ax.contourf(lons, lats, dataset["asnow"].values, levels, alpha=0.5, cmap=cmap, norm=norm, transform=ccrs.PlateCarree())
+ax.contourf(
+    lons, lats, dataset["asnow"].values * 39.3700787, levels,
+    alpha=0.5, cmap=cmap, norm=norm, transform=ccrs.PlateCarree()
+)
 plt.show()
