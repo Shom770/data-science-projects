@@ -4,12 +4,15 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+import matplotlib.cm as cm
 import numpy as np
+from scipy.ndimage import zoom
 
 from historical_hrrr import historical_hrrr_snow
 from nohrsc_plotting import nohrsc_snow
 
 DIFF = 0.2
+ZOOM_LEVEL = 3
 extent = (-79.05, -76.02, 37.585112, 39.56)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 lons_extent = extent[:2]
@@ -23,14 +26,6 @@ ax.set_extent(extent)
 ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"))
-
-levels = [0, 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 30, 36, 48, 60, 72]
-cmap = colors.ListedColormap([
-    '#bdd7e7', '#6baed6', '#3182bd', '#08519c', '#082694', '#ffff96',
-    '#ffc400', '#ff8700', '#db1400', '#9e0000', '#690000', '#ccccff',
-    '#9f8cd8', '#7c52a5', '#561c72', '#40dfff'
-])
-norm = colors.BoundaryNorm(levels, cmap.N)
 
 lons_n, lats_n, snow_n, date = nohrsc_snow(extent_lim)
 coords = historical_hrrr_snow(date, extent_lim)
@@ -50,6 +45,20 @@ for lat in lats_n:
             snow_h[-1].append(coords[closest])
 
 snow_h = np.array(snow_h)
+diff_snow = snow_h - snow_n
+diff_snow[np.isnan(diff_snow)] = 0
+diff_snow = zoom(diff_snow, ZOOM_LEVELgit)
 
-ax.contourf(lons_n, lats_n, snow_h - snow_n, cmap="coolwarm", alpha=0.5, transform=ccrs.PlateCarree())
+diff_snow[np.where(diff_snow >= 4.75)] = 4.75
+diff_snow[np.where(diff_snow < -5)] = -5
+
+levels = np.arange(-5, 5, 0.25)
+cmap = cm.get_cmap("coolwarm")
+norm = colors.BoundaryNorm(levels, cmap.N)
+
+C = ax.contourf(
+    zoom(lons_n, ZOOM_LEVEL), zoom(lats_n, ZOOM_LEVEL), diff_snow, levels,
+    cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+)
+fig.colorbar(C, extend="max")
 plt.show()
