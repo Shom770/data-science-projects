@@ -45,6 +45,9 @@ def historical_hrrr_snow(data_time, extent):
 
     for y, (lon_row, lat_row) in enumerate(zip(lons - 359.99, lats)):
         for x, (lon, lat) in enumerate(zip(lon_row, lat_row)):
-            coords[(round(lon, 2), round(lat, 2))] = dataset["asnow"].values[y, x] * 39.3700787
+            try:
+                coords[(round(lon, 2), round(lat, 2))] = dataset["asnow"].values[y, x] * 39.3700787
+            except KeyError:
+                coords[(round(lon, 2), round(lat, 2))] = dataset["sdwe"].values[y, x] * 0.039370 * 10
 
     return dict(sorted(coords.items()))

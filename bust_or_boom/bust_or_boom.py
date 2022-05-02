@@ -56,6 +56,7 @@ for lat in lats_n:
             snow_h[-1].append(coords[closest])
 
 snow_h = np.array(snow_h)
+
 diff_snow = snow_n - snow_h
 diff_snow[np.isnan(diff_snow)] = 0
 diff_snow = gaussian_filter(diff_snow, ZOOM_LEVEL)
