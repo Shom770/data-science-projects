@@ -1,5 +1,7 @@
 import bisect
+import math
 from datetime import timedelta
+
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib
@@ -61,7 +63,15 @@ diff_snow = gaussian_filter(diff_snow, ZOOM_LEVEL)
 diff_snow[np.where(diff_snow >= 4.75)] = 4.75
 diff_snow[np.where(diff_snow < -5)] = -5
 
-levels = np.arange(-5, 5, 0.25)
+if diff_snow.max() < 4.75 and diff_snow.min() > -5:
+    abs_min, abs_max = abs(diff_snow.min()), abs(diff_snow.max())
+    if abs_min > abs_max:
+        levels = np.arange(math.floor(diff_snow.min()), -math.floor(diff_snow.min()), 0.25)
+    else:
+        levels = np.arange(-math.ceil(diff_snow.max()), math.ceil(diff_snow.max()), 0.25)
+else:
+    levels = np.arange(-5, 5, 0.25)
+
 cmap = cm.get_cmap("coolwarm_r")
 norm = colors.BoundaryNorm(levels, cmap.N)
 
