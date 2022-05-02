@@ -76,10 +76,25 @@ else:
 cmap = cm.get_cmap("coolwarm_r")
 norm = colors.BoundaryNorm(levels, cmap.N)
 
+# These colormaps are used for debugging to see individual snow
+levels_s = [0.1, 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 30, 36, 48, 60, 72]
+cmap_s = colors.ListedColormap(
+    [
+        '#bdd7e7', '#6baed6', '#3182bd', '#08519c', '#082694', '#ffff96',
+        '#ffc400', '#ff8700', '#db1400', '#9e0000', '#690000', '#ccccff',
+        '#9f8cd8', '#7c52a5', '#561c72', '#40dfff'
+    ]
+)
+norm_s = colors.BoundaryNorm(levels_s, cmap_s.N)
+
 C = ax.contourf(
     gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow, levels,
     cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 )
+# C = ax.contourf(
+#     lons_n, lats_n, snow_h, levels_s,
+#     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+# )
 fig.colorbar(
     C,
     label="Difference Between Total Snow and Forecasted Snow (in.)",
