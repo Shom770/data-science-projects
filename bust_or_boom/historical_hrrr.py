@@ -12,7 +12,7 @@ def historical_hrrr_snow(data_time, extent):
     data_time = data_time - timedelta(hours=24)
     zulu = "00" if data_time.hour == 0 else "12"
     BUCKET_NAME = 'noaa-hrrr-bdp-pds'
-    S3_OBJECT = f"hrrr.{data_time.strftime('%Y%m%d')}/conus/hrrr.t{zulu}z.wrfsfcf{'15' if zulu == '12' else 24}.grib2"
+    S3_OBJECT = f"hrrr.{data_time.strftime('%Y%m%d')}/conus/hrrr.t{zulu}z.wrfsfcf{15 if zulu == '12' else 24}.grib2"
 
     FILE_PATH = S3_OBJECT.split("/")[-1].replace("hrrr", data_time.strftime('%Y%m%d'))
 
