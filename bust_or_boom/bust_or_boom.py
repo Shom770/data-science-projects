@@ -1,4 +1,5 @@
 import bisect
+from datetime import timedelta
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
@@ -9,6 +10,7 @@ import matplotlib.cm as cm
 import matplotlib.font_manager as font_manager
 import numpy as np
 from scipy.ndimage import zoom
+from matplotlib.offsetbox import AnchoredText
 
 from historical_hrrr import historical_hrrr_snow
 from nohrsc_plotting import nohrsc_snow
@@ -73,6 +75,13 @@ fig.colorbar(
     label="Difference Between Total Snow and Forecasted Snow (in.)",
     extend="max"
 )
-ax.set_title(f"Bust or Boom?: {date.strftime('%B %d, %Y')}")
-ax.annotate("Made by @AtlanticWx")
+ax.set_title(f"Bust or Boom?: {(date - timedelta(hours=24)).strftime('%B %d, %Y')}", fontweight="bold")
+ax.add_artist(
+    AnchoredText(
+        "Made by @AtlanticWx",
+        loc="lower right",
+        prop={"size": 10},
+        frameon=True
+    )
+)
 plt.show()
