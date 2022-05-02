@@ -8,7 +8,7 @@ import matplotlib.colors as colors
 import matplotlib.cm as cm
 import matplotlib.font_manager as font_manager
 import numpy as np
-from scipy.ndimage import zoom
+from scipy.ndimage.filters import gaussian_filter
 from matplotlib.offsetbox import AnchoredText
 
 from historical_hrrr import historical_hrrr_snow
@@ -21,7 +21,7 @@ for font in font_manager.findSystemFonts(["."]):
 matplotlib.rcParams['font.family'] = 'Inter'
 
 DIFF = 0.2
-ZOOM_LEVEL = 5
+ZOOM_LEVEL = 0.75
 extent = (-79.05, -76.02, 37.585112, 39.56)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 lons_extent = extent[:2]
@@ -56,7 +56,7 @@ for lat in lats_n:
 snow_h = np.array(snow_h)
 diff_snow = snow_n - snow_h
 diff_snow[np.isnan(diff_snow)] = 0
-diff_snow = zoom(diff_snow, ZOOM_LEVEL)
+diff_snow = gaussian_filter(diff_snow, ZOOM_LEVEL)
 
 diff_snow[np.where(diff_snow >= 4.75)] = 4.75
 diff_snow[np.where(diff_snow < -5)] = -5
@@ -66,7 +66,7 @@ cmap = cm.get_cmap("coolwarm_r")
 norm = colors.BoundaryNorm(levels, cmap.N)
 
 C = ax.contourf(
-    zoom(lons_n, ZOOM_LEVEL), zoom(lats_n, ZOOM_LEVEL), diff_snow, levels,
+    gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow, levels,
     cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 )
 fig.colorbar(
