@@ -1,16 +1,15 @@
-import math
+import bisect
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
-import numpy as np
 
 from historical_hrrr import historical_hrrr_snow
 from nohrsc_plotting import nohrsc_snow
 
-DIFF = 0.1
-extent = (-79.05, -76.02, 37.585112, 39.6)
+DIFF = 0.2
+extent = (-79.05, -76.02, 37.585112, 39.56)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 lons_extent = extent[:2]
 lats_extent = extent[2:]
@@ -33,4 +32,22 @@ cmap = colors.ListedColormap([
 norm = colors.BoundaryNorm(levels, cmap.N)
 
 lons_n, lats_n, snow_n, date = nohrsc_snow(extent_lim)
-lons_h, lats_h, snow_h = historical_hrrr_snow(date, extent_lim)
+coords = historical_hrrr_snow(date, extent_lim)
+
+snow_h = []
+all_keys = [*coords.keys()]
+
+for lat in lats_n:
+    snow_h.append([])
+    lat = round(lat, 2)
+    for lon in lons_n:
+        lon = round(lon, 2)
+        try:
+            snow_h[-1].append(coords[(lon, lat)])
+        except KeyError:
+            closest = all_keys[bisect.bisect_left(all_keys, (lon, lat))]
+            snow_h[-1].append(coords[closest])
+
+
+ax.contourf(lons_n, lats_n, snow_h, levels, cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree())
+plt.show()

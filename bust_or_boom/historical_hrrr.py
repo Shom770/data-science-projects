@@ -30,10 +30,9 @@ def historical_hrrr_snow(data_time, extent):
     dataset = xarray.open_dataset(
         FILE_PATH,
         engine="cfgrib",
-        filter_by_keys={'stepType': 'instant', 'typeOfLevel': 'surface'},
+        filter_by_keys={'stepType': 'accum', 'typeOfLevel': 'surface'},
         decode_times=False
     )
-    print(dataset.variables)
 
     mask_lon = (dataset.longitude - 359.99 >= min_lon) & (dataset.longitude - 360 <= max_lon)
     mask_lat = (dataset.latitude >= min_lat) & (dataset.latitude <= max_lat)
@@ -41,5 +40,10 @@ def historical_hrrr_snow(data_time, extent):
     dataset = dataset.where(mask_lon & mask_lat, drop=True)
     lons = dataset["longitude"].values
     lats = dataset["latitude"].values
+    coords = {}
 
-    return lons - 359.99, lats, dataset["asnow"].values * 39.3700787
+    for y, (lon_row, lat_row) in enumerate(zip(lons - 359.99, lats)):
+        for x, (lon, lat) in enumerate(zip(lon_row, lat_row)):
+            coords[(round(lon, 2), round(lat, 2))] = dataset["asnow"].values[y, x] * 39.3700787
+
+    return dict(sorted(coords.items()))
