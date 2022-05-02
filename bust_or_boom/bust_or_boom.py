@@ -4,6 +4,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+import numpy as np
 
 from historical_hrrr import historical_hrrr_snow
 from nohrsc_plotting import nohrsc_snow
@@ -48,6 +49,7 @@ for lat in lats_n:
             closest = all_keys[bisect.bisect_left(all_keys, (lon, lat))]
             snow_h[-1].append(coords[closest])
 
+snow_h = np.array(snow_h)
 
-ax.contourf(lons_n, lats_n, snow_h, levels, cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree())
+ax.contourf(lons_n, lats_n, snow_h - snow_n, cmap="coolwarm", alpha=0.5, transform=ccrs.PlateCarree())
 plt.show()

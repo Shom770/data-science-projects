@@ -13,7 +13,7 @@ def historical_hrrr_snow(data_time, extent):
     BUCKET_NAME = 'noaa-hrrr-bdp-pds'
     S3_OBJECT = f"hrrr.{data_time.strftime('%Y%m%d')}/conus/hrrr.t00z.wrfsfcf24.grib2"
 
-    FILE_PATH = S3_OBJECT.split("/")[-1]
+    FILE_PATH = S3_OBJECT.split("/")[-1].replace("hrrr", data_time.strftime('%Y%m%d'))
 
     if not os.path.exists(FILE_PATH):
         directory = next(os.walk("./"))
