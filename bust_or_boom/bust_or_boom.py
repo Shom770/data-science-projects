@@ -1,6 +1,5 @@
 import bisect
 from datetime import timedelta
-
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib
