@@ -12,7 +12,7 @@ def historical_nbm_snow(data_time, extent, go_back=24):
     data_time = data_time - timedelta(hours=go_back)
     BUCKET_NAME = 'noaa-nbm-grib2-pds'
     S3_OBJECT = f"blend.{data_time.strftime('%Y%m%d')}/00/grib2/blend.t00z.master.f{str(go_back).zfill(3)}.co.grib2"
-    print(S3_OBJECT)
+    ALT_S3_OBJECT = f"blend.{data_time.strftime('%Y%m%d')}/00/core/blend.t00z.core.f{str(go_back).zfill(3)}.co.grib2"
 
     FILE_PATH = S3_OBJECT.split("/")[-1].replace("blend", data_time.strftime('%Y%m%d'))
 
@@ -23,7 +23,10 @@ def historical_nbm_snow(data_time, extent, go_back=24):
                 os.remove(file_name)
 
         s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
-        obj = s3.get_object(Bucket=BUCKET_NAME, Key=S3_OBJECT)['Body'].read()
+        try:
+            obj = s3.get_object(Bucket=BUCKET_NAME, Key=S3_OBJECT)['Body'].read()
+        except:
+            obj = s3.get_object(Bucket=BUCKET_NAME, Key=ALT_S3_OBJECT)['Body'].read()
 
         with open(FILE_PATH, "wb") as file:
             file.write(obj)
