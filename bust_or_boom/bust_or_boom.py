@@ -1,6 +1,6 @@
 import bisect
 import math
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
@@ -39,7 +39,7 @@ ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"))
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
-coords = historical_hrrr_snow(date, extent_lim)
+coords = historical_hrrr_snow(date, extent_lim, not_zulu=False)
 
 snow_h = []
 all_keys = [*coords.keys()]
@@ -92,7 +92,7 @@ C = ax.contourf(
     cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 )
 # C = ax.contourf(
-#     lons_n, lats_n, snow_n, levels_s,
+#     lons_n, lats_n, snow_h, levels_s,
 #     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 # )
 fig.colorbar(

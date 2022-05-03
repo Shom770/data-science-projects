@@ -5,7 +5,7 @@ import os
 import xarray
 
 
-DATA_TIME = datetime.datetime(year=2022, month=1, day=8)
+DATA_TIME = datetime.datetime(year=2016, month=1, day=23, hour=12)
 GO_BACK = 24
 FILE_PATH = f"{DATA_TIME.strftime('%Y%m%d%H')}.nc"
 URL = (

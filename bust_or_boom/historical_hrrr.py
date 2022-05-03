@@ -7,12 +7,12 @@ from botocore.config import Config
 import xarray
 
 
-def historical_hrrr_snow(data_time, extent):
+def historical_hrrr_snow(data_time, extent, not_zulu=True):
     min_lon, max_lon, min_lat, max_lat = extent
     data_time = data_time - timedelta(hours=24)
-    zulu = "00" if data_time.hour == 0 else "12"
+    zulu = "00" if data_time.hour == 0 else ("12" if not_zulu else str((data_time - timedelta(hours=15)).hour).zfill(2))
     BUCKET_NAME = 'noaa-hrrr-bdp-pds'
-    S3_OBJECT = f"hrrr.{data_time.strftime('%Y%m%d')}/conus/hrrr.t{zulu}z.wrfsfcf{15 if zulu == '12' else 24}.grib2"
+    S3_OBJECT = f"hrrr.{data_time.strftime('%Y%m%d')}/conus/hrrr.t{zulu}z.wrfsfcf{15 if zulu != '00' else 24}.grib2"
 
     FILE_PATH = S3_OBJECT.split("/")[-1].replace("hrrr", data_time.strftime('%Y%m%d'))
 
