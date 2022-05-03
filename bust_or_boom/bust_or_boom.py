@@ -39,7 +39,7 @@ ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"))
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
-coords = historical_hrrr_snow(date, extent_lim, goes_out=12, occ=2)
+coords = historical_hrrr_snow(date, extent_lim, accum_time, goes_out=12, occ=4)
 
 snow_h = []
 all_keys = [*coords.keys()]
@@ -92,7 +92,7 @@ C = ax.contourf(
     cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 )
 # C = ax.contourf(
-#     lons_n, lats_n, snow_n, levels_s,
+#     lons_n, lats_n, snow_h, levels_s,
 #     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 # )
 fig.colorbar(
@@ -100,7 +100,10 @@ fig.colorbar(
     label="Difference Between Total Snow and Forecasted Snow (in.)",
     extend="max"
 )
-ax.set_title(f"Bust or Boom?: {(date - timedelta(hours=24)).strftime('%B %d, %Y')}", fontweight="bold")
+ax.set_title(
+    f"Bust or Boom?: from {(date - timedelta(hours=accum_time)).strftime('%B %d, %Y')} to {date.strftime('%B %d, %Y')}",
+    fontweight="bold"
+)
 ax.add_artist(
     AnchoredText(
         "Made by @AtlanticWx",

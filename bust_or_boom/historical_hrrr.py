@@ -8,10 +8,11 @@ from botocore.config import Config
 import xarray
 
 
-def historical_hrrr_snow(data_time, extent, occ=1, goes_out=24):
+def historical_hrrr_snow(data_time, extent, go_back, occ=1, goes_out=24):
     min_lon, max_lon, min_lat, max_lat = extent
-    data_time = data_time - timedelta(hours=24)
+    data_time = data_time - timedelta(hours=go_back)
     BUCKET_NAME = 'noaa-hrrr-bdp-pds'
+    coords = defaultdict(float)
     for _ in range(occ):
         zulu = data_time.hour
         hours = goes_out
@@ -46,7 +47,6 @@ def historical_hrrr_snow(data_time, extent, occ=1, goes_out=24):
         dataset = dataset.where(mask_lon & mask_lat, drop=True)
         lons = dataset["longitude"].values
         lats = dataset["latitude"].values
-        coords = defaultdict(float)
 
         for y, (lon_row, lat_row) in enumerate(zip(lons - 359.99, lats)):
             for x, (lon, lat) in enumerate(zip(lon_row, lat_row)):
