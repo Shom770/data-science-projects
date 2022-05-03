@@ -14,7 +14,6 @@ from scipy.ndimage.filters import gaussian_filter
 from matplotlib.offsetbox import AnchoredText
 
 from historical_hrrr import historical_hrrr_snow
-from historical_nbm import historical_nbm_snow
 from nohrsc_plotting import nohrsc_snow
 
 for font in font_manager.findSystemFonts(["."]):
@@ -40,10 +39,7 @@ ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"))
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
-if date >= datetime(year=2020, month=5, day=18):
-    coords = historical_nbm_snow(date, extent_lim, go_back=accum_time)
-else:
-    coords = historical_hrrr_snow(date, extent_lim)
+coords = historical_hrrr_snow(date, extent_lim)
 
 snow_h = []
 all_keys = [*coords.keys()]
@@ -96,7 +92,7 @@ C = ax.contourf(
     cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 )
 # C = ax.contourf(
-#     lons_n, lats_n, snow_h, levels_s,
+#     lons_n, lats_n, snow_n, levels_s,
 #     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 # )
 fig.colorbar(
