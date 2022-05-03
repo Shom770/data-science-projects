@@ -5,11 +5,12 @@ import os
 import xarray
 
 
-DATA_TIME = datetime.datetime(year=2021, month=2, day=13)
+DATA_TIME = datetime.datetime(year=2022, month=1, day=8)
+GO_BACK = 24
 FILE_PATH = f"{DATA_TIME.strftime('%Y%m%d%H')}.nc"
 URL = (
         f"http://www.nohrsc.noaa.gov/snowfall_v2/data/"
-        f"{DATA_TIME.strftime('%Y%m')}/sfav2_CONUS_24h_{DATA_TIME.strftime('%Y%m%d%H')}.nc"
+        f"{DATA_TIME.strftime('%Y%m')}/sfav2_CONUS_{GO_BACK}h_{DATA_TIME.strftime('%Y%m%d%H')}.nc"
 )
 
 if not os.path.exists(FILE_PATH):
@@ -36,4 +37,4 @@ def nohrsc_snow(extent):
     lats = snow_data.lat.values
     lons = snow_data.lon.values
 
-    return lons, lats, snow_data.values, DATA_TIME
+    return lons, lats, snow_data.values, DATA_TIME, GO_BACK
