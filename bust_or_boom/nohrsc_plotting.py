@@ -6,7 +6,7 @@ import xarray
 
 
 DATA_TIME = datetime.datetime(year=2022, month=1, day=8)
-GO_BACK = 24
+GO_BACK = 48
 FILE_PATH = f"{DATA_TIME.strftime('%Y%m%d%H')}.nc"
 URL = (
         f"http://www.nohrsc.noaa.gov/snowfall_v2/data/"

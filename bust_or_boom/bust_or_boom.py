@@ -25,7 +25,7 @@ matplotlib.rcParams['font.family'] = 'Inter'
 
 DIFF = 0.2
 ZOOM_LEVEL = 1
-extent = (-75.9814453125,-69.5654296875, 38.86697874644268,42.91771501488716)
+extent = (-79.05, -76.02, 37.585112, 39.56)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 lons_extent = extent[:2]
 lats_extent = extent[2:]
@@ -40,7 +40,7 @@ ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"))
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
-coords = historical_hrrr_snow(date, extent_lim, accum_time, goes_out=24)
+coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=24, occ=2)
 
 snow_h = []
 lons_to_lats = defaultdict(list)
@@ -95,14 +95,14 @@ cmap_s = colors.ListedColormap(
 )
 norm_s = colors.BoundaryNorm(levels_s, cmap_s.N)
 
-C = ax.contourf(
-    gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow, levels,
-    cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
-)
 # C = ax.contourf(
-#     lons_n, lats_n, snow_h, levels_s,
-#     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+#     gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow, levels,
+#     cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 # )
+C = ax.contourf(
+    lons_n, lats_n, snow_n, levels_s,
+    cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+)
 fig.colorbar(
     C,
     label="Difference Between Total Snow and Forecasted Snow (in.)",
