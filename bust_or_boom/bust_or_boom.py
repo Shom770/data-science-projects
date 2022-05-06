@@ -16,6 +16,7 @@ from scipy.ndimage.filters import gaussian_filter
 from matplotlib.offsetbox import AnchoredText
 
 from historical_hrrr import historical_hrrr_snow
+from historical_ndfd import historical_ndfd_snow
 from nohrsc_plotting import nohrsc_snow
 
 for font in font_manager.findSystemFonts(["."]):
@@ -42,7 +43,10 @@ ax.add_feature(cfeature.STATES.with_scale("50m"))
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
 if date > datetime.datetime(year=2020, day=15, month=4):
-    coords = historical
+    coords = historical_ndfd_snow(date, extent_lim, accum_time, goes_out=24)
+else:
+    coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=24, occ=2)
+
 coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=24, occ=2)
 
 snow_h = []
