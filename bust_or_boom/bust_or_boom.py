@@ -25,7 +25,7 @@ matplotlib.rcParams['font.family'] = 'Inter'
 
 DIFF = 0.2
 ZOOM_LEVEL = 1
-extent = (-79.05, -66.72, 37.585112, 47.76)
+extent = (-104.875488, -94.592285, 39.317300, 43.628123)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 lons_extent = extent[:2]
 lats_extent = extent[2:]
@@ -40,14 +40,10 @@ ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25)
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
-coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=24, occ=3)
+coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=24, occ=2)
 
 snow_h = []
-lons_to_lats = defaultdict(list)
-for tup in coords.keys():
-    lons_to_lats[tup[0]].append(tup[1])
-
-lons = [*lons_to_lats.keys()]
+all_keys = [*coords.keys()]
 
 
 for idx, lat in enumerate(lats_n):
@@ -58,10 +54,11 @@ for idx, lat in enumerate(lats_n):
         try:
             snow_h[-1].append(coords[(lon, lat)])
         except KeyError:
-            closest_lon = lons[bisect.bisect_left(lons, lon)]
-            corres_lats = lons_to_lats[closest_lon]
-            closest_lat = corres_lats[bisect.bisect_left(corres_lats, lat) - 1]
+            closest_lon, closest_lat = all_keys[
+                bisect.bisect_left((lon, lat), key=lambda tup: (abs(tup[0] - lon) ** 2 + abs(tup[1] - lat)) ** 2) ** 0.5
+            ]
             snow_h[-1].append(coords[(closest_lon, closest_lat)])
+    print("finished :)")
 
 snow_h = np.array(snow_h)
 

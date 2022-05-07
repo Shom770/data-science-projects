@@ -13,6 +13,7 @@ def historical_hrrr_snow(data_time, extent, go_back, lat_regrid, lon_regrid, occ
     data_time = data_time - timedelta(hours=go_back)
     BUCKET_NAME = 'noaa-hrrr-bdp-pds'
     coords = defaultdict(float)
+
     for _ in range(occ):
         zulu = data_time.hour
         hours = goes_out
