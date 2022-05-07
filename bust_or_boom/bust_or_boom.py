@@ -40,7 +40,7 @@ ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25)
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
-coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=12, occ=2)
+coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=12, occ=4)
 
 all_keys = [*coords.keys()]
 
