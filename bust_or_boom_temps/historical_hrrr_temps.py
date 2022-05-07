@@ -1,5 +1,5 @@
+import os
 from datetime import timedelta
-from io import StringIO
 
 import boto3
 from botocore import UNSIGNED
@@ -7,7 +7,7 @@ from botocore.config import Config
 import xarray
 
 
-def historical_hrrr_temps(data_time, layer="1000mb", go_back=12):
+def historical_hrrr_snow(data_time, layer="1000mb", go_back=12):
     prev_time = data_time - timedelta(hours=go_back)
     BUCKET_NAME = 'noaa-hrrr-bdp-pds'
 
@@ -16,26 +16,35 @@ def historical_hrrr_temps(data_time, layer="1000mb", go_back=12):
         f"hrrr.{prev_time.strftime('%Y%m%d')}/conus/hrrr.t{str(zulu).zfill(2)}z.wrfsfcf"
         f"{go_back}.grib2"
     )
-    INIT_S3 = f"hrrr.{data_time.strftime('%Y%m%d')}/conus/hrrr.t{str(zulu).zfill(2)}z.wrfsfcf00.grib2"
+    INIT_OBJ = f"hrrr.{prev_time.strftime('%Y%m%d')}/conus/hrrr.t{str(zulu).zfill(2)}z.wrfsfcf00.grib2"
+    FILE_PATH = S3_OBJECT.split("/")[-1].replace("hrrr", data_time.strftime('%Y%m%d'))
+    CUR_FP = INIT_OBJ.split("/")[-1].replace("hrrr", data_time.strftime('%Y%m%d'))
 
-    s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
-    obj = StringIO(s3.get_object(Bucket=BUCKET_NAME, Key=S3_OBJECT)['Body'].read())
-    cur_obj = StringIO(s3.get_object(Bucket=BUCKET_NAME, Key=INIT_S3)['Body'].read())
+    if not os.path.exists(FILE_PATH) or not os.path.exists(CUR_FP):
+        directory = next(os.walk("./"))
+        for file_name in directory[-1]:
+            if file_name.endswith(".grib2") or file_name.endswith(".idx"):
+                os.remove(file_name)
+
+        s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
+        obj = s3.get_object(Bucket=BUCKET_NAME, Key=S3_OBJECT)['Body'].read()
+        cur_obj = s3.get_object(Bucket=BUCKET_NAME, Key=INIT_OBJ)['Body'].read()
+        with open(FILE_PATH, "wb") as file:
+            file.write(obj)
+
+        with open(CUR_FP, "wb") as cur_file:
+            cur_file.write(cur_obj)
 
     dataset = xarray.open_dataset(
-        obj,
+        FILE_PATH,
         engine="cfgrib",
         filter_by_keys={'stepType': 'instant', 'typeOfLevel': 'surface'},
         decode_times=False
     )
     cur_dataset = xarray.open_dataset(
-        cur_obj,
+        CUR_FP,
         engine="cfgrib",
         filter_by_keys={'stepType': 'instant', 'typeOfLevel': 'surface'},
         decode_times=False
     )
-
-    lons = dataset["longitude"].values
-    lats = dataset["latitude"].values
-
     print(dataset.variables)
