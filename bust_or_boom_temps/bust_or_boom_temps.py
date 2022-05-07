@@ -56,9 +56,21 @@ fig.colorbar(
     extend="max",
     aspect=3
 )
-ax.set_title(
+plt.suptitle(
     f"Bust or Boom?: {layer} Temps",
+    fontsize=14,
+    ha="left",
+    x=0.1529,
+    y=0.96,
     fontweight="bold"
+)
+plt.title(
+    (
+        f"{layer} Temps during {data_time.strftime('%Hz on %m/%d/%Y')} vs "
+        f"Forecasted {layer} Temps from {prev_time.strftime('%Hz HRRR (%m/%d/%Y)')}"
+    ),
+    fontsize=10,
+    loc="left"
 )
 ax.add_artist(
     AnchoredText(
