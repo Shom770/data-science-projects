@@ -7,16 +7,15 @@ from botocore.config import Config
 import xarray
 
 
-def historical_hrrr_snow(data_time, layer="1000mb", go_back=12):
+def historical_hrrr_temps(data_time, layer="1000mb", go_back=12):
     prev_time = data_time - timedelta(hours=go_back)
     BUCKET_NAME = 'noaa-hrrr-bdp-pds'
 
-    zulu = data_time.hour
     S3_OBJECT = (
-        f"hrrr.{prev_time.strftime('%Y%m%d')}/conus/hrrr.t{str(zulu).zfill(2)}z.wrfsfcf"
+        f"hrrr.{prev_time.strftime('%Y%m%d')}/conus/hrrr.t{str(prev_time.hour).zfill(2)}z.wrfsfcf"
         f"{go_back}.grib2"
     )
-    INIT_OBJ = f"hrrr.{prev_time.strftime('%Y%m%d')}/conus/hrrr.t{str(zulu).zfill(2)}z.wrfsfcf00.grib2"
+    INIT_OBJ = f"hrrr.{data_time.strftime('%Y%m%d')}/conus/hrrr.t{str(data_time.hour).zfill(2)}z.wrfsfcf00.grib2"
     FILE_PATH = S3_OBJECT.split("/")[-1].replace("hrrr", data_time.strftime('%Y%m%d'))
     CUR_FP = INIT_OBJ.split("/")[-1].replace("hrrr", data_time.strftime('%Y%m%d'))
 
@@ -47,4 +46,7 @@ def historical_hrrr_snow(data_time, layer="1000mb", go_back=12):
         filter_by_keys={'stepType': 'instant', 'typeOfLevel': 'surface'},
         decode_times=False
     )
-    print(dataset.variables)
+    temp_before = dataset["t"].values - 273.15 * 1.8 + 32
+    temp_now = cur_dataset["t"].values - 273.15 * 1.8 + 32
+
+    return dataset.longitude - 359.99, dataset.latitude, temp_now - temp_before
