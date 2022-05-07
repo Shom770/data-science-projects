@@ -30,11 +30,14 @@ ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25)
 
-data_time = datetime.datetime(2021, 2, 18)
-go_back = 12
-layer = "1000mb"
+data_time = datetime.datetime(2021, 2, 18, hour=12)
+go_back = 24
+layer = "850mb"
 prev_time = data_time - datetime.timedelta(hours=go_back)
 lons, lats, temp_contour = historical_hrrr_temps(data_time=data_time, go_back=go_back, layer=layer)
+
+temp_contour[np.where(temp_contour > 4.75)] = 4.75
+temp_contour[np.where(temp_contour < -5)] = -5
 
 levels = np.arange(-5, 5, 0.25)
 
@@ -48,8 +51,7 @@ C = ax.contourf(
 fig.colorbar(
     C,
     label=(
-        f"Difference between {data_time.strftime('%Hz HRRR (%m/%d/%Y)')} Temps "
-        f"and {prev_time.strftime('%Hz HRRR (%m/%d/%Y)')} Temps (F)"
+        f"Difference Between Actual and Forecasted {layer} Temperatures (F)"
     ),
     extend="max",
     aspect=3

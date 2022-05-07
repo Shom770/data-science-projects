@@ -16,7 +16,7 @@ def historical_hrrr_temps(data_time, layer="1000mb", go_back=12):
         f"{go_back}.grib2"
     )
     INIT_OBJ = f"hrrr.{data_time.strftime('%Y%m%d')}/conus/hrrr.t{str(data_time.hour).zfill(2)}z.wrfsfcf00.grib2"
-    FILE_PATH = S3_OBJECT.split("/")[-1].replace("hrrr", data_time.strftime('%Y%m%d'))
+    FILE_PATH = S3_OBJECT.split("/")[-1].replace("hrrr", prev_time.strftime('%Y%m%d'))
     CUR_FP = INIT_OBJ.split("/")[-1].replace("hrrr", data_time.strftime('%Y%m%d'))
 
     if not os.path.exists(FILE_PATH) or not os.path.exists(CUR_FP):
@@ -34,19 +34,25 @@ def historical_hrrr_temps(data_time, layer="1000mb", go_back=12):
         with open(CUR_FP, "wb") as cur_file:
             cur_file.write(cur_obj)
 
+    keys_to_filter = {
+        'stepType': 'instant',
+        'typeOfLevel': 'isobaricInhPa',
+        'shortName': 't'
+    }
     dataset = xarray.open_dataset(
         FILE_PATH,
         engine="cfgrib",
-        filter_by_keys={'stepType': 'instant', 'typeOfLevel': 'surface'},
+        filter_by_keys=keys_to_filter,
         decode_times=False
     )
     cur_dataset = xarray.open_dataset(
         CUR_FP,
         engine="cfgrib",
-        filter_by_keys={'stepType': 'instant', 'typeOfLevel': 'surface'},
+        filter_by_keys=keys_to_filter,
         decode_times=False
     )
-    temp_before = dataset["t"].values - 273.15 * 1.8 + 32
-    temp_now = cur_dataset["t"].values - 273.15 * 1.8 + 32
+    layers_to_indices = {"1000mb": 0, "925mb": 1, "850mb": 2, "700mb": 3, "500mb": 4}
+    temp_before = dataset["t"][layers_to_indices[layer]].values - 273.15 * 1.8 + 32
+    temp_now = cur_dataset["t"][layers_to_indices[layer]].values - 273.15 * 1.8 + 32
 
     return dataset.longitude - 359.99, dataset.latitude, temp_now - temp_before
