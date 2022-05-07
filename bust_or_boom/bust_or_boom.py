@@ -1,6 +1,6 @@
 import bisect
 import math
-from collections import defaultdict
+import operator
 from datetime import timedelta
 
 import cartopy.crs as ccrs
@@ -25,7 +25,7 @@ matplotlib.rcParams['font.family'] = 'Inter'
 
 DIFF = 0.2
 ZOOM_LEVEL = 1
-extent = (-104.875488, -94.592285, 39.317300, 43.628123)
+extent = (-79.05, -76.02, 37.585112, 39.56)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 lons_extent = extent[:2]
 lats_extent = extent[2:]
@@ -40,28 +40,44 @@ ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25)
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
-coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=24, occ=2)
+coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=12, occ=2)
 
-snow_h = []
 all_keys = [*coords.keys()]
 
 
-for idx, lat in enumerate(lats_n):
-    snow_h.append([])
-    lat = round(lat, 2)
-    for lon in lons_n:
-        lon = round(lon, 2)
-        try:
-            snow_h[-1].append(coords[(lon, lat)])
-        except KeyError:
-            closest_lon, closest_lat = all_keys[
-                bisect.bisect_left((lon, lat), key=lambda tup: (abs(tup[0] - lon) ** 2 + abs(tup[1] - lat)) ** 2) ** 0.5
-            ]
-            snow_h[-1].append(coords[(closest_lon, closest_lat)])
-    print("finished :)")
+def distance(tup, lon_, lat_):
+    return (abs(tup[0] - lon_) ** 2 + abs(tup[1] - lat_) ** 2) ** 0.5
 
-snow_h = np.array(snow_h)
 
+def regrid_hrrr(midwest=False, target=0.25):
+    snow_h = []
+
+    for lat in lats_n:
+        snow_h.append([])
+        lat = round(lat, 2)
+        for lon in lons_n:
+            lon = round(lon, 2)
+            try:
+                snow_h[-1].append(coords[(lon, lat)])
+            except KeyError:
+                if midwest:
+                    idx = bisect.bisect_left(all_keys, (lon, lat))
+                    dists = ((distance(tup, lon, lat), tup) for tup in all_keys[idx:])
+
+                    for dist in dists:
+                        if dist[0] <= target:
+                            closest = dist[1]
+                            break
+                else:
+                    closest = all_keys[bisect.bisect_left(all_keys, (lon, lat))]
+
+                snow_h[-1].append(coords[closest])
+
+    snow_h = np.array(snow_h)
+    return snow_h
+
+
+snow_h = regrid_hrrr()
 diff_snow = snow_n - snow_h
 diff_snow[np.isnan(diff_snow)] = 0
 diff_snow = gaussian_filter(diff_snow, ZOOM_LEVEL)
