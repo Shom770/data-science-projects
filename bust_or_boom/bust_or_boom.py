@@ -40,7 +40,7 @@ ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25)
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
-coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=12, occ=4)
+coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=24, occ=2)
 
 all_keys = [*coords.keys()]
 
@@ -49,7 +49,7 @@ def distance(tup, lon_, lat_):
     return (abs(tup[0] - lon_) ** 2 + abs(tup[1] - lat_) ** 2) ** 0.5
 
 
-def regrid_hrrr(midwest=False, target=0.25):
+def regrid_hrrr(use_closest=False, target=0.25):
     snow_h = []
 
     for lat in lats_n:
@@ -60,7 +60,7 @@ def regrid_hrrr(midwest=False, target=0.25):
             try:
                 snow_h[-1].append(coords[(lon, lat)])
             except KeyError:
-                if midwest:
+                if use_closest:
                     idx = bisect.bisect_left(all_keys, (lon, lat))
                     dists = ((distance(tup, lon, lat), tup) for tup in all_keys[idx:])
 
@@ -77,7 +77,7 @@ def regrid_hrrr(midwest=False, target=0.25):
     return snow_h
 
 
-snow_h = regrid_hrrr()
+snow_h = regrid_hrrr(use_closest=True, target=0.5)
 diff_snow = snow_n - snow_h
 diff_snow[np.isnan(diff_snow)] = 0
 diff_snow = gaussian_filter(diff_snow, ZOOM_LEVEL)
@@ -113,7 +113,7 @@ C = ax.contourf(
     cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 )
 # C = ax.contourf(
-#     lons_n, lats_n, snow_n, levels_s,
+#     lons_n, lats_n, snow_h, levels_s,
 #     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 # )
 fig.colorbar(
