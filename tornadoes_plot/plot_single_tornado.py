@@ -4,6 +4,7 @@ from shapefile import Reader
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
+from metpy.plots import USCOUNTIES
 
 # Constants
 EF_COLORS = {
@@ -29,10 +30,10 @@ info_needed = [
 # Setting up CartoPy plot
 
 extent = (
-    min(info_needed, key=itemgetter("lon"))["lon"] + PADDING,
+    min(info_needed, key=itemgetter("lon"))["lon"] - PADDING,
     max(info_needed, key=itemgetter("lon"))["lon"] + PADDING,
-    min(info_needed, key=itemgetter("lat"))["lat"] + PADDING,
-    max(info_needed, key=itemgetter("lon"))["lat"] + PADDING
+    min(info_needed, key=itemgetter("lat"))["lat"] - PADDING,
+    max(info_needed, key=itemgetter("lat"))["lat"] + PADDING
 )
 
 fig: plt.Figure = plt.figure(figsize=(12, 6))
@@ -42,7 +43,7 @@ ax.set_extent(extent)
 
 ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"))
-ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25)
+ax.add_feature(USCOUNTIES.with_scale("10m"), lw=1.25)
 
 # Plotting it onto the map
 
