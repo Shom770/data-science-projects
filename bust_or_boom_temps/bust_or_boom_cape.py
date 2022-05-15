@@ -24,15 +24,15 @@ ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25)
 
-data_time = datetime.datetime.now()
+data_time = datetime.datetime.today().replace(hour=18)
 go_back = 24
 prev_time = data_time - datetime.timedelta(hours=go_back)
 lons, lats, cape_contour = historical_hrrr_cape(data_time=data_time, go_back=go_back)
 
-cape_contour[np.where(cape_contour > 500)] = 500
 cape_contour[np.where(cape_contour < -500)] = -500
+cape_contour[np.where(cape_contour) > 500] = 500
 
-levels = np.arange(-500, 501, 1)
+levels = np.arange(-500, 501, 5)
 
 cmap = cm.get_cmap("coolwarm")
 norm = colors.BoundaryNorm(levels, cmap.N)
