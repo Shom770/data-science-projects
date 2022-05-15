@@ -7,10 +7,12 @@ import matplotlib.colors as colors
 import matplotlib.cm as cm
 import numpy as np
 from matplotlib.offsetbox import AnchoredText
+from scipy.ndimage.filters import gaussian_filter
 
 from historical_hrrr_cape import historical_hrrr_cape
 
 
+SIGMA = 0.8
 DIFF = 0.2
 extent = (-79.05, -76.02, 37.585112, 39.56)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
@@ -41,7 +43,7 @@ cmap = cm.get_cmap("coolwarm")
 norm = colors.BoundaryNorm(levels, cmap.N)
 
 C = ax.contourf(
-    lons, lats, cape_contour, levels,
+    gaussian_filter(lons, SIGMA), gaussian_filter(lats, SIGMA), gaussian_filter(cape_contour, SIGMA), levels,
     cmap=cmap, norm=norm, alpha=0.5, antialiased=True, transform=ccrs.PlateCarree()
 )
 fig.colorbar(
