@@ -29,10 +29,10 @@ go_back = 24
 prev_time = data_time - datetime.timedelta(hours=go_back)
 lons, lats, cape_contour = historical_hrrr_cape(data_time=data_time, go_back=go_back)
 
-cape_contour[np.where(cape_contour < -500)] = -500
-cape_contour[np.where(cape_contour) > 500] = 500
+levels = np.arange(-1000, 1001, 10)
 
-levels = np.arange(-500, 501, 5)
+cape_contour[np.where(cape_contour >= levels.max())] = levels.max() - 1
+cape_contour[np.where(cape_contour < levels.min())] = levels.min() - 1
 
 cmap = cm.get_cmap("coolwarm")
 norm = colors.BoundaryNorm(levels, cmap.N)
