@@ -7,7 +7,8 @@ from botocore.config import Config
 import xarray
 
 
-def historical_hrrr_cape(data_time, go_back=12):
+def historical_hrrr_cape(data_time, extent_lim, go_back=12):
+    min_lon, max_lon, min_lat, max_lat = extent_lim
     prev_time = data_time - timedelta(hours=go_back)
     BUCKET_NAME = 'noaa-hrrr-bdp-pds'
 
@@ -50,5 +51,12 @@ def historical_hrrr_cape(data_time, go_back=12):
         filter_by_keys=keys_to_filter,
         decode_times=False
     )
+    mask_lon_d = (dataset.longitude - 359.99 >= min_lon) & (dataset.longitude - 360 <= max_lon)
+    mask_lat_d = (dataset.latitude >= min_lat) & (dataset.latitude <= max_lat)
+    mask_lon_cd = (cur_dataset.longitude - 359.99 >= min_lon) & (cur_dataset.longitude - 360 <= max_lon)
+    mask_lat_cd = (cur_dataset.latitude >= min_lat) & (cur_dataset.latitude <= max_lat)
 
-    return dataset.longitude - 359.99, dataset.latitude, cur_dataset["cape"] - dataset["cape"]
+    dataset = dataset.where(mask_lon_d & mask_lat_d, drop=True)
+    cur_dataset = cur_dataset.where(mask_lon_cd & mask_lat_cd, drop=True)
+
+    return dataset.longitude - 359.99, dataset.latitude, cur_dataset["cape"].values - dataset["cape"].values
