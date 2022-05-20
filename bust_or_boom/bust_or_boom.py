@@ -40,7 +40,7 @@ ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25)
 
-print(get_cities(extent, DIFF, 30000))
+print(get_cities(extent))
 # lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
 # coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=24, occ=2)
 #
