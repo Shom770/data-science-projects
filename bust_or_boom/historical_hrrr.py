@@ -8,7 +8,7 @@ from botocore.config import Config
 import xarray
 
 
-def historical_hrrr_snow(data_time, extent, go_back, lat_regrid, lon_regrid, occ=1, goes_out=24):
+def historical_hrrr_snow(data_time, extent, go_back, occ=1, goes_out=24):
     min_lon, max_lon, min_lat, max_lat = extent
     data_time = data_time - timedelta(hours=go_back)
     BUCKET_NAME = 'noaa-hrrr-bdp-pds'

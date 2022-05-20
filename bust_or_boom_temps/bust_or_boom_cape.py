@@ -29,7 +29,7 @@ ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"), zorder=100)
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25, zorder=200)
 
-data_time = datetime.datetime.today().replace(hour=18)
+data_time = datetime.datetime(2022, 5, 16, 18)
 go_back = 24
 prev_time = data_time - datetime.timedelta(hours=go_back)
 lons, lats, cape_contour = historical_hrrr_cape(data_time=data_time, go_back=go_back, extent_lim=extent_lim)

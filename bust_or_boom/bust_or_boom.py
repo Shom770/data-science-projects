@@ -16,6 +16,7 @@ from matplotlib.offsetbox import AnchoredText
 
 from historical_hrrr import historical_hrrr_snow
 from nohrsc_plotting import nohrsc_snow
+from plot_cities import get_cities
 
 for font in font_manager.findSystemFonts(["."]):
     font_manager.fontManager.addfont(font)
@@ -39,98 +40,99 @@ ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25)
 
-lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
-coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=24, occ=2)
-
-all_keys = [*coords.keys()]
-
-
-def distance(tup, lon_, lat_):
-    return (abs(tup[0] - lon_) ** 2 + abs(tup[1] - lat_) ** 2) ** 0.5
-
-
-def regrid_hrrr(use_closest=False, target=0.25):
-    snow_h = []
-
-    for lat in lats_n:
-        snow_h.append([])
-        lat = round(lat, 2)
-        for lon in lons_n:
-            lon = round(lon, 2)
-            try:
-                snow_h[-1].append(coords[(lon, lat)])
-            except KeyError:
-                if use_closest:
-                    idx = bisect.bisect_left(all_keys, (lon, lat))
-                    dists = ((distance(tup, lon, lat), tup) for tup in all_keys[idx:])
-
-                    for dist in dists:
-                        if dist[0] <= target:
-                            closest = dist[1]
-                            break
-                else:
-                    closest = all_keys[bisect.bisect_left(all_keys, (lon, lat))]
-
-                snow_h[-1].append(coords[closest])
-
-    snow_h = np.array(snow_h)
-    return snow_h
-
-
-snow_h = regrid_hrrr(use_closest=True, target=0.5)
-diff_snow = snow_n - snow_h
-diff_snow[np.isnan(diff_snow)] = 0
-diff_snow = gaussian_filter(diff_snow, ZOOM_LEVEL)
-
-diff_snow[np.where(diff_snow >= 4.75)] = 4.75
-diff_snow[np.where(diff_snow < -5)] = -5
-
-if diff_snow.max() < 4.75 and diff_snow.min() > -5:
-    abs_min, abs_max = abs(diff_snow.min()), abs(diff_snow.max())
-    if abs_min > abs_max:
-        levels = np.arange(math.floor(diff_snow.min()), -math.floor(diff_snow.min()), 0.25)
-    else:
-        levels = np.arange(-math.ceil(diff_snow.max()), math.ceil(diff_snow.max()), 0.25)
-else:
-    levels = np.arange(-5, 5, 0.25)
-
-cmap = cm.get_cmap("coolwarm_r")
-norm = colors.BoundaryNorm(levels, cmap.N)
-
-# These colormaps are used for debugging to see individual snow
-levels_s = [0.1, 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 30, 36, 48, 60, 72]
-cmap_s = colors.ListedColormap(
-    [
-        '#bdd7e7', '#6baed6', '#3182bd', '#08519c', '#082694', '#ffff96',
-        '#ffc400', '#ff8700', '#db1400', '#9e0000', '#690000', '#ccccff',
-        '#9f8cd8', '#7c52a5', '#561c72', '#40dfff'
-    ]
-)
-norm_s = colors.BoundaryNorm(levels_s, cmap_s.N)
-
-C = ax.contourf(
-    gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow, levels,
-    cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
-)
-# C = ax.contourf(
-#     lons_n, lats_n, snow_h, levels_s,
-#     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+print(get_cities(extent, DIFF, 30000))
+# lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
+# coords = historical_hrrr_snow(date, extent_lim, accum_time, lats_n, lons_n, goes_out=24, occ=2)
+#
+# all_keys = [*coords.keys()]
+#
+#
+# def distance(tup, lon_, lat_):
+#     return (abs(tup[0] - lon_) ** 2 + abs(tup[1] - lat_) ** 2) ** 0.5
+#
+#
+# def regrid_hrrr(use_closest=False, target=0.25):
+#     snow_h = []
+#
+#     for lat in lats_n:
+#         snow_h.append([])
+#         lat = round(lat, 2)
+#         for lon in lons_n:
+#             lon = round(lon, 2)
+#             try:
+#                 snow_h[-1].append(coords[(lon, lat)])
+#             except KeyError:
+#                 if use_closest:
+#                     idx = bisect.bisect_left(all_keys, (lon, lat))
+#                     dists = ((distance(tup, lon, lat), tup) for tup in all_keys[idx:])
+#
+#                     for dist in dists:
+#                         if dist[0] <= target:
+#                             closest = dist[1]
+#                             break
+#                 else:
+#                     closest = all_keys[bisect.bisect_left(all_keys, (lon, lat))]
+#
+#                 snow_h[-1].append(coords[closest])
+#
+#     snow_h = np.array(snow_h)
+#     return snow_h
+#
+#
+# snow_h = regrid_hrrr(use_closest=True, target=0.5)
+# diff_snow = snow_n - snow_h
+# diff_snow[np.isnan(diff_snow)] = 0
+# diff_snow = gaussian_filter(diff_snow, ZOOM_LEVEL)
+#
+# diff_snow[np.where(diff_snow >= 4.75)] = 4.75
+# diff_snow[np.where(diff_snow < -5)] = -5
+#
+# if diff_snow.max() < 4.75 and diff_snow.min() > -5:
+#     abs_min, abs_max = abs(diff_snow.min()), abs(diff_snow.max())
+#     if abs_min > abs_max:
+#         levels = np.arange(math.floor(diff_snow.min()), -math.floor(diff_snow.min()), 0.25)
+#     else:
+#         levels = np.arange(-math.ceil(diff_snow.max()), math.ceil(diff_snow.max()), 0.25)
+# else:
+#     levels = np.arange(-5, 5, 0.25)
+#
+# cmap = cm.get_cmap("coolwarm_r")
+# norm = colors.BoundaryNorm(levels, cmap.N)
+#
+# # These colormaps are used for debugging to see individual snow
+# levels_s = [0.1, 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 30, 36, 48, 60, 72]
+# cmap_s = colors.ListedColormap(
+#     [
+#         '#bdd7e7', '#6baed6', '#3182bd', '#08519c', '#082694', '#ffff96',
+#         '#ffc400', '#ff8700', '#db1400', '#9e0000', '#690000', '#ccccff',
+#         '#9f8cd8', '#7c52a5', '#561c72', '#40dfff'
+#     ]
 # )
-fig.colorbar(
-    C,
-    label="Difference Between Total Snow and Forecasted Snow (in.)",
-    extend="max"
-)
-ax.set_title(
-    f"Bust or Boom?: from {(date - timedelta(hours=accum_time)).strftime('%B %d, %Y')} to {date.strftime('%B %d, %Y')}",
-    fontweight="bold"
-)
-ax.add_artist(
-    AnchoredText(
-        "Made by @AtlanticWx",
-        loc="lower right",
-        prop={"size": 10},
-        frameon=True
-    )
-)
-plt.show()
+# norm_s = colors.BoundaryNorm(levels_s, cmap_s.N)
+#
+# C = ax.contourf(
+#     gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow, levels,
+#     cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+# )
+# # C = ax.contourf(
+# #     lons_n, lats_n, snow_h, levels_s,
+# #     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+# # )
+# fig.colorbar(
+#     C,
+#     label="Difference Between Total Snow and Forecasted Snow (in.)",
+#     extend="max"
+# )
+# ax.set_title(
+#     f"Bust or Boom?: from {(date - timedelta(hours=accum_time)).strftime('%B %d, %Y')} to {date.strftime('%B %d, %Y')}",
+#     fontweight="bold"
+# )
+# ax.add_artist(
+#     AnchoredText(
+#         "Made by @AtlanticWx",
+#         loc="lower right",
+#         prop={"size": 10},
+#         frameon=True
+#     )
+# )
+# plt.show()
