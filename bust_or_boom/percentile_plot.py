@@ -1,4 +1,6 @@
+import bisect
 import datetime
+from operator import itemgetter
 
 import requests
 import cartopy.crs as ccrs
@@ -45,7 +47,7 @@ stations = [stn for stn in session.get(
 all_dps = [
     (
         get_station_data(station["sids"][0], elements=(Elements.SNOW,), start_date=START_DATE, end_date=END_DATE),
-        station["ll"],
+        tuple(station["ll"]),
         station["name"]
     )
     for station in stations
@@ -56,6 +58,22 @@ all_dps = [
         res := dp[0].filter(condition=lambda cond: cond.snow >= 0.1, combine_similar=True)
     )
 ]
+
+for y, lat in enumerate(lats_n):
+    for x, lon in enumerate(lons_n):
+        closest_airport = all_dps[bisect.bisect_left(all_dps, (lon, lat), key=itemgetter(1))]
+        print((lon, lat), closest_airport[-1])
+        all_events = sorted(map(lambda data: data.snow, closest_airport[0].values()))
+        percentile = round(bisect.bisect_left(
+            all_events,
+            snow_n[y, x]
+        ) / len(all_events))
+        if percentile < 1:
+            percentile = 1
+        elif percentile > 99:
+            percentile = 99
+
+        snow_n[y, x] = percentile
 
 # Plot the result
 ax.add_artist(
