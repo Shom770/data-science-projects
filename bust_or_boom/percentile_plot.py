@@ -2,10 +2,13 @@ import bisect
 import datetime
 from operator import itemgetter
 
+import numpy as np
 import requests
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+import matplotlib.cm as cm
 from matplotlib.offsetbox import AnchoredText
 
 from plot_cities import get_cities
@@ -59,21 +62,39 @@ all_dps = [
     )
 ]
 
+latlng = [dp[1] for dp in all_dps]
+
 for y, lat in enumerate(lats_n):
     for x, lon in enumerate(lons_n):
-        closest_airport = all_dps[bisect.bisect_left(all_dps, (lon, lat), key=itemgetter(1))]
-        print((lon, lat), closest_airport[-1])
+        closest_airport = all_dps[min(
+            ((idx, (abs(lon - lon_o) ** 2 + abs(lat - lat_o)) ** 0.5) for idx, (lon_o, lat_o) in enumerate(latlng)),
+            key=itemgetter(1)
+        )[0]]
         all_events = sorted(map(lambda data: data.snow, closest_airport[0].values()))
-        percentile = round(bisect.bisect_left(
+        percentile = round(round(bisect.bisect_left(
             all_events,
             snow_n[y, x]
-        ) / len(all_events))
+        )) / len(all_events) * 100)
         if percentile < 1:
             percentile = 1
         elif percentile > 99:
             percentile = 99
 
         snow_n[y, x] = percentile
+
+levels = np.arange(1, 100, 1)
+cmap = cm.get_cmap("coolwarm_r")
+norm = colors.BoundaryNorm(levels, cmap.N)
+
+C = ax.contourf(
+    lons_n, lats_n, snow_n, levels,
+    cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=True
+)
+fig.colorbar(
+    C,
+    label="Percentile of Storm Compared to All Storms",
+    extend="max"
+)
 
 # Plot the result
 ax.add_artist(
