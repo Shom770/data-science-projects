@@ -24,13 +24,14 @@ session = requests.session()
 
 def filter_datapoints(period, data):
     if MONTH:
-        return period.month == MONTH and data.snow >= 0.1
+        return period.month == MONTH and data.snow >= (MIN_SNOWFALL if MIN_SNOWFALL else 0.1)
     else:
-        return data.snow >= 0.1
+        return data.snow >= (MIN_SNOWFALL if MIN_SNOWFALL else 0.1)
 
 
 DIFF = 0.5
 SIGMA = 1
+MIN_SNOWFALL = None
 MONTH = None
 NUM_TO_MONTH = {
     1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
@@ -124,6 +125,7 @@ cmap_c = cm.get_cmap("viridis")
 norm = colors.BoundaryNorm(levels, cmap.N)
 norm_c = colors.BoundaryNorm(levels_c, cmap_c.N)
 month_name = NUM_TO_MONTH[MONTH] + " " if MONTH else ""
+over_in = f" (with over {MIN_SNOWFALL}\" of snow)"
 
 # Plot the result
 C = ax.contourf(
@@ -152,7 +154,7 @@ date_range = (
 )
 
 ax.set_title(
-    f"How does the {date_range} snowstorm compare to other {month_name}snowstorms?",
+    f"How does the {date_range} snowstorm compare to other {month_name}snowstorms{over_in if MIN_SNOWFALL else ''}?",
     fontsize=9,
     loc="left"
 )
