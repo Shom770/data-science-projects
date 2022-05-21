@@ -132,7 +132,7 @@ C = ax.contourf(
 )
 CS = ax.contour(
     gaussian_filter(lons_n, SIGMA), gaussian_filter(lats_n, SIGMA), gaussian_filter(snow_n, SIGMA),
-    levels=levels_c, cmap=cmap_c, norm=norm_c, transform=ccrs.PlateCarree()
+    levels=levels_c, cmap=cmap_c, norm=norm_c, transform=ccrs.PlateCarree(), zorder=500, alpha=0.75
 )
 ax.clabel(CS, levels_c, inline=True, fontsize=10)
 
