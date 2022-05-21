@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 
-def get_cities(extent, spacing_lat=0.3, spacing_long=0.3, min_pop=10000):
+def get_cities(extent, spacing_lat=0.3, spacing_long=0.3, min_pop=15000, min_distance=0.25):
     extent_lim = extent
     lon_spacing = np.arange(extent_lim[0], extent_lim[1], spacing_long)
     lat_spacing = np.arange(extent_lim[2], extent_lim[3], spacing_lat)
@@ -18,6 +18,7 @@ def get_cities(extent, spacing_lat=0.3, spacing_long=0.3, min_pop=10000):
     ]
 
     cities = []
+    filtered_cities = set()
 
     for slon, elon in zip(lon_spacing, lon_spacing[1:]):
         for slat, elat in zip(lat_spacing, lat_spacing[1:]):
@@ -38,4 +39,13 @@ def get_cities(extent, spacing_lat=0.3, spacing_long=0.3, min_pop=10000):
 
             cities.append((*largest_city["city"], (*largest_city["lng"], *largest_city["lat"])))
 
-    return cities
+    for city, (lon, lat) in cities:
+        if city in filtered_cities:
+            continue
+        for other_city, (lon_o, lat_o) in cities:
+            if city == other_city:
+                continue
+            elif not ((abs(lon - lon_o) ** 2 + abs(lat - lat_o) ** 2) ** 0.5 > min_distance):
+                filtered_cities.add((other_city, (lon_o, lat_o)))
+
+    return set(cities).difference(filtered_cities)
