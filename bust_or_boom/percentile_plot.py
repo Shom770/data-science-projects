@@ -6,6 +6,7 @@ import requests
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as patheffects
 import matplotlib.colors as colors
 import matplotlib.cm as cm
 import scipy.stats
@@ -15,6 +16,7 @@ from scipy.ndimage.filters import gaussian_filter
 from scipy.stats import norm
 
 from nohrsc_plotting import nohrsc_snow
+from plot_cities import get_cities
 from xmacis import Elements, get_station_data
 
 session = requests.session()
@@ -37,10 +39,13 @@ NUM_TO_MONTH = {
 }
 START_DATE = datetime.datetime(2010, 1, 1)
 END_DATE = datetime.datetime.today()
+OPP_DIFF = (0.2, 0.2)
 
 extent = (-79.05, -76.02, 37.585112, 39.56)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
+extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
+all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5)
 
 # Set up CartoPy
 fig: plt.Figure = plt.figure(figsize=(12, 6))
@@ -174,5 +179,14 @@ cbar = fig.colorbar(
     ticks=[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99]
 )
 cbar.ax.set_yticklabels(["1", "10", "20", "30", "40", "50", "60", "70", "80", "90", "99"])
+
+# Add all cities to map
+for city, (lon, lat) in all_cities:
+    txt = ax.text(
+        lon, lat, city,
+        fontdict={"size": 10, "color": "black", "fontweight": "bold"}, horizontalalignment="center",
+        verticalalignment="center", transform=ccrs.PlateCarree(), zorder=500
+    )
+    txt.set_path_effects([patheffects.withStroke(linewidth=1.5, foreground="white")])
 
 plt.show()

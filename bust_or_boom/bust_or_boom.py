@@ -140,10 +140,10 @@ C = ax.contourf(
 for city, (lon, lat) in all_cities:
     txt = ax.text(
         lon, lat, city,
-        fontdict={"size": 10, "color": "white"}, horizontalalignment="center",
+        fontdict={"size": 10, "color": "black"}, horizontalalignment="center",
         verticalalignment="center", transform=ccrs.PlateCarree(), zorder=350
     )
-    txt.set_path_effects([patheffects.withStroke(linewidth=2.5, foreground="black")])
+    txt.set_path_effects([patheffects.withStroke(linewidth=2, foreground="white")])
 
 fig.colorbar(
     C,
