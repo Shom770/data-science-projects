@@ -1,6 +1,5 @@
 import datetime
 from operator import itemgetter
-from statistics import NormalDist
 
 import numpy as np
 import requests
@@ -14,7 +13,6 @@ from matplotlib.offsetbox import AnchoredText
 from scipy.interpolate import NearestNDInterpolator
 from scipy.ndimage.filters import gaussian_filter
 from scipy.stats import norm
-from plot_cities import get_cities
 
 from nohrsc_plotting import nohrsc_snow
 from xmacis import Elements, get_station_data
@@ -52,7 +50,7 @@ ax.set_extent(extent)
 
 ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"), zorder=100)
-ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25, zorder=200)
+ax.add_feature(cfeature.STATES.with_scale("50m"), lw=2, zorder=200)
 
 # Get stations
 stations = [stn for stn in session.get(
