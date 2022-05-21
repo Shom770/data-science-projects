@@ -8,8 +8,8 @@ import xarray
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-DATA_TIME = datetime.datetime(year=2015, month=1, day=29, hour=12)
-GO_BACK = 72
+DATA_TIME = datetime.datetime(year=2022, month=1, day=8)
+GO_BACK = 48
 FILE_PATH = f"{DATA_TIME.strftime('%Y%m%d%H')}.nc"
 URL = (
         f"https://www.nohrsc.noaa.gov/snowfall_v2/data/"

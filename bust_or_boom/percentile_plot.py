@@ -1,6 +1,6 @@
-import bisect
 import datetime
 from operator import itemgetter
+from statistics import NormalDist
 
 import numpy as np
 import requests
@@ -10,7 +10,9 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cm
 from matplotlib.offsetbox import AnchoredText
+from scipy.interpolate import NearestNDInterpolator
 from scipy.ndimage.filters import gaussian_filter
+from scipy.stats import norm
 from plot_cities import get_cities
 
 from nohrsc_plotting import nohrsc_snow
@@ -36,7 +38,7 @@ NUM_TO_MONTH = {
 START_DATE = datetime.datetime(2010, 1, 1)
 END_DATE = datetime.datetime.today()
 
-extent = (-76.09130859375, -69.0380859375, 38.832754476016575, 42.98204654832571)
+extent = (-79.05, -76.02, 37.585112, 39.56)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
 
@@ -73,8 +75,7 @@ all_dps = [
     (tuple(sorted(map(lambda data: data.snow, res.values()))),) + dp[1:] for dp in all_dps if (
         res := dp[0].filter(condition=filter_datapoints, combine_similar=True)
     )
-]
-print(all_dps)
+]  
 
 latlng = [dp[1] for dp in all_dps]
 
@@ -86,20 +87,18 @@ for y, lat in enumerate(lats_n):
             key=itemgetter(1)
         )[0]]
         all_events = closest_airport[0]
-        if "dulles" in closest_airport[-1].lower():
-            print(len(event for event in all_events if event < 1), "- <1\"")
-            print(len(event for event in all_events if 1 <= event < 3), "- 1-3\"")
-            print(len(event for event in all_events if 3 <= event < 5), "- 3-5\"")
-            print(len(event for event in all_events if 5 <= event < 7), "- 5-7\"")
-            print(len(event for event in all_events if 7 <= event < 9), "- 7-9\"")
-            print(len(event for event in all_events if 9 <= event < 11), "- 9-11\"")
-            print(len(event for event in all_events if 11 <= event < 13), "- 11-13\"")
-            print(len(event for event in all_events if 13 <= event < 15), "- 13-15\"")
-            raise Exception
-        percentile = round(round(bisect.bisect_left(
-            all_events,
-            snow_n[y, x]
-        )) / len(all_events) * 100)
+        # Normalize by applying log function to every value
+        all_events = [*map(np.log, all_events)]
+        snow_log = np.log(snow_n[y, x])
+
+        # Standardize distribution
+        all_events_m, all_events_std = np.mean(all_events), np.std(all_events)
+        all_events = [(snow - all_events_m) / all_events_std for snow in all_events]
+
+        # Get z-score
+        z_score = (snow_log - np.mean(all_events))
+
+        percentile = (1 - norm.sf(z_score)) * 100
         if percentile < 1:
             percentile = 1
         elif percentile > 99:
@@ -115,6 +114,12 @@ norm = colors.BoundaryNorm(levels, cmap.N)
 norm_c = colors.BoundaryNorm(levels_c, cmap_c.N)
 month_name = NUM_TO_MONTH[MONTH] + " " if MONTH else ""
 
+# Mask numpy array to fill in NaN values
+mask = np.where(~np.isnan(snow_n))
+interp = NearestNDInterpolator(np.transpose(mask), snow_n[mask])
+snow_n = interp(*np.indices(snow_n.shape))
+
+# Plot the result
 C = ax.contourf(
     gaussian_filter(lons_n, SIGMA), gaussian_filter(lats_n, SIGMA), gaussian_filter(snow_n, SIGMA),
     levels=levels, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=False
@@ -125,7 +130,6 @@ CS = ax.contour(
 )
 ax.clabel(CS, levels_c, inline=True, fontsize=10)
 
-# Plot the result
 ax.add_artist(
     AnchoredText(
         "Made by @AtlanticWx",
@@ -145,8 +149,8 @@ plt.suptitle(
     f"Percentile of the {date_range} Snowstorm",
     fontsize=13,
     ha="left",
-    x=0.124,
-    y=0.94,
+    x=0.1529,
+    y=0.96,
     fontweight="bold"
 )
 plt.title(
