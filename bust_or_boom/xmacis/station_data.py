@@ -59,14 +59,20 @@ class DataPoints(UserDict):
         if not combine_similar:
             return DataPoints(filtered)
         else:
-            all_periods = []
+            all_periods = {}
             data_points = {}
 
             for (period, data), (next_period, next_data) in zip(filtered.items(), list(filtered.items())[1:]):
                 if (next_period - period).total_seconds() // 3600 > 24:
                     if not data_points:
                         data_points[period] = data
-                    all_periods.append(DataPoints(data_points))
+                    all_keys = list(data_points.keys())
+                    if all_keys[0] == all_keys[-1]:
+                        all_periods[all_keys[0]] = data_points[all_keys[0]]
+                    else:
+                        all_periods[(all_keys[0], all_keys[-1])] = _Data(
+                            snow=sum([dp.snow for dp in data_points.values()])
+                        )
                     data_points = {}
                 else:
                     data_points[period] = data
@@ -84,7 +90,11 @@ class _Data:
     def __init__(self, **kwargs):
         for element, value in kwargs.items():
             if value not in {"T", "M", "S"}:
-                setattr(self, element.lower(), literal_eval(value.replace("A", "")))
+                setattr(
+                    self,
+                    element.lower(),
+                    (literal_eval(value.replace("A", "")) if not isinstance(value, float) else value)
+                )
             else:
                 setattr(self, element.lower(), 0.01 if value == "T" else float("nan"))
 
