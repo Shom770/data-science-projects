@@ -107,7 +107,7 @@ for y, lat in enumerate(lats_n):
         snow_n[y, x] = percentile
 
 levels = np.arange(1, 100, 1)
-levels_c = [1, 25, 50, 75, 99]
+levels_c = [10, 25, 50, 75, 90]
 cmap = cm.get_cmap("coolwarm_r")
 cmap_c = cm.get_cmap("viridis")
 norm = colors.BoundaryNorm(levels, cmap.N)
@@ -125,7 +125,7 @@ C = ax.contourf(
     levels=levels, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=False
 )
 CS = ax.contour(
-    gaussian_filter(lons_n, 0.4), gaussian_filter(lats_n, 0.4), gaussian_filter(snow_n, 0.4),
+    gaussian_filter(lons_n, SIGMA), gaussian_filter(lats_n, SIGMA), gaussian_filter(snow_n, SIGMA),
     levels=levels_c, cmap=cmap_c, norm=norm_c, transform=ccrs.PlateCarree()
 )
 ax.clabel(CS, levels_c, inline=True, fontsize=10)
