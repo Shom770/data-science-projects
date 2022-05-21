@@ -45,7 +45,7 @@ extent = (-79.05, -76.02, 37.585112, 39.56)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
-all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5)
+all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5, min_pop=10000)
 
 # Set up CartoPy
 fig: plt.Figure = plt.figure(figsize=(12, 6))
@@ -116,13 +116,13 @@ for y, lat in enumerate(lats_n):
         percentile = (1 - norm.sf(z_score)) * 100
         if percentile < 1:
             percentile = 1
-        elif percentile > 99:
-            percentile = 99
+        elif percentile >= 100:
+            percentile = 99.99
 
         snow_n[y, x] = percentile
 
-levels = np.arange(1, 100, 1)
-levels_c = [10, 25, 50, 75, 90]
+levels = np.arange(1, 101, 1)
+levels_c = [10, 25, 50, 75, 90, 99]
 cmap = cm.get_cmap("coolwarm_r")
 cmap_c = cm.get_cmap("viridis")
 norm = colors.BoundaryNorm(levels, cmap.N)
