@@ -145,24 +145,26 @@ date_range = (
     f"to {date.strftime('%B %d, %Y')}"
 )
 
-plt.suptitle(
-    f"Percentile of the {date_range} Snowstorm",
-    fontsize=13,
-    ha="left",
-    x=0.1529,
-    y=0.96,
-    fontweight="bold"
-)
-plt.title(
+ax.set_title(
     f"How does the {date_range} snowstorm compare to other {month_name}snowstorms?",
     fontsize=9,
     loc="left"
 )
 
+plt.suptitle(
+    f"Percentile of the {date_range} Snowstorm",
+    fontsize=13,
+    ha="left",
+    va="bottom",
+    x=0,
+    y=1.05,
+    fontweight="bold",
+    transform=ax.transAxes
+)
+
 cbar = fig.colorbar(
     C,
     label=f"Percentile of Snowstorm Compared to Other {month_name}Snowstorms",
-    extend="max",
     ticks=[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99]
 )
 cbar.ax.set_yticklabels(["1", "10", "20", "30", "40", "50", "60", "70", "80", "90", "99"])
