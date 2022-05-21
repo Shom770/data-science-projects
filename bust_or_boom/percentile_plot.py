@@ -70,12 +70,14 @@ all_dps = [
 ]
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
 all_dps = [
-    (res,) + dp[1:] for dp in all_dps if (
+    (tuple(sorted(map(lambda data: data.snow, res.values()))),) + dp[1:] for dp in all_dps if (
         res := dp[0].filter(condition=filter_datapoints, combine_similar=True)
     )
 ]
+print(all_dps)
 
 latlng = [dp[1] for dp in all_dps]
+
 
 for y, lat in enumerate(lats_n):
     for x, lon in enumerate(lons_n):
@@ -83,7 +85,17 @@ for y, lat in enumerate(lats_n):
             ((idx, (abs(lon - lon_o) ** 2 + abs(lat - lat_o)) ** 0.5) for idx, (lon_o, lat_o) in enumerate(latlng)),
             key=itemgetter(1)
         )[0]]
-        all_events = sorted(map(lambda data: data.snow, closest_airport[0].values()))
+        all_events = closest_airport[0]
+        if "dulles" in closest_airport[-1].lower():
+            print(len(event for event in all_events if event < 1), "- <1\"")
+            print(len(event for event in all_events if 1 <= event < 3), "- 1-3\"")
+            print(len(event for event in all_events if 3 <= event < 5), "- 3-5\"")
+            print(len(event for event in all_events if 5 <= event < 7), "- 5-7\"")
+            print(len(event for event in all_events if 7 <= event < 9), "- 7-9\"")
+            print(len(event for event in all_events if 9 <= event < 11), "- 9-11\"")
+            print(len(event for event in all_events if 11 <= event < 13), "- 11-13\"")
+            print(len(event for event in all_events if 13 <= event < 15), "- 13-15\"")
+            raise Exception
         percentile = round(round(bisect.bisect_left(
             all_events,
             snow_n[y, x]
