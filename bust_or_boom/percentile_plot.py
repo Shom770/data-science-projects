@@ -41,7 +41,7 @@ START_DATE = datetime.datetime(2010, 1, 1)
 END_DATE = datetime.datetime.today()
 OPP_DIFF = (0.2, 0.2)
 
-extent = (-79.05, -76.02, 37.585112, 39.56)
+extent = (-91.439209,-87.253418,41.623655,43.365126)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
@@ -105,10 +105,12 @@ for y, lat in enumerate(lats_n):
         elif 0.5 <= skewness < 1:
             all_events = [*map(np.sqrt, all_events)]
             snow_log = np.sqrt(snow_n[y, x])
+        elif skewness == 0:
+            snow_log = snow_n[y, x]
 
         # Standardize distribution
         all_events_m, all_events_std = np.mean(all_events), np.std(all_events)
-        all_events = [(snow - all_events_m) / all_events_std for snow in all_events]
+        all_events = [(snow - all_events_m) / (all_events_std + 1e-200) for snow in all_events]
 
         # Get z-score
         z_score = (snow_log - np.mean(all_events))
