@@ -2,6 +2,7 @@ import datetime
 
 import requests
 
+from nohrsc_plotting import nohrsc_snow
 from xmacis import Elements, get_station_data
 
 session = requests.session()
@@ -32,8 +33,11 @@ all_dps = [
     )
     for station in stations
 ]
+lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
 all_dps = [
-    (res,) + dp[1:] for dp in all_dps if (res := dp[0].filter(condition=lambda cond: cond.snow >= 0.1)).data_points
+    (res,) + dp[1:] for dp in all_dps if (
+        res := dp[0].filter(condition=lambda cond: cond.snow >= 0.1, combine_similar=True)
+    )
 ]
 
-
+print(all_dps[0][0], all_dps[0][-1])

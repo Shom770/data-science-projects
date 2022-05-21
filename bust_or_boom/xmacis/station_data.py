@@ -50,53 +50,29 @@ class DataPoints(UserDict):
     def filter(
             self,
             condition: typing.Callable,
-            within: typing.Optional[int] = None,
-            min_periods: typing.Optional = None
+            combine_similar=False
     ) -> "DataPoints":
         """Filter through each data point in `self.data_points` with the condition provided (callable)"""
 
         filtered = {period: data for period, data in self.data_points.items() if condition(data)}
 
-        if not within:
+        if not combine_similar:
             return DataPoints(filtered)
         else:
             all_periods = []
             data_points = {}
-            difference_between_periods = 0
 
-            periods_meeting_condition = list(filtered.keys())
-
-            for idx, (period, data) in enumerate(filtered.items()):
-                # Skip the first period
-                if idx == 0:
-                    continue
-
-                previous_period = periods_meeting_condition[idx - 1]
-
-                # Ensure that the difference between two periods are within the range (within)
-                if (period - previous_period).total_seconds() // 86400 + difference_between_periods <= within:
-                    difference_between_periods += (period - previous_period).total_seconds() // 86400
-
-                    if previous_period not in data_points:
-                        data_points[previous_period] = filtered[previous_period]
-
-                    data_points[period] = data
-                else:
-                    # If data_points isn't empty and the range has been exceeded, add it to the list of periods
-                    if data_points:
-                        all_periods.append(DataPoints(data_points))
-                        data_points = {}
-
-                    difference_between_periods = 0
-            else:
-                # If the last period sufficed for the conditions, add it to the periods list
-                if data_points:
+            for (period, data), (next_period, next_data) in zip(filtered.items(), list(filtered.items())[1:]):
+                if (next_period - period).total_seconds() // 3600 > 24:
+                    if not data_points:
+                        data_points[period] = data
                     all_periods.append(DataPoints(data_points))
+                    data_points = {}
+                else:
+                    data_points[period] = data
+                    data_points[next_period] = next_data
 
-            if min_periods:
-                return [period for period in all_periods if len(period.data_points.keys()) >= min_periods]
-            else:
-                return all_periods
+            return all_periods
 
     def __repr__(self):
         return f"DataPoints({self.data_points})"
