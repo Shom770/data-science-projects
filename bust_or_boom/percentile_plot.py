@@ -9,6 +9,7 @@ import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cm
+import scipy.stats
 from matplotlib.offsetbox import AnchoredText
 from scipy.interpolate import NearestNDInterpolator
 from scipy.ndimage.filters import gaussian_filter
@@ -30,7 +31,7 @@ def filter_datapoints(period, data):
 
 DIFF = 0.5
 SIGMA = 1
-MONTH = None
+MONTH = 3
 NUM_TO_MONTH = {
     1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
     7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"
@@ -71,12 +72,16 @@ all_dps = [
     for station in stations
 ]
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
+# Mask numpy array to fill in NaN values
+mask = np.where(~np.isnan(snow_n))
+interp = NearestNDInterpolator(np.transpose(mask), snow_n[mask])
+snow_n = interp(*np.indices(snow_n.shape))
+
 all_dps = [
     (tuple(sorted(map(lambda data: data.snow, res.values()))),) + dp[1:] for dp in all_dps if (
         res := dp[0].filter(condition=filter_datapoints, combine_similar=True)
     )
-]  
-
+]
 latlng = [dp[1] for dp in all_dps]
 
 
@@ -87,9 +92,15 @@ for y, lat in enumerate(lats_n):
             key=itemgetter(1)
         )[0]]
         all_events = closest_airport[0]
+        skewness = scipy.stats.skew(closest_airport[0])
+
         # Normalize by applying log function to every value
-        all_events = [*map(np.log, all_events)]
-        snow_log = np.log(snow_n[y, x])
+        if skewness >= 1:
+            all_events = [*map(np.log, all_events)]
+            snow_log = np.log(snow_n[y, x])
+        elif 0.5 <= skewness < 1:
+            all_events = [*map(np.sqrt, all_events)]
+            snow_log = np.sqrt(snow_n[y, x])
 
         # Standardize distribution
         all_events_m, all_events_std = np.mean(all_events), np.std(all_events)
@@ -113,11 +124,6 @@ cmap_c = cm.get_cmap("viridis")
 norm = colors.BoundaryNorm(levels, cmap.N)
 norm_c = colors.BoundaryNorm(levels_c, cmap_c.N)
 month_name = NUM_TO_MONTH[MONTH] + " " if MONTH else ""
-
-# Mask numpy array to fill in NaN values
-mask = np.where(~np.isnan(snow_n))
-interp = NearestNDInterpolator(np.transpose(mask), snow_n[mask])
-snow_n = interp(*np.indices(snow_n.shape))
 
 # Plot the result
 C = ax.contourf(
