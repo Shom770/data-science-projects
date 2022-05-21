@@ -1,6 +1,12 @@
 import datetime
 
 import requests
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import matplotlib.pyplot as plt
+from matplotlib.offsetbox import AnchoredText
+
+from plot_cities import get_cities
 
 from nohrsc_plotting import nohrsc_snow
 from xmacis import Elements, get_station_data
@@ -16,6 +22,17 @@ extent = (-79.05, -76.02, 37.585112, 39.56)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
 
+# Set up CartoPy
+fig: plt.Figure = plt.figure(figsize=(12, 6))
+ax: plt.Axes = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
+
+ax.set_extent(extent)
+
+ax.add_feature(cfeature.LAND.with_scale("50m"))
+ax.add_feature(cfeature.OCEAN.with_scale("50m"), zorder=100)
+ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25, zorder=200)
+
+# Get stations
 stations = [stn for stn in session.get(
     f"http://data.rcc-acis.org/StnMeta", params={
         "bbox": ",".join(map(str, bbox_lim)),
@@ -40,4 +57,14 @@ all_dps = [
     )
 ]
 
-print(all_dps[0][0], all_dps[0][-1])
+# Plot the result
+ax.add_artist(
+    AnchoredText(
+        "Made by @AtlanticWx",
+        loc="lower right",
+        prop={"size": 10},
+        frameon=True,
+        zorder=300
+    )
+)
+plt.show()
