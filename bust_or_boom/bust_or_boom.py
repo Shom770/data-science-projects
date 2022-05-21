@@ -127,14 +127,14 @@ C = ax.contourf(
 #     lons_n, lats_n, snow_h, levels_s,
 #     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 # )
-CS = ax.contour(
-    gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow,
-    levels=levels_c, cmap=cmap_c, norm=norm_c, transform=ccrs.PlateCarree()
-)
-ax.clabel(
-    CS, levels_c,
-    fmt=lambda amt: f"{'-' if amt < 0 else ('+' if amt > 0 else '')}{amt:.0f}\"", inline=True, fontsize=10
-)
+# CS = ax.contour(
+#     gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow,
+#     levels=levels_c, cmap=cmap_c, norm=norm_c, transform=ccrs.PlateCarree()
+# )
+# ax.clabel(
+#     CS, levels_c,
+#     fmt=lambda amt: f"{'-' if amt < 0 else ('+' if amt > 0 else '')}{amt:.0f}\"", inline=True, fontsize=10
+# )
 
 # Add all cities to map
 for city, (lon, lat) in all_cities:
