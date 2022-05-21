@@ -100,8 +100,13 @@ if diff_snow.max() < 4.75 and diff_snow.min() > -5:
 else:
     levels = np.arange(-5, 5, 0.25)
 
+levels_c = np.arange(-5, 5.01, 1)
+
 cmap = cm.get_cmap("coolwarm_r")
+cmap_c = cm.get_cmap("viridis")
+
 norm = colors.BoundaryNorm(levels, cmap.N)
+norm_c = colors.BoundaryNorm(levels_c, cmap_c.N)
 
 # These colormaps are used for debugging to see individual snow
 levels_s = [0.1, 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 30, 36, 48, 60, 72]
@@ -116,12 +121,20 @@ norm_s = colors.BoundaryNorm(levels_s, cmap_s.N)
 
 C = ax.contourf(
     gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow, levels,
-    cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=True
+    cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=True, alpha=0.75
 )
 # C = ax.contourf(
 #     lons_n, lats_n, snow_h, levels_s,
 #     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 # )
+CS = ax.contour(
+    gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow,
+    levels=levels_c, cmap=cmap_c, norm=norm_c, transform=ccrs.PlateCarree()
+)
+ax.clabel(
+    CS, levels_c,
+    fmt=lambda amt: f"{'-' if amt < 0 else ('+' if amt > 0 else '')}{amt:.0f}\"", inline=True, fontsize=10
+)
 
 # Add all cities to map
 for city, (lon, lat) in all_cities:
