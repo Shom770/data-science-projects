@@ -21,14 +21,14 @@ session = requests.session()
 
 def filter_datapoints(period, data):
     if MONTH:
-        return period.month == MONTH and data >= 0.1
+        return period.month == MONTH and data.snow >= 0.1
     else:
-        return data >= 0.1
+        return data.snow >= 0.1
 
 
 DIFF = 0.5
 SIGMA = 1
-MONTH = None
+MONTH = 1
 NUM_TO_MONTH = {
     1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
     7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"
@@ -98,6 +98,7 @@ for y, lat in enumerate(lats_n):
 levels = np.arange(1, 100, 1)
 cmap = cm.get_cmap("coolwarm_r")
 norm = colors.BoundaryNorm(levels, cmap.N)
+month_name = NUM_TO_MONTH[MONTH] + " " if MONTH else ""
 
 C = ax.contourf(
     gaussian_filter(lons_n, SIGMA), gaussian_filter(lats_n, SIGMA), gaussian_filter(snow_n, SIGMA),
@@ -105,7 +106,7 @@ C = ax.contourf(
 )
 cbar = fig.colorbar(
     C,
-    label="Percentile of Snowstorm Compared to Other Snowstorms",
+    label=f"Percentile of Snowstorm Compared to Other {month_name}Snowstorms",
     extend="max",
     ticks=[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99]
 )
@@ -136,7 +137,7 @@ plt.suptitle(
     fontweight="bold"
 )
 plt.title(
-    f"How does the {date_range} snowstorm compare to other snowstorms?",
+    f"How does the {date_range} snowstorm compare to other {month_name}snowstorms?",
     fontsize=9,
     loc="left"
 )
