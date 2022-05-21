@@ -142,7 +142,7 @@ ax.add_artist(
         loc="lower right",
         prop={"size": 10},
         frameon=True,
-        zorder=300
+        zorder=600
     )
 )
 
