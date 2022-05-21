@@ -54,7 +54,7 @@ class DataPoints(UserDict):
     ) -> "DataPoints":
         """Filter through each data point in `self.data_points` with the condition provided (callable)"""
 
-        filtered = {period: data for period, data in self.data_points.items() if condition(data)}
+        filtered = {period: data for period, data in self.data_points.items() if condition(period, data)}
 
         if not combine_similar:
             return DataPoints(filtered)

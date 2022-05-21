@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cm
 from matplotlib.offsetbox import AnchoredText
-
+from scipy.ndimage.filters import gaussian_filter
 from plot_cities import get_cities
 
 from nohrsc_plotting import nohrsc_snow
@@ -19,7 +19,20 @@ from xmacis import Elements, get_station_data
 session = requests.session()
 
 
+def filter_datapoints(period, data):
+    if MONTH:
+        return period.month == MONTH and data >= 0.1
+    else:
+        return data >= 0.1
+
+
 DIFF = 0.5
+SIGMA = 1
+MONTH = None
+NUM_TO_MONTH = {
+    1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
+    7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"
+}
 START_DATE = datetime.datetime(2010, 1, 1)
 END_DATE = datetime.datetime.today()
 
@@ -58,7 +71,7 @@ all_dps = [
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
 all_dps = [
     (res,) + dp[1:] for dp in all_dps if (
-        res := dp[0].filter(condition=lambda cond: cond.snow >= 0.1, combine_similar=True)
+        res := dp[0].filter(condition=filter_datapoints, combine_similar=True)
     )
 ]
 
@@ -87,14 +100,16 @@ cmap = cm.get_cmap("coolwarm_r")
 norm = colors.BoundaryNorm(levels, cmap.N)
 
 C = ax.contourf(
-    lons_n, lats_n, snow_n, levels,
-    cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=True
+    gaussian_filter(lons_n, SIGMA), gaussian_filter(lats_n, SIGMA), gaussian_filter(snow_n, SIGMA),
+    levels=levels, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=False
 )
-fig.colorbar(
+cbar = fig.colorbar(
     C,
-    label="Percentile of Storm Compared to All Storms",
-    extend="max"
+    label="Percentile of Snowstorm Compared to Other Snowstorms",
+    extend="max",
+    ticks=[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99]
 )
+cbar.ax.set_yticklabels(["1", "10", "20", "30", "40", "50", "60", "70", "80", "90", "99"])
 
 # Plot the result
 ax.add_artist(
@@ -106,4 +121,24 @@ ax.add_artist(
         zorder=300
     )
 )
+
+date_range = (
+    f"{(date - datetime.timedelta(hours=accum_time)).strftime('%B %d, %Y')} "
+    f"to {date.strftime('%B %d, %Y')}"
+)
+
+plt.suptitle(
+    f"Percentile of the {date_range} Snowstorm",
+    fontsize=13,
+    ha="left",
+    x=0.1529,
+    y=0.96,
+    fontweight="bold"
+)
+plt.title(
+    f"How does the {date_range} snowstorm compare to other snowstorms?",
+    fontsize=9,
+    loc="left"
+)
+
 plt.show()
