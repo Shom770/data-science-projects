@@ -107,8 +107,8 @@ class _Data:
 
     def __init__(self, **kwargs):
         for element, value in kwargs.items():
-            if value != "T" and value != "M":
-                setattr(self, element.lower(), literal_eval(value))
+            if value not in {"T", "M", "S"}:
+                setattr(self, element.lower(), literal_eval(value.replace("A", "")))
             else:
                 setattr(self, element.lower(), 0.01 if value == "T" else float("nan"))
 
