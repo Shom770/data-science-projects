@@ -36,7 +36,7 @@ NUM_TO_MONTH = {
 START_DATE = datetime.datetime(2010, 1, 1)
 END_DATE = datetime.datetime.today()
 
-extent = (-79.05, -76.02, 37.585112, 39.56)
+extent = (-76.09130859375, -69.0380859375, 38.832754476016575, 42.98204654832571)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
 
@@ -96,21 +96,22 @@ for y, lat in enumerate(lats_n):
         snow_n[y, x] = percentile
 
 levels = np.arange(1, 100, 1)
+levels_c = [1, 25, 50, 75, 99]
 cmap = cm.get_cmap("coolwarm_r")
+cmap_c = cm.get_cmap("viridis")
 norm = colors.BoundaryNorm(levels, cmap.N)
+norm_c = colors.BoundaryNorm(levels_c, cmap_c.N)
 month_name = NUM_TO_MONTH[MONTH] + " " if MONTH else ""
 
 C = ax.contourf(
     gaussian_filter(lons_n, SIGMA), gaussian_filter(lats_n, SIGMA), gaussian_filter(snow_n, SIGMA),
     levels=levels, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=False
 )
-cbar = fig.colorbar(
-    C,
-    label=f"Percentile of Snowstorm Compared to Other {month_name}Snowstorms",
-    extend="max",
-    ticks=[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99]
+CS = ax.contour(
+    gaussian_filter(lons_n, 0.4), gaussian_filter(lats_n, 0.4), gaussian_filter(snow_n, 0.4),
+    levels=levels_c, cmap=cmap_c, norm=norm_c, transform=ccrs.PlateCarree()
 )
-cbar.ax.set_yticklabels(["1", "10", "20", "30", "40", "50", "60", "70", "80", "90", "99"])
+ax.clabel(CS, levels_c, inline=True, fontsize=10)
 
 # Plot the result
 ax.add_artist(
@@ -132,8 +133,8 @@ plt.suptitle(
     f"Percentile of the {date_range} Snowstorm",
     fontsize=13,
     ha="left",
-    x=0.1529,
-    y=0.96,
+    x=0.124,
+    y=0.94,
     fontweight="bold"
 )
 plt.title(
@@ -141,5 +142,13 @@ plt.title(
     fontsize=9,
     loc="left"
 )
+
+cbar = fig.colorbar(
+    C,
+    label=f"Percentile of Snowstorm Compared to Other {month_name}Snowstorms",
+    extend="max",
+    ticks=[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99]
+)
+cbar.ax.set_yticklabels(["1", "10", "20", "30", "40", "50", "60", "70", "80", "90", "99"])
 
 plt.show()
