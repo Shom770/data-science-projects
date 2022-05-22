@@ -33,7 +33,7 @@ DIFF = 0.5
 SIGMA = 1
 MIN_SNOWFALL = None
 MONTH = None
-LONLAT = (-89.3866, 43.07295)
+LONLAT = (-84.211466, 34.435523)
 GO_OUT_LONLAT = (3, 1.75)
 
 NUM_TO_MONTH = {
@@ -55,7 +55,7 @@ else:
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
-all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5, min_pop=20000)
+all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5, min_pop=20000, min_distance=0.5)
 
 # Set up CartoPy
 fig: plt.Figure = plt.figure(figsize=(12, 6))
@@ -65,6 +65,7 @@ ax.set_extent(extent)
 
 ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"), zorder=100)
+ax.add_feature(cfeature.LAKES.with_scale("50m"), zorder=150)
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=2, zorder=200)
 
 # Get stations

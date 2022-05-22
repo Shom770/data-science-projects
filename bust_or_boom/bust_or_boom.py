@@ -28,7 +28,18 @@ matplotlib.rcParams['font.family'] = 'Inter'
 DIFF = 0.2
 OPP_DIFF = (0.2, 0.2)
 ZOOM_LEVEL = 1
-extent = (-109.291992, -101.887207, 36.862043, 41.393294)
+
+LONLAT = (-89.3866, 43.07295)
+GO_OUT_LONLAT = (3, 1.75)
+
+if LONLAT:
+    extent = (
+        LONLAT[0] - GO_OUT_LONLAT[0], LONLAT[0] + GO_OUT_LONLAT[0],
+        LONLAT[1] - GO_OUT_LONLAT[1], LONLAT[1] + GO_OUT_LONLAT[1]
+    )
+else:
+    extent = (-109.291992, -101.887207, 36.862043, 41.393294)
+
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
 lons_extent = extent[:2]
@@ -119,14 +130,14 @@ cmap_s = colors.ListedColormap(
 )
 norm_s = colors.BoundaryNorm(levels_s, cmap_s.N)
 
-C = ax.contourf(
-    gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow, levels,
-    cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=True, alpha=0.75
-)
 # C = ax.contourf(
-#     lons_n, lats_n, snow_h, levels_s,
-#     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+#     gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow, levels,
+#     cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=True, alpha=0.75
 # )
+C = ax.contourf(
+    lons_n, lats_n, snow_n, levels_s,
+    cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+)
 # CS = ax.contour(
 #     gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow,
 #     levels=levels_c, cmap=cmap_c, norm=norm_c, transform=ccrs.PlateCarree()
