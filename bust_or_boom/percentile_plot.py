@@ -32,9 +32,9 @@ def filter_datapoints(period, data):
 DIFF = 0.5
 SIGMA = 1
 MIN_SNOWFALL = None
-MONTH = 5
+MONTH = None
 LONLAT = (-89.3866, 43.07295)
-GO_OUT_LONLAT = (2, 2)
+GO_OUT_LONLAT = (3, 1.75)
 
 NUM_TO_MONTH = {
     1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
@@ -51,10 +51,11 @@ if LONLAT:
     )
 else:
     extent = (-109.291992, -101.887207, 36.862043, 41.393294)
+
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
-all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5, min_pop=10000)
+all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5, min_pop=20000)
 
 # Set up CartoPy
 fig: plt.Figure = plt.figure(figsize=(12, 6))
