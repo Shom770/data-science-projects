@@ -32,7 +32,10 @@ def filter_datapoints(period, data):
 DIFF = 0.5
 SIGMA = 1
 MIN_SNOWFALL = None
-MONTH = None
+MONTH = 5
+LONLAT = (-89.3866, 43.07295)
+GO_OUT_LONLAT = (2, 2)
+
 NUM_TO_MONTH = {
     1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
     7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"
@@ -41,7 +44,13 @@ START_DATE = datetime.datetime(2010, 1, 1)
 END_DATE = datetime.datetime.today()
 OPP_DIFF = (0.2, 0.2)
 
-extent = (-91.439209,-87.253418,41.623655,43.365126)
+if LONLAT:
+    extent = (
+        LONLAT[0] - GO_OUT_LONLAT[0], LONLAT[0] + GO_OUT_LONLAT[0],
+        LONLAT[1] - GO_OUT_LONLAT[1], LONLAT[1] + GO_OUT_LONLAT[1]
+    )
+else:
+    extent = (-109.291992, -101.887207, 36.862043, 41.393294)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
@@ -67,14 +76,14 @@ stations = [stn for stn in session.get(
     }
 ).json()["meta"] if any(sid.endswith("3") for sid in stn["sids"])]
 
-all_dps = [
-    (
-        get_station_data(station["sids"][0], elements=(Elements.SNOW,), start_date=START_DATE, end_date=END_DATE),
-        tuple(station["ll"]),
-        station["name"]
+all_dps = []
+
+for station in stations:
+    stn_data = get_station_data(
+        station["sids"][0], elements=(Elements.SNOW,), start_date=START_DATE, end_date=END_DATE
     )
-    for station in stations
-]
+    all_dps.append((stn_data, tuple(station["ll"]), station["name"]))
+
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
 # Mask numpy array to fill in NaN values
 mask = np.where(~np.isnan(snow_n))
@@ -86,34 +95,39 @@ all_dps = [
         res := dp[0].filter(condition=filter_datapoints, combine_similar=True)
     )
 ]
+all_dps = [tup for tup in all_dps if len(set(tup[0])) > 1]
 latlng = [dp[1] for dp in all_dps]
 
 
 for y, lat in enumerate(lats_n):
     for x, lon in enumerate(lons_n):
+        if snow_n[y, x] == 0:
+            snow_n[y, x] = 1
+            continue
         closest_airport = all_dps[min(
             ((idx, (abs(lon - lon_o) ** 2 + abs(lat - lat_o)) ** 0.5) for idx, (lon_o, lat_o) in enumerate(latlng)),
             key=itemgetter(1)
         )[0]]
         all_events = closest_airport[0]
-        skewness = scipy.stats.skew(closest_airport[0])
-
-        # Normalize by applying log function to every value
-        if skewness >= 1:
-            all_events = [*map(np.log, all_events)]
+        all_skews = [
+            (0, [np.log(val) for val in all_events]),
+            (1, [np.sqrt(val) for val in all_events]),
+            (2, [1/val for val in all_events])
+        ]
+        lowest, all_events = min(all_skews, key=lambda x: abs(scipy.stats.skew(x[1])))
+        if lowest == 0:
             snow_log = np.log(snow_n[y, x])
-        elif 0.5 <= skewness < 1:
-            all_events = [*map(np.sqrt, all_events)]
+        elif lowest == 1:
             snow_log = np.sqrt(snow_n[y, x])
-        elif skewness == 0:
-            snow_log = snow_n[y, x]
+        else:
+            snow_log = 1 / snow_n[y, x]
 
         # Standardize distribution
         all_events_m, all_events_std = np.mean(all_events), np.std(all_events)
-        all_events = [(snow - all_events_m) / (all_events_std + 1e-200) for snow in all_events]
+        all_events = [(snow - all_events_m) / all_events_std for snow in all_events]
 
         # Get z-score
-        z_score = (snow_log - np.mean(all_events))
+        z_score = (snow_log - np.mean(all_events)) / np.std(all_events)
 
         percentile = (1 - norm.sf(z_score)) * 100
         if percentile < 1:
@@ -170,7 +184,7 @@ plt.suptitle(
     ha="left",
     va="bottom",
     x=0,
-    y=1.05,
+    y=1.06,
     fontweight="bold",
     transform=ax.transAxes
 )

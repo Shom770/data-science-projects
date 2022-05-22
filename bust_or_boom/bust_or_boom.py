@@ -28,7 +28,7 @@ matplotlib.rcParams['font.family'] = 'Inter'
 DIFF = 0.2
 OPP_DIFF = (0.2, 0.2)
 ZOOM_LEVEL = 1
-extent = (-79.05, -76.02, 37.585112, 39.56)
+extent = (-109.291992, -101.887207, 36.862043, 41.393294)
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
 lons_extent = extent[:2]
@@ -43,7 +43,7 @@ ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"), zorder=100)
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25, zorder=200)
 
-all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5)
+all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5, min_pop=10000)
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
 coords = historical_hrrr_snow(date, extent_lim, accum_time, goes_out=24, occ=2)
@@ -83,7 +83,7 @@ def regrid_hrrr(use_closest=False, target=0.25):
     return snow_h
 
 
-snow_h = regrid_hrrr(use_closest=True, target=0.5)
+snow_h = regrid_hrrr(use_closest=True, target=0.1)
 diff_snow = snow_n - snow_h
 diff_snow[np.isnan(diff_snow)] = 0
 diff_snow = gaussian_filter(diff_snow, ZOOM_LEVEL)

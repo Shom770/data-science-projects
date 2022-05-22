@@ -109,6 +109,9 @@ class _Data:
 
         return represent_instance.removesuffix(", ") + ")"
 
+    def __hash__(self):
+        return hash(self.snow)
+
 
 def get_station_data(
     station_id: str,
