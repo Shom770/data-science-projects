@@ -12,8 +12,9 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+DIFF = 0.25
 LONLAT = (-77.28, 39.14)
-GO_OUT_LONLAT = (3, 1.75)
+GO_OUT_LONLAT = (2.5, 1.5)
 DAY = datetime.datetime(2022, 5, 23, 20)
 
 if LONLAT:
@@ -30,27 +31,42 @@ ax: plt.Axes = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
 ax.set_extent(extent)
 
 ax.add_feature(cfeature.LAND.with_scale("10m"), zorder=100)
-ax.add_feature(cfeature.OCEAN.with_scale("10m"), zorder=300)
-ax.add_feature(cfeature.STATES.with_scale("10m"), lw=1.25, zorder=200)
+ax.add_feature(cfeature.OCEAN.with_scale("10m"), zorder=200)
+ax.add_feature(cfeature.STATES.with_scale("10m"), lw=1.25, zorder=300)
 logger.info("CartoPy setting up finished.")
 
 date_fmt = DAY.strftime('%Y%m%d')
 meso_data = Dataset(
     (
         f"http://nomads.ncep.noaa.gov/dods/rtma2p5/"
-        f"rtma2p5{date_fmt}/rtma2p5_ges_{DAY.hour}z"
+        f"rtma2p5{date_fmt}/rtma2p5_anl_{DAY.hour}z"
     )
 )
 logger.info("RTMA data fetched.")
 
-temp_data = meso_data["tmp2m"][:]
-temp_data = [[1.8 * (col - 273) + 32 for col in row] for row in temp_data]
-lons = meso_data["lon"][:]
-lats = meso_data["lat"][:]
+temp_data = meso_data.variables["tmp2m"][0][:]
+logger.info("Temperature data acquired.")
+
+lons = meso_data.variables["lon"][:]
+lats = meso_data.variables["lat"][:]
+slo, elo, sla, ela = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
+
+home_lat = np.where(
+    np.logical_and(np.greater_equal(lats, sla), np.less_equal(lats, ela))
+)[0]
+all_lats = np.array([lats[lat] for lat in home_lat])
+
+home_lon = np.where(
+    np.logical_and(np.greater_equal(lons, slo), np.less_equal(lons, elo))
+)[0]
+all_lons = np.array([lons[lon] for lon in home_lon])
+
+temp_data = [[1.8 * (temp_data[lat, lon] - 273) + 32 for lon in home_lon] for lat in home_lat]
+logger.info("Temperature data converted to Kelvin.")
 
 C = ax.contourf(
-    lons, lats, temp_data,
-    cmap="coolwarm"
+    *np.meshgrid(all_lons, all_lats), temp_data,
+    cmap="coolwarm", transform=ccrs.PlateCarree(), zorder=150
 )
 
 fig.colorbar(C)
