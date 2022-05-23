@@ -55,7 +55,7 @@ else:
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
-all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5, min_pop=20000, min_distance=0.5)
+all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5, min_pop=15000)
 
 # Set up CartoPy
 fig: plt.Figure = plt.figure(figsize=(12, 6))
