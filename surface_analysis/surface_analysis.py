@@ -43,7 +43,8 @@ meso_data = Dataset(
 )
 logger.info("RTMA data fetched.")
 
-temp_data = 1.8 * (meso_data["tmp2m"][:] - 273) + 32
+temp_data = meso_data["tmp2m"][:]
+temp_data = [[1.8 * (col - 273) + 32 for col in row] for row in temp_data]
 lons = meso_data["lon"][:]
 lats = meso_data["lat"][:]
 
