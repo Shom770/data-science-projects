@@ -14,8 +14,8 @@ logger.setLevel(logging.INFO)
 
 DIFF = 0.25
 SKIP = 15
-LONLAT = (-77.28, 39.14)
-GO_OUT_LONLAT = (2.5, 1.5)
+LONLAT = (-79.337425, 35.688637)
+GO_OUT_LONLAT = (3, 1.5)
 DAY = datetime.datetime(2022, 5, 23, 20)
 
 if LONLAT:
@@ -26,7 +26,7 @@ if LONLAT:
 else:
     extent = (-109.291992, -101.887207, 36.862043, 41.393294)
 
-fig: plt.Figure = plt.figure()
+fig: plt.Figure = plt.figure(figsize=(12, 6))
 ax: plt.Axes = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
 
 ax.set_extent(extent)
