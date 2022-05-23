@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 DIFF = 0.25
+SKIP = 15
 LONLAT = (-77.28, 39.14)
 GO_OUT_LONLAT = (2.5, 1.5)
 DAY = datetime.datetime(2022, 5, 23, 20)
@@ -47,6 +48,12 @@ logger.info("RTMA data fetched.")
 temp_data = meso_data.variables["tmp2m"][0][:]
 logger.info("Temperature data acquired.")
 
+wind_data_u = meso_data.variables["ugrd10m"][0][:]
+logger.info("U component of wind data acquired.")
+
+wind_data_v = meso_data.variables["vgrd10m"][0][:]
+logger.info("V component of wind data acquired.")
+
 lons = meso_data.variables["lon"][:]
 lats = meso_data.variables["lat"][:]
 slo, elo, sla, ela = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
@@ -64,9 +71,23 @@ all_lons = np.array([lons[lon] for lon in home_lon])
 temp_data = [[1.8 * (temp_data[lat, lon] - 273) + 32 for lon in home_lon] for lat in home_lat]
 logger.info("Temperature data converted to Kelvin.")
 
+u_comp_data = np.array([[wind_data_u[lat, lon] for lon in home_lon[::SKIP]] for lat in home_lat[::SKIP]])
+logger.info("U wind data clipped to specified lons/lats")
+
+v_comp_data = np.array([[wind_data_v[lat, lon] for lon in home_lon[::SKIP]] for lat in home_lat[::SKIP]])
+logger.info("U wind data clipped to specified lons/lats")
+
+lons_, lats_ = np.meshgrid(all_lons, all_lats)
+lons_less, lats_less = np.meshgrid(all_lons[::SKIP], all_lats[::SKIP])
+
 C = ax.contourf(
-    *np.meshgrid(all_lons, all_lats), temp_data,
+    lons_, lats_, temp_data,
     cmap="coolwarm", transform=ccrs.PlateCarree(), zorder=150
+)
+
+ax.barbs(
+    lons_less, lats_less, u_comp_data, v_comp_data,
+    transform=ccrs.PlateCarree(0), zorder=155
 )
 
 fig.colorbar(C)
