@@ -14,9 +14,9 @@ logger.setLevel(logging.INFO)
 
 DIFF = 0.25
 SKIP = 15
-LONLAT = (-79.337425, 35.688637)
+LONLAT = (-77.28, 39.14)
 GO_OUT_LONLAT = (3, 1.5)
-DAY = datetime.datetime(2022, 5, 23, 20)
+DAY = datetime.datetime.utcnow() - datetime.timedelta(hours=1)
 
 if LONLAT:
     extent = (
@@ -40,7 +40,7 @@ date_fmt = DAY.strftime('%Y%m%d')
 meso_data = Dataset(
     (
         f"http://nomads.ncep.noaa.gov/dods/rtma2p5/"
-        f"rtma2p5{date_fmt}/rtma2p5_anl_{DAY.hour}z"
+        f"rtma2p5{date_fmt}/rtma2p5_anl_{DAY.strftime('%H')}z"
     )
 )
 logger.info("RTMA data fetched.")
@@ -71,10 +71,10 @@ all_lons = np.array([lons[lon] for lon in home_lon])
 temp_data = [[1.8 * (temp_data[lat, lon] - 273) + 32 for lon in home_lon] for lat in home_lat]
 logger.info("Temperature data converted to Kelvin.")
 
-u_comp_data = np.array([[wind_data_u[lat, lon] for lon in home_lon[::SKIP]] for lat in home_lat[::SKIP]])
+u_comp_data = np.array([[wind_data_u[lat, lon] * 1.94384449 for lon in home_lon[::SKIP]] for lat in home_lat[::SKIP]])
 logger.info("U wind data clipped to specified lons/lats")
 
-v_comp_data = np.array([[wind_data_v[lat, lon] for lon in home_lon[::SKIP]] for lat in home_lat[::SKIP]])
+v_comp_data = np.array([[wind_data_v[lat, lon] * 1.94384449 for lon in home_lon[::SKIP]] for lat in home_lat[::SKIP]])
 logger.info("U wind data clipped to specified lons/lats")
 
 lons_, lats_ = np.meshgrid(all_lons, all_lats)
