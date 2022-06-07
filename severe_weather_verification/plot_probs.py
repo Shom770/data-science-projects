@@ -11,6 +11,9 @@ from scipy.ndimage.filters import gaussian_filter
 from reports import all_reports, ReportType
 
 
+def report_type_metadata(report_type):
+    if report_type == ReportType.TORNADO:
+
 DIFF = 1
 REPORT_RADIUS = 5
 SIGMA = 0.75
