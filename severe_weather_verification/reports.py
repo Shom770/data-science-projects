@@ -3,6 +3,7 @@ from io import StringIO
 
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 
@@ -29,7 +30,11 @@ with open("220602_rpts_filtered.csv") as file:
         all_text = "\n".join(split_text[header_pos[2]:])
 
     reports_df = pd.read_csv(StringIO(all_text))
-    print(reports_df)
+    condition = (
+            (extent[0] <= reports_df.Lon) & (reports_df.Lon <= extent[1])
+            & (extent[2] <= reports_df.Lat) & (reports_df.Lat <= extent[3])
+    )
+    reports_df = reports_df[condition]
 
 fig: plt.Figure = plt.figure()
 ax: plt.Axes = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
