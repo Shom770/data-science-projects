@@ -5,6 +5,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import geopy.distance
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 import numpy as np
 from scipy.ndimage.filters import gaussian_filter
 
@@ -13,6 +14,20 @@ from reports import all_reports, ReportType
 
 def report_type_metadata(report_type):
     if report_type == ReportType.TORNADO:
+        levels = [2, 5, 10, 15, 30, 45, 60, 100]
+        colormap = colors.ListedColormap(
+            ["#00DC00", "#A5734B", "#FFFF00", "#FF0000", "#F000F0", "#F000F0", "#8200DC", "#00C8C8"]
+        )
+        norm = colors.BoundaryNorm(levels, colormap.N)
+    else:
+        levels = [5, 15, 30, 45, 60, 100]
+        colormap = colors.ListedColormap(
+            ["#A5734B", "#FFFF00", "#FF0000", "#F000F0", "#F000F0", "#8200DC"]
+        )
+        norm = colors.BoundaryNorm(levels, colormap.N)
+
+    return levels, colormap, norm
+
 
 DIFF = 1
 REPORT_RADIUS = 5
