@@ -31,9 +31,9 @@ def report_type_metadata(report_type):
 
 DIFF = 1
 CROP_DIFF = 0.1
-REPORT_TYPE = ReportType.HAIL
+REPORT_TYPE = ReportType.WIND
 SIGMA = 0.75
-MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "s"}
+MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
 
 LONLAT = (-77.2, 38.1)
 GO_OUT_LONLAT = (3, 1.75)
@@ -91,5 +91,22 @@ ax.scatter(
 
 CBAR = fig.colorbar(C, ticks=levels[:-1], extend="max", shrink=0.9)
 CBAR.set_ticklabels(levels[:-1])
+
+ax.set_title(
+    "The actual chance of one or more severe events within 25 miles on June 2nd, 2022",
+    fontsize=9,
+    loc="left"
+)
+
+plt.suptitle(
+    f"Estimated Actual {REPORT_TYPE._name_.lower().title()} Probabilities",
+    fontsize=13,
+    ha="left",
+    va="bottom",
+    x=0,
+    y=1.06,
+    fontweight="bold",
+    transform=ax.transAxes
+)
 
 plt.show()
