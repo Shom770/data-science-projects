@@ -1,3 +1,4 @@
+import datetime
 import functools
 
 import cartopy.crs as ccrs
@@ -34,6 +35,7 @@ CROP_DIFF = 0.1
 REPORT_TYPE = ReportType.WIND
 SIGMA = 0.75
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
+DATE = datetime.datetime(2012, 6, 29)
 
 LONLAT = (-77.2, 38.1)
 GO_OUT_LONLAT = (3, 1.75)
@@ -57,7 +59,7 @@ ax.add_feature(cfeature.STATES.with_scale("10m"), zorder=300)
 
 ax.set_extent((extent[0] + CROP_DIFF, extent[1] - CROP_DIFF, extent[2] + CROP_DIFF, extent[3] - CROP_DIFF))
 
-reports = all_reports(report_type=REPORT_TYPE, extent=extent_lim)
+reports = all_reports(report_type=REPORT_TYPE, extent=extent_lim, day=DATE)
 lons = np.arange(extent[0], extent[1] + 0.1, 0.1)
 lats = np.arange(extent[2], extent[3] + 0.1, 0.1)
 z_data = []
@@ -95,7 +97,7 @@ CBAR = fig.colorbar(C, ticks=levels[:-1], extend="max", shrink=0.9)
 CBAR.set_ticklabels(levels[:-1])
 
 ax.set_title(
-    "The actual chance of one or more severe events within 25 miles on June 2nd, 2022",
+    f"The actual chance of one or more severe events within 25 miles on {DATE.strftime('%B %d, %Y')}",
     fontsize=9,
     loc="left"
 )

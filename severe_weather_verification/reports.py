@@ -10,8 +10,8 @@ class ReportType(Enum):
     HAIL = 2
 
 
-def all_reports(report_type, extent):
-    with open("120629_rpts_filtered.csv") as file:
+def all_reports(report_type, extent, day):
+    with open(f"{day.strftime('%y')[-2:] + day.strftime('%m%d')}_rpts_filtered.csv") as file:
         all_text = file.read()
         split_text = all_text.split("\n")
 
