@@ -73,6 +73,8 @@ for idx, lat in enumerate(lats):
         # z_data[-1].append(((report_ct * (REPORT_RADIUS ** 2 * math.pi)) / (25 ** 2 * math.pi)) * 100)
         z_data[-1].append((report_ct / 25) * 100)
 
+z_data = np.array(z_data)
+z_data[np.where(z_data > 60)] = 60
 
 levels, cmap, norm = report_type_metadata(REPORT_TYPE)
 

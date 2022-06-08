@@ -11,7 +11,7 @@ class ReportType(Enum):
 
 
 def all_reports(report_type, extent):
-    with open("220602_rpts_filtered.csv") as file:
+    with open("120629_rpts_filtered.csv") as file:
         all_text = file.read()
         split_text = all_text.split("\n")
 
@@ -24,7 +24,7 @@ def all_reports(report_type, extent):
         elif report_type == ReportType.HAIL:
             all_text = "\n".join(split_text[header_pos[2]:])
 
-        reports_df = pd.read_csv(StringIO(all_text))
+        reports_df = pd.read_csv(StringIO(all_text), on_bad_lines='skip')
         condition = (
                 (extent[0] <= reports_df.Lon) & (reports_df.Lon <= extent[1])
                 & (extent[2] <= reports_df.Lat) & (reports_df.Lat <= extent[3])
