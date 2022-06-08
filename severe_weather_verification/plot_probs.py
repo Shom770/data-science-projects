@@ -1,5 +1,4 @@
 import functools
-import math
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
@@ -7,6 +6,7 @@ import geopy.distance
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import numpy as np
+from matplotlib.offsetbox import AnchoredText
 from scipy.ndimage.filters import gaussian_filter
 
 from reports import all_reports, ReportType
@@ -107,6 +107,16 @@ plt.suptitle(
     y=1.06,
     fontweight="bold",
     transform=ax.transAxes
+)
+
+ax.add_artist(
+    AnchoredText(
+        "Made by @AtlanticWx",
+        loc="lower right",
+        prop={"size": 10},
+        frameon=True,
+        zorder=350
+    )
 )
 
 plt.show()
