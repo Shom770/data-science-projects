@@ -7,6 +7,7 @@ import geopy.distance
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import numpy as np
+import requests
 from matplotlib.offsetbox import AnchoredText
 from scipy.ndimage.filters import gaussian_filter
 
@@ -76,7 +77,7 @@ for idx, lat in enumerate(lats):
         z_data[-1].append((report_ct / 25) * 100)
 
 z_data = np.array(z_data)
-z_data[np.where(z_data > 60)] = 60
+z_data[np.where(z_data > 60)] = 60.1
 
 levels, cmap, norm = report_type_metadata(REPORT_TYPE)
 
