@@ -1,4 +1,8 @@
+import datetime
+
 import requests
+
+from reports import ReportType
 
 
 def get_risks(date, report_type):
@@ -9,3 +13,6 @@ def get_risks(date, report_type):
         )
     ).json()
     print(response)
+
+
+get_risks(datetime.datetime(2022, 6, 2), ReportType.HAIL)
