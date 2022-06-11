@@ -94,8 +94,8 @@ CBAR.set_ticklabels(["0.01x", "0.25x", "0.5x", "0.75x", "1x", "2x", "3x", "4x", 
 
 ax.set_title(
     (
-        f"The predicted {REPORT_TYPE._name_.lower()} probabilities from the SPC "
-        f"compared to the actual {REPORT_TYPE._name_.lower()} probabilities"
+        f"The actual {REPORT_TYPE._name_.lower()} gprobabilities "
+        f"compared to the forecasted {REPORT_TYPE._name_.lower()} probabilities from SPC"
     ),
     fontsize=9,
     loc="left"
