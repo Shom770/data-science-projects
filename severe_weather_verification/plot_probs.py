@@ -10,7 +10,6 @@ import numpy as np
 from matplotlib.offsetbox import AnchoredText
 from scipy.ndimage.filters import gaussian_filter
 
-from outlooks import get_risks
 from reports import all_reports, ReportType
 
 
@@ -36,7 +35,7 @@ CROP_DIFF = 0.1
 REPORT_TYPE = ReportType.WIND
 SIGMA = 0.75
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
-DATE = datetime.datetime(2012, 6, 29)
+DATE = datetime.datetime(2022, 6, 2)
 
 LONLAT = (-77.2, 38.1)
 GO_OUT_LONLAT = (3, 1.75)
