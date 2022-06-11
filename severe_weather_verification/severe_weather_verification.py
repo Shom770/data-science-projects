@@ -89,17 +89,20 @@ ax.scatter(
     c="black", s=10, marker=MARKER_MAPPING[REPORT_TYPE], transform=ccrs.PlateCarree(), zorder=175
 )
 
-CBAR = fig.colorbar(C, ticks=[0.01, 0.25, 0.5, 0.75, 1, 2, 3, 4, 5], extend="max", shrink=0.9)
-CBAR.set_ticklabels(["1%", "25%", "50%", "75%", "100%", "200%", "300%", "400%", "500%"])
+CBAR = fig.colorbar(C, ticks=[0.01, 0.25, 0.5, 0.75, 1, 2, 3, 4, 5], extend="max", shrink=0.9, label="Verification (%)")
+CBAR.set_ticklabels(["0.01x", "0.25x", "0.5x", "0.75x", "1x", "2x", "3x", "4x", "5x"])
 
 ax.set_title(
-    f"The actual chance of one or more severe events within 25 miles on {DATE.strftime('%B %d, %Y')}",
+    (
+        f"The predicted {REPORT_TYPE._name_.lower()} probabilities from the SPC "
+        f"compared to the actual {REPORT_TYPE._name_.lower()} probabilities"
+    ),
     fontsize=9,
     loc="left"
 )
 
 plt.suptitle(
-    f"Estimated Actual {REPORT_TYPE._name_.lower().title()} Probabilities",
+    f"Bust or Boom: {DATE.strftime('%B %d, %Y')}",
     fontsize=13,
     ha="left",
     va="bottom",
