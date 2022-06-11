@@ -17,10 +17,12 @@ def get_risks(date, report_type):
     risks = response["features"][0]["geometry"]["coordinates"]
     all_polygons = []
 
-    for risk in risks:
-        print(risk[0])
-        all_polygons.append(geometry.Polygon(risk[0]))
+    for risks in response["features"]:
+        all_polygons.append([])
+        for risk in risks["geometry"]["coordinates"]:
+            all_polygons[-1].append(geometry.Polygon(risk[0]))
 
-    print(all_polygons[0].wkt)
+    print(all_polygons)
+
 
 get_risks(datetime.datetime(2022, 6, 2), ReportType.WIND)
