@@ -14,19 +14,18 @@ def get_risks(date, report_type):
         )
     ).json()
 
-    risks = response["features"][0]["geometry"]["coordinates"]
-    all_polygons = []
+    all_polygons = {}
 
     for risks in response["features"]:
-        all_polygons.append([])
+        all_polygons[risks["properties"]["DN"]] = []
         for risk in risks["geometry"]["coordinates"]:
-            all_polygons[-1].append(geometry.Polygon(risk[0]))
+            all_polygons[risks["properties"]["DN"]].append(geometry.Polygon(risk[0]))
 
-    for polygon_lst, next_pl in zip(all_polygons, all_polygons[1:]):
+    all_vals = list(all_polygons.values())
+
+    for polygon_lst, next_pl in zip(all_vals, all_vals[1:]):
         for idx, (p1, p2) in enumerate(zip(polygon_lst, next_pl)):
             polygon_lst[idx] = p1 - p2
 
+    return all_polygons
 
-
-
-get_risks(datetime.datetime(2022, 6, 2), ReportType.WIND)
