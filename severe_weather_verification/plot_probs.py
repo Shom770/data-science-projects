@@ -7,10 +7,10 @@ import geopy.distance
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import numpy as np
-import requests
 from matplotlib.offsetbox import AnchoredText
 from scipy.ndimage.filters import gaussian_filter
 
+from outlooks import get_risks
 from reports import all_reports, ReportType
 
 
