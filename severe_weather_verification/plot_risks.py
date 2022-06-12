@@ -5,6 +5,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import geopy.distance
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 import numpy as np
 from matplotlib.offsetbox import AnchoredText
 from scipy.ndimage.filters import gaussian_filter
@@ -12,10 +13,27 @@ from scipy.ndimage.filters import gaussian_filter
 from reports import all_reports, ReportType
 
 
+def report_type_metadata(report_type):
+    if report_type == ReportType.TORNADO:
+        levels = [2, 5, 10, 15, 30, 45, 60, 100]
+        colormap = colors.ListedColormap(
+            ["#00DC00", "#A5734B", "#FFFF00", "#FF0000", "#F000F0", "#F000F0", "#8200DC", "#00C8C8"]
+        )
+        norm = colors.BoundaryNorm(levels, colormap.N)
+    else:
+        levels = [5, 15, 30, 45, 60, 100]
+        colormap = colors.ListedColormap(
+            ["#A5734B", "#FFFF00", "#FF0000", "#F000F0", "#F000F0", "#8200DC"]
+        )
+        norm = colors.BoundaryNorm(levels, colormap.N)
+
+    return levels, colormap, norm
+
+
 DIFF = 1
 CROP_DIFF = 0.1
 REPORT_TYPE = ReportType.WIND
-SIGMA = 1
+SIGMA = 0.75
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
 DATE = datetime.datetime(2022, 6, 2)
 
@@ -66,7 +84,7 @@ for idx, lat in enumerate(lats):
         sig_percentage = (sig_ct / 25) * 100
 
         if REPORT_TYPE == ReportType.TORNADO:
-            if risk_percentage < 2:
+            if 0 < risk_percentage < 2:
                 z_data[-1].append(0)
             elif 2 <= risk_percentage < 5:
                 z_data[-1].append(1)
@@ -78,8 +96,11 @@ for idx, lat in enumerate(lats):
                 z_data[-1].append(4)
             elif 10 <= risk_percentage <= 15:
                 z_data[-1].append(3)
+            else:
+                z_data[-1].append(-1)
+
         elif REPORT_TYPE == ReportType.WIND:
-            if risk_percentage < 5:
+            if 0 < risk_percentage < 5:
                 z_data[-1].append(0)
             elif 5 <= risk_percentage < 15:
                 z_data[-1].append(1)
@@ -91,8 +112,11 @@ for idx, lat in enumerate(lats):
                 z_data[-1].append(4)
             elif 30 <= risk_percentage <= 45:
                 z_data[-1].append(3)
+            else:
+                z_data[-1].append(-1)
+
         else:
-            if risk_percentage < 5:
+            if 0 < risk_percentage < 5:
                 z_data[-1].append(0)
             elif 5 <= risk_percentage < 15:
                 z_data[-1].append(1)
@@ -102,11 +126,16 @@ for idx, lat in enumerate(lats):
                 z_data[-1].append(4)
             elif 30 <= risk_percentage <= 45:
                 z_data[-1].append(3)
+            else:
+                z_data[-1].append(-1)
+
+cmap = colors.ListedColormap(
+    ["#C1E9C1", "#66A366", "#FFE066", "#FFA366", "#E06666", "#EE99EE"]
+)
 
 C = ax.contourf(
     *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(z_data, SIGMA),
-    colors=["#C1E9C1", "#66A366", "#FFE066", "#FFA366", "#E06666", "#EE99EE"],
-    transform=ccrs.PlateCarree(), zorder=150, antialiased=True
+    levels=[0, 1, 2, 3, 4, 5], cmap=cmap, transform=ccrs.PlateCarree(), zorder=150, antialiased=True
 )
 
 lon_reports = [report[0] for report in reports]
@@ -117,8 +146,7 @@ ax.scatter(
     c="black", s=10, marker=MARKER_MAPPING[REPORT_TYPE], transform=ccrs.PlateCarree(), zorder=175
 )
 
-CBAR = fig.colorbar(C, ticks=[0.5, 1.5, 2.5, 3.5, 4.5, 5], shrink=0.9)
-CBAR.set_ticklabels(["TSTM", "MRGL", "SLGT", "ENH", "MDT", "HIGH"])
+CBAR = fig.colorbar(C, shrink=0.9)
 
 ax.set_title(
     f"The actual chance of one or more severe events within 25 miles on {DATE.strftime('%B %d, %Y')}",
