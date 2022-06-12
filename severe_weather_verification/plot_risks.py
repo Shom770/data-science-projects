@@ -33,7 +33,7 @@ def report_type_metadata(report_type):
 DIFF = 1
 CROP_DIFF = 0.1
 REPORT_TYPE = ReportType.WIND
-SIGMA = 0.75
+SIGMA = 1
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
 DATE = datetime.datetime(2022, 6, 2)
 
@@ -82,9 +82,22 @@ for idx, lat in enumerate(lats):
                 elif REPORT_TYPE == ReportType.HAIL and int(report[-1]) >= 200:
                     sig_ct += 1
 
-        # z_data[-1].append(((report_ct * (REPORT_RADIUS ** 2 * math.pi)) / (25 ** 2 * math.pi)) * 100)
-        z_data[-1].append((report_ct / 25) * 100)
-        sig_z_data[-1].append((sig_ct / 25) * 100)
+        risk_percentage = (report_ct / 25) * 100
+        sig_percentage = (sig_ct / 25) * 100
+
+        if REPORT_TYPE == ReportType.TORNADO:
+            if risk_percentage < 2:
+                z_data[-1].append(0)
+            elif 2 <= risk_percentage < 5:
+                z_data[-1].append(1)
+            elif 5 <= risk_percentage < 10:
+                z_data[-1].append(2)
+            elif 30 < risk_percentage or (risk_percentage == 30 and sig_percentage >= 10):
+                z_data[-1].append(5)
+            elif 15 < risk_percentage <= 30 or (risk_percentage == 15 and sig_percentage >= 10):
+                z_data[-1].append(4)
+            elif 10 <= risk_percentage <= 15:
+                z_data[-1].append(3)
 
 z_data = np.array(z_data)
 sig_z_data = np.array(sig_z_data)

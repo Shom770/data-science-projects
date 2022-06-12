@@ -1,5 +1,6 @@
 import datetime
 import functools
+import math
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
@@ -32,8 +33,9 @@ def report_type_metadata(report_type):
 
 DIFF = 1
 CROP_DIFF = 0.1
+REPORT_RADIUS = 5
 REPORT_TYPE = ReportType.WIND
-SIGMA = 0.75
+SIGMA = 1
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
 DATE = datetime.datetime(2022, 6, 2)
 
@@ -83,8 +85,8 @@ for idx, lat in enumerate(lats):
                     sig_ct += 1
 
         # z_data[-1].append(((report_ct * (REPORT_RADIUS ** 2 * math.pi)) / (25 ** 2 * math.pi)) * 100)
-        z_data[-1].append((report_ct / 25) * 100)
-        sig_z_data[-1].append((sig_ct / 25) * 100)
+        z_data[-1].append(((report_ct * (REPORT_RADIUS ** 2 * math.pi)) / (25 ** 2 * math.pi)) * 100)
+        sig_z_data[-1].append(((sig_ct * (REPORT_RADIUS ** 2 * math.pi)) / (25 ** 2 * math.pi)) * 100)
 
 z_data = np.array(z_data)
 sig_z_data = np.array(sig_z_data)
