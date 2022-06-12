@@ -36,7 +36,7 @@ CROP_DIFF = 0.1
 REPORT_TYPE = ReportType.WIND
 SIGMA = 0.75
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
-DATE = datetime.datetime(2022, 6, 2)
+DATE = datetime.datetime(2012, 6, 29)
 
 LONLAT = (-77.2, 38.1)
 GO_OUT_LONLAT = (3, 1.75)
@@ -64,17 +64,28 @@ reports = all_reports(report_type=REPORT_TYPE, extent=extent_lim, day=DATE)
 lons = np.arange(extent[0], extent[1] + 0.1, 0.1)
 lats = np.arange(extent[2], extent[3] + 0.1, 0.1)
 z_data = []
+sig_z_data = []
 
 for idx, lat in enumerate(lats):
     z_data.append([])
+    sig_z_data.append([])
     filtered_reports = [report for report in reports if lat - 0.5 <= report[1] <= lat + 0.5]
     for lon in lons:
-        report_ct = len([
-            report for report in filtered_reports
-            if geopy.distance.distance(report[::-1], (lat, lon)).miles <= 25
-        ])
+        report_ct = 0
+        sig_ct = 0
+        for report in filtered_reports:
+            if geopy.distance.distance((report[1], report[0]), (lat, lon)).miles <= 25:
+                report_ct += 1
+                if REPORT_TYPE == ReportType.TORNADO and report[-1] == "UNK" and gint(report[-1]) >= 2:
+                    sig_ct += 1
+                elif REPORT_TYPE == ReportType.WIND and report[-1] != "UNK" and int(report[-1]) >= 65:
+                    sig_ct += 1
+                elif REPORT_TYPE == ReportType.HAIL and int(report[-1]) >= 200:
+                    sig_ct += 1
+
         # z_data[-1].append(((report_ct * (REPORT_RADIUS ** 2 * math.pi)) / (25 ** 2 * math.pi)) * 100)
         z_data[-1].append((report_ct / 25) * 100)
+        sig_z_data[-1].append((sig_ct / 25) * 100)
 
 z_data = np.array(z_data)
 z_data[np.where(z_data > 60)] = 60.1
@@ -84,6 +95,10 @@ levels, cmap, norm = report_type_metadata(REPORT_TYPE)
 C = ax.contourf(
     *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(z_data, SIGMA),
     levels=levels, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), zorder=150, extend="max", antialiased=True
+)
+ax.contour(
+    *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(z_data, SIGMA),
+    levels=[10, 100], hatches=[" ", "/"], transform=ccrs.PlateCarree(), zorder=175
 )
 
 lon_reports = [report[0] for report in reports]

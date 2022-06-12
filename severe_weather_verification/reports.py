@@ -10,6 +10,9 @@ class ReportType(Enum):
     HAIL = 2
 
 
+SIG_COND_MAPPING = {ReportType.TORNADO: "F_Scale", ReportType.WIND: "Speed", ReportType.HAIL: "Size"}
+
+
 def all_reports(report_type, extent, day):
     with open(f"{day.strftime('%y')[-2:] + day.strftime('%m%d')}_rpts_filtered.csv") as file:
         all_text = file.read()
@@ -31,4 +34,4 @@ def all_reports(report_type, extent, day):
         )
         reports_df = reports_df[condition]
 
-        return [*zip(reports_df.Lon, reports_df.Lat)]
+        return [*zip(reports_df.Lon, reports_df.Lat, reports_df[SIG_COND_MAPPING[report_type]])]
