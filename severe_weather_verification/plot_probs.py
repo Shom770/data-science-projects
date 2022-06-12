@@ -36,7 +36,7 @@ CROP_DIFF = 0.1
 REPORT_TYPE = ReportType.WIND
 SIGMA = 0.75
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
-DATE = datetime.datetime(2012, 6, 29)
+DATE = datetime.datetime(2022, 6, 2)
 
 LONLAT = (-77.2, 38.1)
 GO_OUT_LONLAT = (3, 1.75)
@@ -88,6 +88,7 @@ for idx, lat in enumerate(lats):
         sig_z_data[-1].append((sig_ct / 25) * 100)
 
 z_data = np.array(z_data)
+sig_z_data = np.array(sig_z_data)
 z_data[np.where(z_data > 60)] = 60.1
 
 levels, cmap, norm = report_type_metadata(REPORT_TYPE)
@@ -96,14 +97,16 @@ C = ax.contourf(
     *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(z_data, SIGMA),
     levels=levels, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), zorder=150, extend="max", antialiased=True
 )
-ax.contourf(
-    *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
-    levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
-)
-ax.contour(
-    *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
-    levels=[10, 100], colors="black", linestyles="-", transform=ccrs.PlateCarree(), zorder=180
-)
+
+if (sig_z_data >= 10).any():
+    ax.contourf(
+        *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
+        levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
+    )
+    ax.contour(
+        *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
+        levels=[10, 100], colors="black", linestyles="-", transform=ccrs.PlateCarree(), zorder=180
+    )
 
 lon_reports = [report[0] for report in reports]
 lat_reports = [report[1] for report in reports]
