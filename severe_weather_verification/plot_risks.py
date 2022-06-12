@@ -1,37 +1,24 @@
 import datetime
 import functools
+import json
 import math
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import geojsoncontour
 import geopy.distance
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import numpy as np
+import shapely.geometry
 from matplotlib.offsetbox import AnchoredText
 from scipy.ndimage.filters import gaussian_filter
 
 from reports import all_reports, ReportType
 
 
-def report_type_metadata(report_type):
-    if report_type == ReportType.TORNADO:
-        levels = [2, 5, 10, 15, 30, 45, 60, 100]
-        colormap = colors.ListedColormap(
-            ["#00DC00", "#A5734B", "#FFFF00", "#FF0000", "#F000F0", "#F000F0", "#8200DC", "#00C8C8"]
-        )
-        norm = colors.BoundaryNorm(levels, colormap.N)
-    else:
-        levels = [5, 15, 30, 45, 60, 100]
-        colormap = colors.ListedColormap(
-            ["#A5734B", "#FFFF00", "#FF0000", "#F000F0", "#F000F0", "#8200DC"]
-        )
-        norm = colors.BoundaryNorm(levels, colormap.N)
-
-    return levels, colormap, norm
-
-
 DIFF = 1
+COLOR_MAPPING = ["#66A366", "#FFE066", "#FFA366", "#E06666", "#EE99EE"]
 CROP_DIFF = 0.1
 REPORT_RADIUS = 5
 REPORT_TYPE = ReportType.WIND
@@ -92,33 +79,39 @@ z_data = np.array(z_data)
 sig_z_data = np.array(sig_z_data)
 z_data[np.where(z_data > 60)] = 60.1
 
-levels, cmap, norm = report_type_metadata(REPORT_TYPE)
-
 C = ax.contourf(
     *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(z_data, SIGMA),
-    levels=levels, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), zorder=150, extend="max", antialiased=True
+    transform=ccrs.PlateCarree(), zorder=150, extend="max", antialiased=True
 )
+for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C))["features"]:
+    if risks["properties"]["title"].startswith("0.00"):
+        color = "#FFFFFF"
+    elif risks["properties"]["title"].startswith("5.00"):
+        color = COLOR_MAPPING[0]
+    elif risks["properties"]["title"].startswith("15.00"):
+        color = COLOR_MAPPING[1]
+    elif risks["properties"]["title"].startswith("30.00"):
+        color = COLOR_MAPPING[2]
+
+    for risk in risks["geometry"]["coordinates"]:
+        ax.fill(*shapely.geometry.Polygon(risk[0]).exterior.xy, color=color, zorder=150, transform=ccrs.PlateCarree())
+
+plt.show()
+
+sig_polygons = []
 
 if (sig_z_data >= 10).any():
-    ax.contourf(
+    C1 = ax.contourf(
         *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
         levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
     )
-    ax.contour(
-        *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
-        levels=[10, 100], colors="black", linestyles="-", transform=ccrs.PlateCarree(), zorder=180
-    )
+    for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C1))["features"]:
+        sig_polygons.append([])
 
-lon_reports = [report[0] for report in reports]
-lat_reports = [report[1] for report in reports]
+        for risk in risks["geometry"]["coordinates"]:
+            sig_polygons[-1].append(shapely.geometry.Polygon(risk[0]))
 
-ax.scatter(
-    lon_reports, lat_reports,
-    c="black", s=10, marker=MARKER_MAPPING[REPORT_TYPE], transform=ccrs.PlateCarree(), zorder=175
-)
-
-CBAR = fig.colorbar(C, ticks=levels[:-1], extend="max", shrink=0.9)
-CBAR.set_ticklabels(levels[:-1])
+CBAR = fig.colorbar(C, extend="max", shrink=0.9)
 
 ax.set_title(
     f"The actual chance of one or more severe events within 25 miles on {DATE.strftime('%B %d, %Y')}",
