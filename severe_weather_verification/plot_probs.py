@@ -96,9 +96,13 @@ C = ax.contourf(
     *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(z_data, SIGMA),
     levels=levels, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), zorder=150, extend="max", antialiased=True
 )
+ax.contourf(
+    *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
+    levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
+)
 ax.contour(
     *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
-    levels=[10, 100], hatches=[" ", "/"], transform=ccrs.PlateCarree(), zorder=175
+    levels=[10, 100], colors="black", linestyles="-", transform=ccrs.PlateCarree(), zorder=180
 )
 
 lon_reports = [report[0] for report in reports]
