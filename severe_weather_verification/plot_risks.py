@@ -111,7 +111,17 @@ for idx, lat in enumerate(lats):
                 z_data[-1].append(4)
             elif 30 <= risk_percentage <= 45:
                 z_data[-1].append(3)
-
+        else:
+            if risk_percentage < 5:
+                z_data[-1].append(0)
+            elif 5 <= risk_percentage < 15:
+                z_data[-1].append(1)
+            elif 15 <= risk_percentage < 30:
+                z_data[-1].append(2)
+            elif 45 < risk_percentage or (risk_percentage == 45 and sig_percentage >= 10):
+                z_data[-1].append(4)
+            elif 30 <= risk_percentage <= 45:
+                z_data[-1].append(3)
 
 z_data = np.array(z_data)
 sig_z_data = np.array(sig_z_data)
