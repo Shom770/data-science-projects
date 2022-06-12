@@ -1,5 +1,6 @@
 import datetime
 import functools
+import math
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
@@ -32,8 +33,9 @@ def report_type_metadata(report_type):
 
 DIFF = 1
 CROP_DIFF = 0.1
+REPORT_RADIUS = 5
 REPORT_TYPE = ReportType.WIND
-SIGMA = 0.75
+SIGMA = 1
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
 DATE = datetime.datetime(2022, 6, 2)
 
@@ -63,9 +65,11 @@ reports = all_reports(report_type=REPORT_TYPE, extent=extent_lim, day=DATE)
 lons = np.arange(extent[0], extent[1] + 0.1, 0.1)
 lats = np.arange(extent[2], extent[3] + 0.1, 0.1)
 z_data = []
+sig_z_data = []
 
 for idx, lat in enumerate(lats):
     z_data.append([])
+    sig_z_data.append([])
     filtered_reports = [report for report in reports if lat - 0.5 <= report[1] <= lat + 0.5]
     for lon in lons:
         report_ct = 0
@@ -80,63 +84,30 @@ for idx, lat in enumerate(lats):
                 elif REPORT_TYPE == ReportType.HAIL and int(report[-1]) >= 200:
                     sig_ct += 1
 
-        risk_percentage = (report_ct / 25) * 100
-        sig_percentage = (sig_ct / 25) * 100
+        # z_data[-1].append(((report_ct * (REPORT_RADIUS ** 2 * math.pi)) / (25 ** 2 * math.pi)) * 100)
+        z_data[-1].append(((report_ct * (REPORT_RADIUS ** 2 * math.pi)) / (25 ** 2 * math.pi)) * 100)
+        sig_z_data[-1].append(((sig_ct * (REPORT_RADIUS ** 2 * math.pi)) / (25 ** 2 * math.pi)) * 100)
 
-        if REPORT_TYPE == ReportType.TORNADO:
-            if 0 < risk_percentage < 2:
-                z_data[-1].append(0)
-            elif 2 <= risk_percentage < 5:
-                z_data[-1].append(1)
-            elif 5 <= risk_percentage < 10:
-                z_data[-1].append(2)
-            elif 30 < risk_percentage or (risk_percentage == 30 and sig_percentage >= 10):
-                z_data[-1].append(5)
-            elif 15 < risk_percentage <= 30 or (risk_percentage == 15 and sig_percentage >= 10):
-                z_data[-1].append(4)
-            elif 10 <= risk_percentage <= 15:
-                z_data[-1].append(3)
-            else:
-                z_data[-1].append(-1)
+z_data = np.array(z_data)
+sig_z_data = np.array(sig_z_data)
+z_data[np.where(z_data > 60)] = 60.1
 
-        elif REPORT_TYPE == ReportType.WIND:
-            if 0 < risk_percentage < 5:
-                z_data[-1].append(0)
-            elif 5 <= risk_percentage < 15:
-                z_data[-1].append(1)
-            elif 15 <= risk_percentage < 30:
-                z_data[-1].append(2)
-            elif 60 <= risk_percentage and sig_percentage >= 10:
-                z_data[-1].append(5)
-            elif 45 < risk_percentage or (risk_percentage == 45 and sig_percentage >= 10):
-                z_data[-1].append(4)
-            elif 30 <= risk_percentage <= 45:
-                z_data[-1].append(3)
-            else:
-                z_data[-1].append(-1)
-
-        else:
-            if 0 < risk_percentage < 5:
-                z_data[-1].append(0)
-            elif 5 <= risk_percentage < 15:
-                z_data[-1].append(1)
-            elif 15 <= risk_percentage < 30:
-                z_data[-1].append(2)
-            elif 45 < risk_percentage or (risk_percentage == 45 and sig_percentage >= 10):
-                z_data[-1].append(4)
-            elif 30 <= risk_percentage <= 45:
-                z_data[-1].append(3)
-            else:
-                z_data[-1].append(-1)
-
-cmap = colors.ListedColormap(
-    ["#C1E9C1", "#66A366", "#FFE066", "#FFA366", "#E06666", "#EE99EE"]
-)
+levels, cmap, norm = report_type_metadata(REPORT_TYPE)
 
 C = ax.contourf(
     *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(z_data, SIGMA),
-    levels=[0, 1, 2, 3, 4, 5], cmap=cmap, transform=ccrs.PlateCarree(), zorder=150, antialiased=True
+    levels=levels, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), zorder=150, extend="max", antialiased=True
 )
+
+if (sig_z_data >= 10).any():
+    ax.contourf(
+        *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
+        levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
+    )
+    ax.contour(
+        *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
+        levels=[10, 100], colors="black", linestyles="-", transform=ccrs.PlateCarree(), zorder=180
+    )
 
 lon_reports = [report[0] for report in reports]
 lat_reports = [report[1] for report in reports]
@@ -146,7 +117,8 @@ ax.scatter(
     c="black", s=10, marker=MARKER_MAPPING[REPORT_TYPE], transform=ccrs.PlateCarree(), zorder=175
 )
 
-CBAR = fig.colorbar(C, shrink=0.9)
+CBAR = fig.colorbar(C, ticks=levels[:-1], extend="max", shrink=0.9)
+CBAR.set_ticklabels(levels[:-1])
 
 ax.set_title(
     f"The actual chance of one or more severe events within 25 miles on {DATE.strftime('%B %d, %Y')}",
