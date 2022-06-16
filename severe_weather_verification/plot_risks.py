@@ -93,23 +93,22 @@ for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C))["feature
             color = COLOR_MAPPING[1]
         elif risks["properties"]["title"].startswith("30.00") or risks["properties"]["title"].startswith("45.00"):
             color = COLOR_MAPPING[2]
-        else:
-            color = COLOR_MAPPING[3]
 
     for risk in risks["geometry"]["coordinates"]:
         ax.fill(*shapely.geometry.Polygon(risk[0]).exterior.xy, color=color, zorder=150, transform=ccrs.PlateCarree())
 
 plt.show()
-#
-# if (sig_z_data >= 10).any():
-#     C1 = ax.contourf(
-#         *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
-#         levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
-#     )
-#     for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C1))["features"]:
-#
-#         for risk in risks["geometry"]["coordinates"]:
-#             sig_polygons[-1].append(shapely.geometry.Polygon(risk[0]))
+
+if (sig_z_data >= 10).any():
+    C1 = ax.contourf(
+        *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
+        levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
+    )
+    for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C1))["features"]:
+        sig_polygons.append([])
+
+        for risk in risks["geometry"]["coordinates"]:
+            sig_polygons[-1].append(shapely.geometry.Polygon(risk[0]))
 
 CBAR = fig.colorbar(C, extend="max", shrink=0.9)
 
