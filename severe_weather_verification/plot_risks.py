@@ -83,6 +83,11 @@ C = ax.contourf(
     *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(z_data, SIGMA),
     transform=ccrs.PlateCarree(), zorder=150, extend="max", antialiased=True
 )
+if (sig_z_data >= 10).any():
+    C1 = ax.contourf(
+        *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
+        levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
+    )
 
 all_polygons = defaultdict(list)
 
@@ -113,10 +118,6 @@ for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C))["feature
         ax.fill(*poly.exterior.xy, color=color, zorder=150, transform=ccrs.PlateCarree())
 
 if (sig_z_data >= 10).any():
-    C1 = ax.contourf(
-        *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
-        levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
-    )
     for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C1))["features"]:
         for risk in risks["geometry"]["coordinates"]:
             sig_poly = shapely.geometry.Polygon(risk[0])
