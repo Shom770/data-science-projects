@@ -2,13 +2,13 @@ import datetime
 import functools
 import json
 import math
+from collections import defaultdict
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import geojsoncontour
 import geopy.distance
 import matplotlib.pyplot as plt
-import matplotlib.colors as colors
 import numpy as np
 import shapely.geometry
 from matplotlib.offsetbox import AnchoredText
@@ -18,13 +18,13 @@ from reports import all_reports, ReportType
 
 
 DIFF = 1
-COLOR_MAPPING = ["#66A366", "#FFE066", "#FFA366", "#E06666", "#EE99EE"]
+COLOR_MAPPING = ["#66A366", "#FFE066", "#FFA366", "#E06666", "#EE99EE"]  # mrgl, slgt, enh, mdt, high
 CROP_DIFF = 0.1
 REPORT_RADIUS = 5
 REPORT_TYPE = ReportType.WIND
 SIGMA = 1
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
-DATE = datetime.datetime(2022, 6, 2)
+DATE = datetime.datetime(2012, 6, 29)
 
 LONLAT = (-77.2, 38.1)
 GO_OUT_LONLAT = (3, 1.75)
@@ -83,21 +83,34 @@ C = ax.contourf(
     *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(z_data, SIGMA),
     transform=ccrs.PlateCarree(), zorder=150, extend="max", antialiased=True
 )
+
+all_polygons = defaultdict(list)
+
 for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C))["features"]:
     if risks["properties"]["title"].startswith("0.00"):
         color = "#FFFFFF"
+        rp = None  # rp is the risk percentage that can be used for the dictionary above
     else:
         if risks["properties"]["title"].startswith("5.00"):
             color = COLOR_MAPPING[0]
+            rp = 5
         elif risks["properties"]["title"].startswith("15.00"):
             color = COLOR_MAPPING[1]
-        elif risks["properties"]["title"].startswith("30.00") or risks["properties"]["title"].startswith("45.00"):
+            rp = 15
+        elif risks["properties"]["title"].startswith("30.00"):
             color = COLOR_MAPPING[2]
+            rp = 30
+        elif risks["properties"]["title"].startswith("45.00"):
+            color = COLOR_MAPPING[2]
+            rp = 45
+        elif risks["properties"]["title"].startswith("60.00"):
+            color = COLOR_MAPPING[3]
+            rp = 60
 
     for risk in risks["geometry"]["coordinates"]:
-        ax.fill(*shapely.geometry.Polygon(risk[0]).exterior.xy, color=color, zorder=150, transform=ccrs.PlateCarree())
-
-plt.show()
+        poly = shapely.geometry.Polygon(risk[0])
+        all_polygons[rp].append(poly)
+        ax.fill(*poly.exterior.xy, color=color, zorder=150, transform=ccrs.PlateCarree())
 
 if (sig_z_data >= 10).any():
     C1 = ax.contourf(
@@ -105,10 +118,9 @@ if (sig_z_data >= 10).any():
         levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
     )
     for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C1))["features"]:
-        sig_polygons.append([])
-
         for risk in risks["geometry"]["coordinates"]:
-            sig_polygons[-1].append(shapely.geometry.Polygon(risk[0]))
+            sig_poly = shapely.geometry.Polygon(risk[0])
+            print(sig_poly)
 
 CBAR = fig.colorbar(C, extend="max", shrink=0.9)
 
