@@ -9,12 +9,30 @@ import cartopy.feature as cfeature
 import geojsoncontour
 import geopy.distance
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 import numpy as np
 import shapely.geometry
 from matplotlib.offsetbox import AnchoredText
 from scipy.ndimage.filters import gaussian_filter
 
 from reports import all_reports, ReportType
+
+
+def report_type_metadata(report_type):
+    if report_type == ReportType.TORNADO:
+        levels = [2, 5, 10, 15, 30, 45, 60, 100]
+        colormap = colors.ListedColormap(
+            ["#00DC00", "#A5734B", "#FFFF00", "#FF0000", "#F000F0", "#F000F0", "#8200DC", "#00C8C8"]
+        )
+        norm = colors.BoundaryNorm(levels, colormap.N)
+    else:
+        levels = [5, 15, 30, 45, 60, 100]
+        colormap = colors.ListedColormap(
+            ["#A5734B", "#FFFF00", "#FF0000", "#F000F0", "#F000F0", "#8200DC"]
+        )
+        norm = colors.BoundaryNorm(levels, colormap.N)
+
+    return levels, colormap, norm
 
 
 DIFF = 1
@@ -78,15 +96,17 @@ for idx, lat in enumerate(lats):
 z_data = np.array(z_data)
 sig_z_data = np.array(sig_z_data)
 z_data[np.where(z_data > 60)] = 60.1
+levels, cmap, norm = report_type_metadata(REPORT_TYPE)
 
 C = ax.contourf(
     *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(z_data, SIGMA),
+    levels=levels, cmap=cmap, norm=norm,
     transform=ccrs.PlateCarree(), zorder=150, extend="max", antialiased=True
 )
 if (sig_z_data >= 10).any():
     C1 = ax.contourf(
         *map(functools.partial(gaussian_filter, sigma=SIGMA), np.meshgrid(lons, lats)), gaussian_filter(sig_z_data, SIGMA),
-        levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=175
+        levels=[10, 100], hatches=["////"], colors=["#FFFFFF00"], transform=ccrs.PlateCarree(), zorder=150
     )
 
 all_polygons = defaultdict(list)
@@ -115,13 +135,12 @@ for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C))["feature
     for risk in risks["geometry"]["coordinates"]:
         poly = shapely.geometry.Polygon(risk[0])
         all_polygons[rp].append(poly)
-        ax.fill(*poly.exterior.xy, color=color, zorder=150, transform=ccrs.PlateCarree())
+        ax.fill(*poly.exterior.xy, color=color, zorder=190, transform=ccrs.PlateCarree())
 
 if (sig_z_data >= 10).any():
     for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C1))["features"]:
         for risk in risks["geometry"]["coordinates"]:
             sig_poly = shapely.geometry.Polygon(risk[0])
-            print(sig_poly)
 
 CBAR = fig.colorbar(C, extend="max", shrink=0.9)
 
