@@ -141,6 +141,14 @@ if (sig_z_data >= 10).any():
     for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C1))["features"]:
         for risk in risks["geometry"]["coordinates"]:
             sig_poly = shapely.geometry.Polygon(risk[0])
+            if REPORT_TYPE == ReportType.WIND:
+                for poly in all_polygons[45]:
+                    if inter := sig_poly.intersection(poly):
+                        ax.fill(*inter.exterior.xy, color=COLOR_MAPPING[3], zorder=190, transform=ccrs.PlateCarree())
+                for poly in all_polygons[60]:
+                    if inter := sig_poly.intersection(poly):
+                        ax.fill(*inter.exterior.xy, color=COLOR_MAPPING[4], zorder=190, transform=ccrs.PlateCarree())
+
 
 CBAR = fig.colorbar(C, extend="max", shrink=0.9)
 
