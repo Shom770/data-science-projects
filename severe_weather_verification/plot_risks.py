@@ -10,6 +10,7 @@ import geojsoncontour
 import geopy.distance
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+import matplotlib.cm as cm
 import numpy as np
 import shapely.geometry
 from matplotlib.offsetbox import AnchoredText
@@ -149,17 +150,22 @@ if (sig_z_data >= 10).any():
                     if inter := sig_poly.intersection(poly):
                         ax.fill(*inter.exterior.xy, color=COLOR_MAPPING[4], zorder=190, transform=ccrs.PlateCarree())
 
+cmap = colors.ListedColormap(COLOR_MAPPING)
 
-CBAR = fig.colorbar(C, extend="max", shrink=0.9)
+CBAR = fig.colorbar(
+    cm.ScalarMappable(cmap=cmap, norm=colors.BoundaryNorm([0, 1, 2, 3, 4, 5], cmap.N)),
+    shrink=0.9, ticks=[0.5, 1.5, 2.5, 3.5, 4.5]
+)
+CBAR.set_ticklabels(["MRGL", "SLGT", "ENH", "MDT", "HIGH"])
 
 ax.set_title(
-    f"The actual chance of one or more severe events within 25 miles on {DATE.strftime('%B %d, %Y')}",
+    f"What the probabilistic outlook would've been on {DATE.strftime('%B %d, %Y')} based on the actual {REPORT_TYPE._name_.lower()} probabilities",
     fontsize=9,
     loc="left"
 )
 
 plt.suptitle(
-    f"Estimated Actual {REPORT_TYPE._name_.lower().title()} Probabilities",
+    f"Estimated Actual Probabilistic Outlook",
     fontsize=13,
     ha="left",
     va="bottom",
