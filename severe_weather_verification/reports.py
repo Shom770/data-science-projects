@@ -18,6 +18,7 @@ def all_reports(report_type, extent, day):
         with open(f"{day.strftime('%y')[-2:] + day.strftime('%m%d')}_rpts_filtered.csv") as file:
             all_text = file.read()
     except FileNotFoundError:
+        SIG_COND_MAPPING[ReportType.TORNADO] = "F-Scale"
         with open(f"{day.strftime('%y')[-2:] + day.strftime('%m%d')}_rpts.csv") as file:
             all_text = file.read()
 
