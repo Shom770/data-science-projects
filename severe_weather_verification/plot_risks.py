@@ -40,12 +40,12 @@ DIFF = 1
 COLOR_MAPPING = ["#66A366", "#FFE066", "#FFA366", "#E06666", "#EE99EE"]  # mrgl, slgt, enh, mdt, high
 CROP_DIFF = 0.1
 REPORT_RADIUS = 5
-REPORT_TYPE = ReportType.HAIL
+REPORT_TYPE = ReportType.TORNADO
 SIGMA = 1
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
-DATE = datetime.datetime(2022, 6, 2)
+DATE = datetime.datetime(2011, 4, 27)
 
-LONLAT = (-77.2, 38.1)
+LONLAT = (-86.80, 33.52)
 GO_OUT_LONLAT = (3, 1.75)
 
 if LONLAT:
@@ -83,7 +83,7 @@ for idx, lat in enumerate(lats):
         for report in filtered_reports:
             if geopy.distance.distance((report[1], report[0]), (lat, lon)).miles <= 25:
                 report_ct += 1
-                if REPORT_TYPE == ReportType.TORNADO and report[-1] == "UNK" and int(report[-1]) >= 2:
+                if REPORT_TYPE == ReportType.TORNADO and report[-1] != "UNK" and int(report[-1]) >= 2:
                     sig_ct += 1
                 elif REPORT_TYPE == ReportType.WIND and report[-1] != "UNK" and int(report[-1]) >= 65:
                     sig_ct += 1

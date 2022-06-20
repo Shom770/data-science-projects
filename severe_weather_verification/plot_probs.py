@@ -77,7 +77,7 @@ for idx, lat in enumerate(lats):
         for report in filtered_reports:
             if geopy.distance.distance((report[1], report[0]), (lat, lon)).miles <= 25:
                 report_ct += 1
-                if REPORT_TYPE == ReportType.TORNADO and report[-1] == "UNK" and int(report[-1]) >= 2:
+                if REPORT_TYPE == ReportType.TORNADO and report[-1] != "UNK" and int(report[-1]) >= 2:
                     sig_ct += 1
                 elif REPORT_TYPE == ReportType.WIND and report[-1] != "UNK" and int(report[-1]) >= 65:
                     sig_ct += 1
