@@ -1,6 +1,8 @@
+import datetime
 from enum import Enum
 from io import StringIO
 
+import requests
 import pandas as pd
 
 
@@ -10,28 +12,31 @@ class ReportType(Enum):
     HAIL = 2
 
 
-SIG_COND_MAPPING = {ReportType.TORNADO: "F_Scale", ReportType.WIND: "Speed", ReportType.HAIL: "Size"}
+COND_MAPPING = {ReportType.TORNADO: (0.0, "T"), ReportType.WIND: (50, "G"), ReportType.HAIL: (1.0, "H")}
 
 
 def all_reports(report_type, extent, day):
-    with open(f"{day.strftime('%y')[-2:] + day.strftime('%m%d')}_rpts_filtered.csv") as file:
-        all_text = file.read()
-        split_text = all_text.split("\n")
+    start_date = day.isoformat()[:-3] + "Z"
+    end_date = (day + datetime.timedelta(days=1)).isoformat()[:-3] + "Z"
 
-        header_pos = [idx for idx, line in enumerate(split_text) if line.startswith("Time")]
+    url = (
+        f"https://mesonet.agron.iastate.edu/cgi-bin/request/gis/lsr.py?"
+        f"sts={start_date}&ets={end_date}&fmt=csv"
+    )
+    all_text = requests.get(url).content.decode()
+    print(all_text)
 
-        if report_type == ReportType.TORNADO:
-            all_text = "\n".join(split_text[:header_pos[1]])
-        elif report_type == ReportType.WIND:
-            all_text = "\n".join(split_text[header_pos[1]:header_pos[2]])
-        elif report_type == ReportType.HAIL:
-            all_text = "\n".join(split_text[header_pos[2]:])
+    reports_df = pd.read_csv(StringIO(all_text), on_bad_lines='skip')
+    condition = (
+            (extent[0] <= reports_df.LON) & (reports_df.LON <= extent[1])
+            & (extent[2] <= reports_df.LAT) & (reports_df.LAT <= extent[3])
+    )
+    reports_df = reports_df[condition]
+    min_mag, code = COND_MAPPING[report_type]
+    reports_df["MAG"] = reports_df["MAG"].map(lambda mag: 0.0 if mag == "None" else float(mag))
 
-        reports_df = pd.read_csv(StringIO(all_text), on_bad_lines='skip')
-        condition = (
-                (extent[0] <= reports_df.Lon) & (reports_df.Lon <= extent[1])
-                & (extent[2] <= reports_df.Lat) & (reports_df.Lat <= extent[3])
-        )
-        reports_df = reports_df[condition]
-
-        return [*zip(reports_df.Lon, reports_df.Lat, reports_df[SIG_COND_MAPPING[report_type]])]
+    filter_report_cond = (
+        (reports_df.MAG >= min_mag) & (reports_df.TYPECODE == code)
+    )
+    reports_df = reports_df[filter_report_cond]
+    return [*zip(reports_df.LON, reports_df.LAT, reports_df.MAG)]
