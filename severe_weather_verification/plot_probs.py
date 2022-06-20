@@ -37,7 +37,7 @@ REPORT_RADIUS = 5
 REPORT_TYPE = ReportType.WIND
 SIGMA = 1
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
-DATE = datetime.datetime(2012, 6, 29)
+DATE = datetime.datetime(2022, 6, 2)
 
 LONLAT = (-77.2, 38.1)
 GO_OUT_LONLAT = (3, 1.75)

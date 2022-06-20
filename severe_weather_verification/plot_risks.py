@@ -43,7 +43,7 @@ REPORT_RADIUS = 5
 REPORT_TYPE = ReportType.HAIL
 SIGMA = 1
 MARKER_MAPPING = {ReportType.TORNADO: "o", ReportType.HAIL: "^", ReportType.WIND: "o"}
-DATE = datetime.datetime(2012, 6, 29)
+DATE = datetime.datetime(2022, 6, 2)
 
 LONLAT = (-77.2, 38.1)
 GO_OUT_LONLAT = (3, 1.75)
@@ -133,6 +133,28 @@ for risks in json.loads(geojsoncontour.contourf_to_geojson(contourf=C))["feature
             elif risks["properties"]["title"].startswith("60.00"):
                 color = COLOR_MAPPING[3]
                 rp = 60
+        else:
+            if risks["properties"]["title"].startswith("2.00"):
+                color = COLOR_MAPPING[0]
+                rp = 2
+            elif risks["properties"]["title"].startswith("5.00"):
+                color = COLOR_MAPPING[1]
+                rp = 5
+            elif risks["properties"]["title"].startswith("10.00"):
+                color = COLOR_MAPPING[2]
+                rp = 10
+            elif risks["properties"]["title"].startswith("15.00"):
+                color = COLOR_MAPPING[2]
+                rp = 15
+            elif risks["properties"]["title"].startswith("30.00"):
+                color = COLOR_MAPPING[3]
+                rp = 30
+            elif risks["properties"]["title"].startswith("45.00"):
+                color = COLOR_MAPPING[4]
+                rp = 45
+            elif risks["properties"]["title"].startswith("60.00"):
+                color = COLOR_MAPPING[4]
+                rp = 60
 
     for risk in risks["geometry"]["coordinates"]:
         poly = shapely.geometry.Polygon(risk[0])
@@ -154,6 +176,13 @@ if (sig_z_data >= 10).any():
                 for poly in all_polygons[45]:
                     if inter := sig_poly.intersection(poly):
                         ax.fill(*inter.exterior.xy, color=COLOR_MAPPING[3], zorder=190, transform=ccrs.PlateCarree())
+            else:
+                for poly in all_polygons[15]:
+                    if inter := sig_poly.intersection(poly):
+                        ax.fill(*inter.exterior.xy, color=COLOR_MAPPING[3], zorder=190, transform=ccrs.PlateCarree())
+                for poly in all_polygons[30]:
+                    if inter := sig_poly.intersection(poly):
+                        ax.fill(*inter.exterior.xy, color=COLOR_MAPPING[4], zorder=190, transform=ccrs.PlateCarree())
 
 cmap = colors.ListedColormap(COLOR_MAPPING)
 
