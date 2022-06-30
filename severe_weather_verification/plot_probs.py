@@ -64,6 +64,7 @@ ax.set_extent((extent[0] + CROP_DIFF, extent[1] - CROP_DIFF, extent[2] + CROP_DI
 reports = all_reports(report_type=REPORT_TYPE, extent=extent_lim, day=DATE)
 lons = np.arange(extent[0], extent[1] + 0.1, 0.1)
 lats = np.arange(extent[2], extent[3] + 0.1, 0.1)
+print(len(lats), len(lons))
 z_data = []
 sig_z_data = []
 
