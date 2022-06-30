@@ -8,7 +8,7 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-extent = (-126.298828, -66.313477, 24.686952, 49.439557)
+extent = (-126.298828, -66.313477, 24.686952, 49.686953)
 
 lats = np.arange(extent[2], extent[3], 1.25)
 lons = np.arange(extent[0], extent[1], 1.25)
