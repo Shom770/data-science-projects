@@ -42,7 +42,7 @@ ax.add_artist(
     AnchoredText(
         "Made by Shayaan Wadkar",
         loc="lower right",
-        prop={"size": 10},
+        prop={"size": 13},
         frameon=True,
         zorder=300
     )
