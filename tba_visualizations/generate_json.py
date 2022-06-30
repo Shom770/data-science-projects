@@ -36,5 +36,5 @@ for page_num in range(0, 20):
 
 
 with open("all_teams.json", "w") as file:
-    dump(file, all_teams, indent=4)
+    dump(all_teams, file, indent=4)
     logger.info("Wrote to all_teams.json")
