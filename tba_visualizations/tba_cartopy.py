@@ -6,6 +6,7 @@ import matplotlib.colors as colors
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.offsetbox import AnchoredText
 from scipy.ndimage import zoom
 
 SIGMA = 10
@@ -37,6 +38,15 @@ C = ax.contourf(
     levels=levels, cmap=cmap, norm=norm, extend="max", zorder=50, antialiased=False
 )
 fig.colorbar(C, shrink=0.9, label="# of FRC Teams")
+ax.add_artist(
+    AnchoredText(
+        "Made by Shayaan Wadkar",
+        loc="lower right",
+        prop={"size": 10},
+        frameon=True,
+        zorder=300
+    )
+)
 
 ax.set_title(
     "How many FRC teams are there within 100 miles of any given point in the United States?",
