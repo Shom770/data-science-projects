@@ -23,5 +23,10 @@ for event_key in events:
     resp = SESSION.get(URL.format(match_key=event_key), headers={"X-TBA-Auth-Key": TBA_API_KEY}).json()
     all_event_ct[event_resp["name"]] = len([team for team in resp if team.removeprefix("frc") in teams])
 
-print("\n".join([f"{key} - {value} teams going to IRI" for key, value in all_event_ct.items()]))
+print("\n".join(
+    [
+        f"{key} - {value} teams going to IRI"
+        for key, value in sorted(all_event_ct.items(), key=lambda tup: tup[1], reverse=True)
+    ]
+))
 # print(max(all_event_ct.items(), key=lambda tup: tup[1])[0])
