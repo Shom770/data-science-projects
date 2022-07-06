@@ -45,5 +45,5 @@ for match in all_matches:
             )
         )
 
-print(pd.DataFrame(scouting_matches).to_csv())
-print(pd.DataFrame(match_alliances).to_csv())
+print(pd.DataFrame(scouting_matches).to_csv(index=False))
+print(pd.DataFrame(match_alliances).to_csv(index=False))
