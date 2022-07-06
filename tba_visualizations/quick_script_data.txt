@@ -1,0 +1,48 @@
+|Team|Team Name|
+|27|Team RUSH|
+|33|Killer Bees|
+|67|The HOT Team|
+|118|Robonauts|
+|180|S.P.A.M.|
+|195|CyberKnights|
+|234|Cyber Blue|
+|340|Greater Rochester Robotics|
+|503|Frog Force|
+|624|CRyptonite|
+|694|StuyPulse|
+|829|The Digital Goats|
+|1023|Bedford Express|
+|1024|Kil-A-Bytes|
+|1339|AngelBotics|
+|1533|Triple Strange|
+|1706|Ratchet Rockers|
+|1720|PhyXTGears|
+|1730|Team Driven|
+|1732|Hilltoppers|
+|1771|North Gwinnett Robotics|
+|1923|The MidKnight Inventors|
+|1987|The Broncobots|
+|2056|OP Robotics|
+|2075|Enigma Robotics|
+|2337|EngiNERDs|
+|2363|Triple Helix|
+|2468|Team Appreciate|
+|2539|Krypton Cougars|
+|2590|Nemesis|
+|2614|MARS|
+|2767|Stryker Force|
+|3175|Knight Vision|
+|3176|Purple Precision|
+|3357|COMETS|
+|3478|PrepaTec LamBot|
+|3538|RoboJackets|
+|3940|CyberTooth|
+|4028|The Beak Squad|
+|4099|The Falcons|
+|4265|Secret City Wildbots|
+|4499|The Highlanders|
+|4635|Botbusters|
+|4926|GalacTech|
+|5406|Celt-X|
+|5712|Hemlock's Gray Matter|
+|7457|suPURDUEper Robotics|
