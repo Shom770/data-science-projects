@@ -23,7 +23,7 @@ for match in all_matches:
     ):
         scouting_matches.append(
             {
-                "Match Number": match["match_number"],
+                "Match Key": match["key"],
                 "Video URL": f"https://youtube.com/watch?v={match['videos'][-1]['key']}"
             }
         )
