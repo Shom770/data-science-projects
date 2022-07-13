@@ -5,7 +5,7 @@ from os import environ
 import numpy as np
 import requests
 from dotenv import load_dotenv
-from scipy.stats import skew
+from scipy.stats import norm, skew
 
 load_dotenv()
 
@@ -18,10 +18,11 @@ all_ccwms = SESSION.get(
     URL.format(key=EVENT_KEY, mode="oprs"), headers={"X-TBA-Auth-key": TBA_API_KEY}
 ).json()["ccwms"]
 
-all_alliances = [[all_ccwms[pick] for pick in alliance["picks"]]for alliance in SESSION.get(
-    URL.format(key=EVENT_KEY, mode="alliances"), headers={"X-TBA-Auth-key": TBA_API_KEY}
-).json()]
-print(all_alliances)
+all_alliances = [
+    [all_ccwms[pick] for pick in alliance["picks"]]for alliance in SESSION.get(
+        URL.format(key=EVENT_KEY, mode="alliances"), headers={"X-TBA-Auth-key": TBA_API_KEY}
+    ).json()
+]
 
 ccwm_dataset = np.array(
     sorted({
@@ -32,9 +33,13 @@ ccwm_dataset = np.array(
 )
 all_alliances = list(map(sum, all_alliances))
 
-ccwm_dataset = min(
-    [np.array([asinh(value / k_factor) for value in ccwm_dataset]) for k_factor in range(1, 21, 5)],
-    key=lambda arr: abs(skew(arr))
+ccwm_dataset, k_factor = min(
+    [(np.array([asinh(value / k_factor) for value in ccwm_dataset]), k_factor) for k_factor in range(1, 102, 10)],
+    key=lambda arr: abs(skew(arr[0]))
 )
 
-print(skew(ccwm_dataset))
+percentiles_picks = []
+
+for ccwm_sum in all_alliances:
+    z_score = (asinh(ccwm_sum / k_factor) - np.mean(ccwm_dataset)) / np.std(ccwm_dataset)
+    percentiles_picks.append((1 - norm.sf(z_score)) * 100)
