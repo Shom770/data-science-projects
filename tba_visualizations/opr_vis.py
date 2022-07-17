@@ -1,6 +1,8 @@
 import itertools
 from os import environ
 
+import matplotlib
+import matplotlib.font_manager as font_manager
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
@@ -13,9 +15,17 @@ SESSION = requests.session()
 URL = "https://www.thebluealliance.com/api/v3/event/{key}/{mode}"
 TBA_API_KEY = environ["TBA_API_KEY"]
 EVENT_KEY = "2022tur"
+LATEX_SPACE = r"\;"
 
 fig: plt.Figure = plt.figure(figsize=(12, 6))
 ax: plt.Axes = fig.add_subplot(1, 1, 1)
+
+# Change font to Inter
+for font in font_manager.findSystemFonts(["."]):
+    font_manager.fontManager.addfont(font)
+
+# Set font family globally
+matplotlib.rcParams['font.family'] = 'Inter'
 
 
 def rescale(colormap):
@@ -70,17 +80,17 @@ ax.bar(
 
 ax.set_title(
     "How good was an alliance compared to all possible combinations for an alliance?",
-    fontsize=11,
+    fontsize=10,
     loc="left"
 )
 
-ax.set_xlabel(f"Alliances in {event_name}")
+ax.set_xlabel(fr"$\bfAlliances in {event_name}$".replace(" ", LATEX_SPACE))
 
-ax.set_ylabel("Percentile of Alliance Compared to All Poss. Alliances")
+ax.set_ylabel(r"$\bfPercentile of Alliance Compared to All Poss. Alliances$".replace(" ", LATEX_SPACE))
 ax.set_yticks([1, 20, 40, 60, 80, 99], ["1st", "20th", "40th", "60th", "80th", "99th"])
 
 plt.suptitle(
-    f"Percentile of the Alliances in {event_name}",
+    fr"$\bfPercentile of the Alliances in {event_name}$".replace(" ", LATEX_SPACE),
     fontsize=13,
     ha="left",
     va="bottom",
