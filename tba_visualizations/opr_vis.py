@@ -1,7 +1,7 @@
 import itertools
-from math import asinh
 from os import environ
 
+import matplotlib.pyplot as plt
 import numpy as np
 import requests
 from dotenv import load_dotenv
@@ -14,12 +14,23 @@ URL = "https://www.thebluealliance.com/api/v3/event/{key}/{mode}"
 TBA_API_KEY = environ["TBA_API_KEY"]
 EVENT_KEY = "2022tur"
 
+fig: plt.Figure = plt.figure(figsize=(12, 6))
+ax: plt.Axes = fig.add_subplot(1, 1, 1)
+
+
+def rescale(colormap):
+    return (colormap - np.min(colormap)) / (np.max(colormap) - np.min(colormap))
+
+
 all_ccwms = SESSION.get(
     URL.format(key=EVENT_KEY, mode="oprs"), headers={"X-TBA-Auth-key": TBA_API_KEY}
 ).json()["oprs"]
 all_alliances = SESSION.get(
      URL.format(key=EVENT_KEY, mode="alliances"), headers={"X-TBA-Auth-key": TBA_API_KEY}
 ).json()
+event_name = SESSION.get(
+     URL.format(key=EVENT_KEY, mode="simple"), headers={"X-TBA-Auth-key": TBA_API_KEY}
+).json()["name"]
 
 alliance_sums = [
     [all_ccwms[pick] for pick in alliance["picks"]] for alliance in all_alliances
@@ -44,9 +55,39 @@ mode, opr_dataset = min(
 )
 
 percentiles_picks = []
+alliance_picks = ["\n".join(alliance["picks"]).replace("frc", "") for alliance in all_alliances]
 
 for opr_sum in alliance_sums:
     z_score = (mode(opr_sum) - opr_dataset.mean()) / opr_dataset.std()
     percentiles_picks.append((1 - norm.sf(z_score)) * 100)
 
-print(percentiles_picks, [alliance["picks"] for alliance in all_alliances])
+cmap = plt.get_cmap("coolwarm_r")
+ax.bar(
+    alliance_picks,
+    percentiles_picks,
+    color=cmap(rescale(np.array(percentiles_picks)))
+)
+
+ax.set_title(
+    "How good was an alliance compared to all possible combinations for an alliance?",
+    fontsize=11,
+    loc="left"
+)
+
+ax.set_xlabel(f"Alliances in {event_name}")
+
+ax.set_ylabel("Percentile of Alliance Compared to All Poss. Alliances")
+ax.set_yticks([1, 20, 40, 60, 80, 99], ["1st", "20th", "40th", "60th", "80th", "99th"])
+
+plt.suptitle(
+    f"Percentile of the Alliances in {event_name}",
+    fontsize=13,
+    ha="left",
+    va="bottom",
+    x=0,
+    y=1.04,
+    fontweight="bold",
+    transform=ax.transAxes
+)
+
+plt.show()
