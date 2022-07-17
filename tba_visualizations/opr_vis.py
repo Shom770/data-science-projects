@@ -89,7 +89,7 @@ ax.set_ylabel(r"$\bfPercentile of Alliance Compared to All Poss. Alliances$".rep
 ax.set_yticks([1, 20, 40, 60, 80, 99], ["1st", "20th", "40th", "60th", "80th", "99th"])
 
 plt.suptitle(
-    fr"$\bfPercentile of the Alliances in {event_name}$".replace(" ", LATEX_SPACE),
+    fr"$\bfPercentile of the Alliances in the {event_name}$".replace(" ", LATEX_SPACE),
     fontsize=13,
     ha="left",
     va="bottom",
