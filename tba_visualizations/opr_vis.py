@@ -14,7 +14,7 @@ load_dotenv()
 SESSION = requests.session()
 URL = "https://www.thebluealliance.com/api/v3/event/{key}/{mode}"
 TBA_API_KEY = environ["TBA_API_KEY"]
-EVENT_KEY = "2022tur"
+EVENT_KEY = "2022chcmp"
 LATEX_SPACE = r"\;"
 
 fig: plt.Figure = plt.figure(figsize=(12, 6))
@@ -58,7 +58,6 @@ alliance_sums = [sum(all_sum) / len(all_sum) for all_sum in alliance_sums]
 mode, opr_dataset = min(
     (
         (np.log, np.log(opr_dataset)),
-        (np.reciprocal, 1 / opr_dataset),
         (np.sqrt, opr_dataset ** 0.5)
     ),
     key=lambda arr: abs(skew(arr[1]))
