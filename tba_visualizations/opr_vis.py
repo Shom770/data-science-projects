@@ -14,7 +14,7 @@ load_dotenv()
 SESSION = requests.session()
 URL = "https://www.thebluealliance.com/api/v3/event/{key}/{mode}"
 TBA_API_KEY = environ["TBA_API_KEY"]
-EVENT_KEY = "2022chcmp"
+EVENT_KEY = "2022iri"
 LATEX_SPACE = r"\;"
 
 fig: plt.Figure = plt.figure(figsize=(12, 6))
