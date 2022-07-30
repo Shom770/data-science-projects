@@ -71,6 +71,7 @@ def track_robots(match_key: str) -> None:
             else:
                 tracker = cv2.legacy.TrackerCSRT_create()
                 tracker.init(frame, initBB)
+
         elif key == ord("i"):
             upper_l = center_of_bbox(
                 cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
