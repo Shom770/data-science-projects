@@ -29,7 +29,7 @@ ax.add_feature(cfeature.LAKES.with_scale("110m"), zorder=75)
 ax.add_feature(cfeature.OCEAN.with_scale("110m"), zorder=100)
 ax.add_feature(cfeature.STATES.with_scale("110m"), zorder=200)
 
-levels = np.arange(0, 210, 10)
+levels = np.arange(0, 1.01, 0.01)
 cmap = cm.get_cmap("Reds")
 norm = colors.BoundaryNorm(levels, cmap.N)
 
