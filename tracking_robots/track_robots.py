@@ -23,7 +23,8 @@ def track_robots(match_key: str) -> None:
     video_url = f"https://youtube.com/watch?v={tba.match(key=match_key)['videos'][0]['key']}"
 
     with yt_dlp.YoutubeDL({}) as ydl:
-        ydl.download([video_url])
+        info = ydl.extract_info(video_url, download=True)
+        print(info)
 
     vs = cv2.VideoCapture("Einstein Final 1 - 2022 FIRST Championship [EgPMnpp-PnQ].mp4")
 
