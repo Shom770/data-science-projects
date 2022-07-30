@@ -1,11 +1,11 @@
 from os import environ
-from threading import Thread
 
 import cv2
 import cv2.legacy
 import matplotlib.pyplot as plt
 import yt_dlp
 from dotenv import load_dotenv
+from scipy.interpolate import interp1d
 from tbapy import TBA
 
 load_dotenv()
@@ -13,6 +13,10 @@ load_dotenv()
 WIDTH = 1920
 HEIGHT = 1080
 tba = TBA(environ["TBA_API_KEY"])
+
+
+def center_of_bbox(bbox):
+    return bbox[0] + bbox[2] / 2, bbox[1] + bbox[3] / 2
 
 
 def track_robots(match_key: str) -> None:
@@ -32,9 +36,6 @@ def track_robots(match_key: str) -> None:
 
     figure, ax = plt.subplots(figsize=(12, 6))
 
-    ax.set_xlim([0, 1920])
-    ax.set_ylim([0, 1080])
-
     grabbed = True
     initialized = False
 
@@ -47,14 +48,12 @@ def track_robots(match_key: str) -> None:
             # check to see if the tracking was a success
             if success:
                 (x, y, w, h) = [int(v) for v in box]
-                positions_x.append(x + w / 2)
-                positions_y.append(y + h / 2)
+                positions_x.append(interp_x(x + w / 2))
+                positions_y.append(interp_y(y + h / 2))
                 cv2.rectangle(
                     frame, (x, y), (x + w, y + h),
                     (0, 255, 0), 2
                 )
-            else:
-                print(success)
 
         key = cv2.waitKey(1) & 0xFF
         cv2.imshow("Frame", frame)
@@ -62,8 +61,33 @@ def track_robots(match_key: str) -> None:
         # if the 's' key is selected, we are going to "select" a bounding
         # box to track
         if key == ord("s"):
-            # select the bounding box of the object we want to track (make
-            # sure you press ENTER or SPACE after selecting the ROI)
+            initBB = cv2.selectROI("Frame", frame, fromCenter=False,
+                                   showCrosshair=True)
+            # start OpenCV object tracker using the supplied bounding box
+            # coordinates, then start the FPS throughput estimator as well
+            if not initialized:
+                tracker.init(frame, initBB)
+                initialized = True
+            else:
+                tracker = cv2.legacy.TrackerCSRT_create()
+                tracker.init(frame, initBB)
+        elif key == ord("i"):
+            upper_l = center_of_bbox(
+                cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
+            )
+            upper_r = center_of_bbox(
+                cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
+            )
+            lower_l = center_of_bbox(
+                cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
+            )
+            lower_r = center_of_bbox(
+                cv2.selectROI("Frame", frame, fromCenter=False, showCrosshair=True)
+            )
+
+            interp_x = interp1d([min(upper_l[0], lower_l[0]), max(upper_r[0], lower_r[0])], [0, 54])
+            interp_y = interp1d([min(upper_l[1], upper_r[1]), max(lower_l[1], lower_r[1])], [0, 27])
+
             initBB = cv2.selectROI("Frame", frame, fromCenter=False,
                                    showCrosshair=True)
             # start OpenCV object tracker using the supplied bounding box
@@ -78,7 +102,15 @@ def track_robots(match_key: str) -> None:
         elif key == ord("q"):
             break
 
-    ax.plot(positions_x, positions_y)
+    background = plt.imread("field.png")
+
+    ax.imshow(background, zorder=0)
+
+    adjust_x = interp1d([0, 54], [0, ax.get_xlim()[-1]])
+    adjust_y = interp1d([0, 27], [0, ax.get_ylim()[0]])
+
+    ax.plot(adjust_x(positions_x), adjust_y(positions_y), zorder=1, color="white")
+
     plt.show()
 
     vs.release()
