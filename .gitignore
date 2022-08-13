@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# misc
+./tba_visualizations/2022iri_scout_data.csv
