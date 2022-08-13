@@ -59,9 +59,54 @@ class OPRCalculator:
         A = np.array(matrix_a)
         b = np.array(scores)
 
-        raw_eprs = lsmr(A, b, damp=1.0)[0]
+        # change based off errors
+        matrix_b = []
+        score_err = []
 
-        eprs = {scout: (abs(error), matches_scouted[scout]) for scout, error in zip(scout_ids, raw_eprs)}
+        raw_eprs = lsmr(A, b)[0]
+
+        eprs = {scout: (error, matches_scouted[scout]) for scout, error in zip(scout_ids, raw_eprs)}
+
+        for match in requests.get(url=matches_link, headers=self.headers).json():
+            if match['comp_level'] == 'qm':
+                blue_score = match["score_breakdown"]["blue"]
+                red_score = match["score_breakdown"]["red"]
+
+                match_scouts = scouting_data.loc[scouting_data["match_key"] == f"qm{match['match_number']}"]
+
+                if match_scouts.empty:
+                    break
+
+                if len(match_scouts) < 5:
+                    continue
+
+                for alliance_score, alliance_name in zip((blue_score, red_score), ("Blue", "Red")):
+                    alliance_scouts = match_scouts[match_scouts["alliance"] == alliance_name]
+                    alliance_scout_ids = set(alliance_scouts["scout_id"])
+
+                    for scout in alliance_scout_ids:
+                        matches_scouted[scout] += 1
+
+                    total_cargo_points = (
+                        alliance_score["autoCargoPoints"] + alliance_score["teleopCargoPoints"]
+                    )
+                    scout_cargo_points = (
+                        sum(alliance_scouts["auto_upper_hub"]) * 4 + sum(alliance_scouts["auto_lower_hub"]) * 2
+                        + sum(alliance_scouts["teleop_upper_hub"]) * 2 + sum(alliance_scouts["teleop_lower_hub"])
+                    )
+
+                    total_error = abs(total_cargo_points - scout_cargo_points)
+                    scout_est_error = sum([eprs[scout][0] for scout in alliance_scout_ids])
+
+                    matrix_b.append([int(scout in alliance_scout_ids) for scout in scout_ids])
+                    score_err.append(abs(scout_est_error - total_error))
+
+        A2 = np.array(matrix_b)
+        b2 = np.array(score_err)
+
+        errors = lsmr(A2, b2)[0]
+
+        eprs = {key: (eprs[key][0] + corres, eprs) for key, corres in zip(eprs.keys(), errors)}
 
         return dict(sorted(eprs.items(), key=lambda pair: pair[1][0], reverse=True))
 
