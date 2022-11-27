@@ -17,7 +17,7 @@ from matplotlib.offsetbox import AnchoredText
 from historical_hrrr_temps import historical_hrrr_temps
 
 
-extent = (-79.05, -76.02, 37.585112, 39.56)
+extent = (-80.05, -76.02, 37, 40)
 lons_extent = extent[:2]
 lats_extent = extent[2:]
 
@@ -30,9 +30,9 @@ ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"))
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25)
 
-data_time = datetime.datetime(2021, 2, 18, hour=12)
-go_back = 24
-layer = "850mb"
+data_time = datetime.datetime(2022, 10, 9, hour=2)
+go_back = 18
+layer = "1000mb"
 prev_time = data_time - datetime.timedelta(hours=go_back)
 lons, lats, temp_contour = historical_hrrr_temps(data_time=data_time, go_back=go_back, layer=layer)
 
@@ -60,7 +60,7 @@ plt.suptitle(
     f"Bust or Boom?: {layer} Temps",
     fontsize=14,
     ha="left",
-    x=0.1529,
+    x=0.225,
     y=0.96,
     fontweight="bold"
 )

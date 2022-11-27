@@ -132,7 +132,7 @@ def track_robots(match_key: str) -> None:
     adjust_x = interp1d([0, 54], [0, ax.get_xlim()[-1]])
     adjust_y = interp1d([0, 27], [0, ax.get_ylim()[0]])
 
-    ax.plot(adjust_x(positions_x), adjust_y(positions_y), zorder=1, color="white")
+    ax.plot(adjust_x(positions_x), adjust_y(positions_y), zorder=1, color="blue")
 
     plt.show()
 

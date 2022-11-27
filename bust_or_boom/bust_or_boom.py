@@ -27,10 +27,10 @@ matplotlib.rcParams['font.family'] = 'Inter'
 
 DIFF = 0.2
 OPP_DIFF = (0.2, 0.2)
-ZOOM_LEVEL = 1
+ZOOM_LEVEL = 5
 
-LONLAT = (-89.3866, 43.07295)
-GO_OUT_LONLAT = (3, 1.75)
+LONLAT = (-78.87846, 42.88544)
+GO_OUT_LONLAT = (1.5, 1)
 
 if LONLAT:
     extent = (
@@ -57,7 +57,7 @@ ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25, zorder=200)
 all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5, min_pop=10000)
 
 lons_n, lats_n, snow_n, date, accum_time = nohrsc_snow(extent_lim)
-coords = historical_hrrr_snow(date, extent_lim, accum_time, goes_out=24, occ=2)
+coords = historical_hrrr_snow(date, extent_lim, accum_time, goes_out=24, occ=3)
 
 all_keys = [*coords.keys()]
 
@@ -135,9 +135,10 @@ norm_s = colors.BoundaryNorm(levels_s, cmap_s.N)
 #     cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), antialiased=True, alpha=0.75
 # )
 C = ax.contourf(
-    lons_n, lats_n, snow_n, levels_s,
+    lons_n, lats_n, snow_h, levels_s,
     cmap=cmap_s, norm=norm_s, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
 )
+
 # CS = ax.contour(
 #     gaussian_filter(lons_n, ZOOM_LEVEL), gaussian_filter(lats_n, ZOOM_LEVEL), diff_snow,
 #     levels=levels_c, cmap=cmap_c, norm=norm_c, transform=ccrs.PlateCarree()

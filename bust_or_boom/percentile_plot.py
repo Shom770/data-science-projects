@@ -33,16 +33,16 @@ DIFF = 0.5
 SIGMA = 1
 MIN_SNOWFALL = None
 MONTH = None
-LONLAT = (-89.38669, 43.07295)
-GO_OUT_LONLAT = (3, 1.75)
+LONLAT = (-78.87846, 42.88544)
+GO_OUT_LONLAT = (1, 1)
 
 NUM_TO_MONTH = {
     1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
     7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"
 }
-START_DATE = datetime.datetime(2010, 1, 1)
-END_DATE = datetime.datetime.today()
-OPP_DIFF = (0.2, 0.2)
+START_DATE = datetime.datetime(2, 1, 1)
+END_DATE = datetime.datetime(2022, 11, 10)
+OPP_DIFF = (0.3, 0.3)
 
 if LONLAT:
     extent = (
@@ -55,7 +55,7 @@ else:
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 bbox_lim = (extent_lim[0], extent_lim[2], extent_lim[1], extent_lim[3])
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
-all_cities = get_cities(extent_opp, spacing_lat=0.5, spacing_long=0.5, min_pop=15000)
+all_cities = get_cities(extent_opp, spacing_lat=0.25, spacing_long=0.25, min_pop=15000)
 
 # Set up CartoPy
 fig: plt.Figure = plt.figure(figsize=(12, 6))
