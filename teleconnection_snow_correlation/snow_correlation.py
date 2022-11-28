@@ -5,10 +5,17 @@ import numpy as np
 import scipy.stats
 from scipy.stats import norm
 
-with open("nao_values.json") as file:
-    nao_values = load(file)
+with open("nao_values.json") as nao_file:
+    nao_values = load(nao_file)
+    winter_nao_values = {key: value[:3] + value[10:] for key, value in nao_values.items()}
 
-winter_nao_values = {key: value[:3] + value[10:] for key, value in nao_values.items()}
+with open("ao_values.json") as ao_file:
+    ao_values = load(ao_file)
+    winter_ao_values = {key: value[:3] + value[10:] for key, value in ao_values.items()}
+
+with open("pna_values.json") as pna_file:
+    pna_values = load(pna_file)
+    winter_pna_values = {key: value[:3] + value[10:] for key, value in pna_values.items()}
 
 
 def calculate_percentile(teleconnection: float,  dataset: Iterable, negative: bool = False) -> float:
