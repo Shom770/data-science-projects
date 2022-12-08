@@ -20,7 +20,7 @@ OPP_DIFF = (0.2, 0.2)
 ZOOM_LEVEL = 5
 
 LONLAT = (-77.28, 39.14)
-GO_OUT_LONLAT = (1.5, 1)
+GO_OUT_LONLAT = (2.5, 2)
 
 if LONLAT:
     extent = (
@@ -30,7 +30,9 @@ if LONLAT:
 else:
     extent = (-109.291992, -101.887207, 36.862043, 41.393294)
 
-run_time = datetime.datetime(year=2022, month=1, day=3, hour=7)
+run_time = datetime.datetime(year=2021, month=2, day=18, hour=0)
+goes_out = 36
+
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
 lons_extent = extent[:2]
@@ -45,7 +47,7 @@ ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"), zorder=100)
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25, zorder=200)
 
-longitudes, latitudes, snow_totals = historical_hrrr_raw_snow(run_time, extent_lim, go_back=0, goes_out=18)
+longitudes, latitudes, snow_totals = historical_hrrr_raw_snow(run_time, extent_lim, go_back=0, goes_out=goes_out)
 
 levels = [0.1, 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 30, 36, 48, 60, 72]
 cmap = colors.ListedColormap(
@@ -60,6 +62,29 @@ norm = colors.BoundaryNorm(levels, cmap.N)
 C = ax.contourf(
     longitudes, latitudes, snow_totals, levels,
     cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+)
+
+ax.set_title(
+    f"Hour {goes_out} | Total Snowfall | Plotted by @AtlanticWx",
+    fontsize=9,
+    loc="left"
+)
+
+plt.suptitle(
+    f"{str(run_time.hour).zfill(2)}z HRRR on {run_time.strftime('%B %d, %Y')}",
+    fontsize=13,
+    ha="left",
+    va="bottom",
+    x=0,
+    y=1.06,
+    fontweight=800,
+    transform=ax.transAxes
+)
+
+cbar = fig.colorbar(
+    C,
+    label=f"Total Snowfall (in.)",
+    ticks=[1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 30, 36, 48, 60, 72]
 )
 
 plt.show()
