@@ -1,25 +1,13 @@
-import bisect
 import datetime
-import math
-import operator
-from collections import defaultdict
-from datetime import timedelta
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
-import matplotlib.cm as cm
 import matplotlib.font_manager as font_manager
-import matplotlib.patheffects as patheffects
-import numpy as np
-from scipy.ndimage.filters import gaussian_filter
-from matplotlib.offsetbox import AnchoredText
 
 from historical_hrrr import historical_hrrr_raw_snow
-from nohrsc_plotting import nohrsc_snow
-from plot_cities import get_cities
 
 for font in font_manager.findSystemFonts(["."]):
     font_manager.fontManager.addfont(font)
