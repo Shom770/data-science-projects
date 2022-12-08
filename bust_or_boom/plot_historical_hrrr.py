@@ -30,8 +30,8 @@ if LONLAT:
 else:
     extent = (-109.291992, -101.887207, 36.862043, 41.393294)
 
-run_time = datetime.datetime(year=2021, month=2, day=18, hour=0)
-goes_out = 36
+run_time = datetime.datetime(year=2017, month=12, day=9, hour=0)
+goes_out = 15
 
 extent_lim = (extent[0] - DIFF, extent[1] + DIFF, extent[2] - DIFF, extent[3] + DIFF)
 extent_opp = (extent[0] + OPP_DIFF[0], extent[1] - OPP_DIFF[0], extent[2] + OPP_DIFF[1], extent[3] - OPP_DIFF[1])
