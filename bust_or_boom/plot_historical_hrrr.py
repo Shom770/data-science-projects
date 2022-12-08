@@ -2,6 +2,7 @@ import bisect
 import datetime
 import math
 import operator
+from collections import defaultdict
 from datetime import timedelta
 
 import cartopy.crs as ccrs
@@ -16,7 +17,7 @@ import numpy as np
 from scipy.ndimage.filters import gaussian_filter
 from matplotlib.offsetbox import AnchoredText
 
-from historical_hrrr import historical_hrrr_snow
+from historical_hrrr import historical_hrrr_raw_snow
 from nohrsc_plotting import nohrsc_snow
 from plot_cities import get_cities
 
@@ -56,14 +57,21 @@ ax.add_feature(cfeature.LAND.with_scale("50m"))
 ax.add_feature(cfeature.OCEAN.with_scale("50m"), zorder=100)
 ax.add_feature(cfeature.STATES.with_scale("50m"), lw=1.25, zorder=200)
 
-coords = historical_hrrr_snow(run_time, extent_lim, go_back=0, goes_out=18)
+longitudes, latitudes, snow_totals = historical_hrrr_raw_snow(run_time, extent_lim, go_back=0, goes_out=18)
 
-levels_s = [0.1, 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 30, 36, 48, 60, 72]
-cmap_s = colors.ListedColormap(
+levels = [0.1, 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 30, 36, 48, 60, 72]
+cmap = colors.ListedColormap(
     [
         '#bdd7e7', '#6baed6', '#3182bd', '#08519c', '#082694', '#ffff96',
         '#ffc400', '#ff8700', '#db1400', '#9e0000', '#690000', '#ccccff',
         '#9f8cd8', '#7c52a5', '#561c72', '#40dfff'
     ]
 )
-norm_s = colors.BoundaryNorm(levels_s, cmap_s.N)
+norm = colors.BoundaryNorm(levels, cmap.N)
+
+C = ax.contourf(
+    longitudes, latitudes, snow_totals, levels,
+    cmap=cmap, norm=norm, alpha=0.5, transform=ccrs.PlateCarree(), antialiased=True
+)
+
+plt.show()
