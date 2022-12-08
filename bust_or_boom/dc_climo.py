@@ -40,7 +40,7 @@ upper_decembers = np.percentile(list(map(sum, december_data.values())), UPPER_PE
 lower_decembers = np.percentile(list(map(sum, december_data.values())), LOWER_PERCENTILE)
 
 top_years = {year for year, total_snow in december_data.items() if sum(total_snow) >= upper_decembers}
-print(list(sorted(top_years)))
+
 top_years_data = np.array(
     list({year: values for year, values in december_data.items() if year in top_years}.values())
 ).transpose()
